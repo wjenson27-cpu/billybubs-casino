@@ -7,7 +7,7 @@ const vm = require("vm");
 const assert = require("assert");
 
 const root = path.join(__dirname, "..");
-const html = fs.readFileSync(path.join(root, "index.html"), "utf8");
+const html = fs.readFileSync(path.join(root, "trainer", "index.html"), "utf8");
 const engineMatch = html.match(/<script id="bones-engine">([\s\S]*?)<\/script>/);
 const uiMatch = html.match(/<script id="bones-ui">([\s\S]*?)<\/script>/);
 assert.ok(engineMatch, "bones-engine script missing");
