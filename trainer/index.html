@@ -133,6 +133,19 @@
   .banner.bad { background: #2a1014; color: #f0c2c4; }
   .banner strong { font-size: 18px; }
   .rowbtns, .modes, .stakes, .choices, .sides { display: flex; flex-wrap: wrap; gap: 8px; }
+  .bc-setting { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 8px 0 6px; }
+  .bc-setting p { margin: 0; flex: 1 1 auto; min-width: 0; color: var(--muted); font-size: 13px; }
+  .bc-setting button { flex: 0 0 auto; }
+  .bc-rail { display: flex; flex-direction: column; gap: 6px; margin: 0 0 8px; }
+  .bc-rail-row { display: flex; align-items: stretch; gap: 6px; min-width: 0; }
+  .bc-rail-row button { flex: 1 1 auto; min-width: 0; text-align: left; white-space: normal; }
+  .bc-edge {
+    flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center;
+    min-height: 44px; padding: 0 10px; border-radius: 999px; border: 1px solid var(--gold-dim);
+    color: var(--gold-hi); background: var(--surface); text-decoration: none;
+    font-variant-numeric: tabular-nums; white-space: nowrap;
+  }
+  tr.bc-edge-hit td { outline: 2px solid var(--gold-hi); outline-offset: -2px; }
   .rowbtns button, .modes button, .texty, .sides button {
     background: var(--surface); border: 1px solid var(--gold-dim); border-radius: 999px; padding: 8px 12px; min-height: 44px;
   }
@@ -627,7 +640,11 @@
         <button type="button" id="bc-side-tie" data-act="bc-side" data-side="tie">Tie 8:1 · 14.36%</button>
         <button type="button" id="bc-ez" data-act="bc-ez" aria-pressed="false">EZ Baccarat</button>
       </div>
-      <div class="sides" id="bc-sides"></div>
+      <div class="bc-setting">
+        <p id="bc-sides-note">Four most common pair bets.</p>
+        <button type="button" id="bc-all-sides" data-act="bc-all-sides" aria-pressed="false" aria-describedby="bc-sides-note">All 7 side bets</button>
+      </div>
+      <div class="bc-rail" id="bc-sides"></div>
       <div class="stakes" id="bc-stakes"></div>
       <p id="bc-error" class="banner bad" hidden></p>
       <div id="bc-last"></div>
@@ -1753,6 +1770,7 @@ const state = {
     stake: 2500,
     chips: 100000,
     ez: false,
+    allSides: false,
     sides: [],
     peeled: {},
     turn: {},
@@ -1795,7 +1813,7 @@ function save() {
   try {
     sessionStorage.setItem("bones-trainer", JSON.stringify({
       bj: { score: state.bj.score, weak: state.bj.weak },
-      bc: { chips: state.bc.chips, beads: state.bc.beads, score: state.bc.score, stake: state.bc.stake, side: state.bc.side },
+      bc: { chips: state.bc.chips, beads: state.bc.beads, score: state.bc.score, stake: state.bc.stake, side: state.bc.side, allSides: state.bc.allSides },
       ro: { chips: state.ro.chips, qscore: state.ro.qscore, variant: state.ro.variant, stake: state.ro.stake },
     }));
   } catch (err) { /* private mode */ }
@@ -1816,6 +1834,7 @@ function load() {
       if (data.bc.score) state.bc.score = data.bc.score;
       if (data.bc.stake) state.bc.stake = data.bc.stake;
       if (data.bc.side) state.bc.side = data.bc.side;
+      if (typeof data.bc.allSides === "boolean") state.bc.allSides = data.bc.allSides;
     }
     if (data.ro) {
       if (typeof data.ro.chips === "number") state.ro.chips = data.ro.chips;
@@ -2613,11 +2632,14 @@ function renderEdges() {
   });
   html += "</tr></thead><tbody>";
   rows.forEach(function (row) {
-    html += "<tr><td>" + esc(row.game) + "</td><td>" + esc(row.bet) + "</td><td class=\"num\">" +
+    const hit = state.edge.focus === row.bet;
+    html += "<tr" + (hit ? " class=\"bc-edge-hit\"" : "") + "><td>" + esc(row.game) + "</td><td>" + esc(row.bet) + "</td><td class=\"num\">" +
       esc(B.formatEdge(row)) + "</td><td>" + esc(row.note) + "</td></tr>";
   });
   html += "</tbody></table>";
   $("edge-table").innerHTML = html;
+  const marked = document.querySelector("#edge-table tr.bc-edge-hit");
+  if (marked) marked.scrollIntoView({ block: "center" });
 }
 
 /* ---------- baccarat ---------- */
@@ -2753,18 +2775,20 @@ function continueBc() {
 
 function bcSideCatalog() {
   const rows = [
-    ["playerPair", "Player Pair 11:1", "Player Pair"],
-    ["bankerPair", "Banker Pair 11:1", "Banker Pair"],
-    ["dragonPlayer", "Dragon Bonus P", "Dragon Bonus (Player)"],
-    ["dragonBanker", "Dragon Bonus B", "Dragon Bonus (Banker)"],
-    ["perfectPair", "Perfect Pair 25:1", "Perfect Pair"],
-    ["eitherPair", "Either Pair 5:1", "Either Pair"],
+    { id: "playerPair", label: "Player Pair 11:1", edgeName: "Player Pair", common: true },
+    { id: "bankerPair", label: "Banker Pair 11:1", edgeName: "Banker Pair", common: true },
+    { id: "eitherPair", label: "Either Pair 5:1", edgeName: "Either Pair", common: true },
+    { id: "perfectPair", label: "Perfect Pair 25:1", edgeName: "Perfect Pair", common: true },
+    { id: "dragonPlayer", label: "Dragon Bonus, Player", edgeName: "Dragon Bonus (Player)", common: false },
+    { id: "dragonBanker", label: "Dragon Bonus, Banker", edgeName: "Dragon Bonus (Banker)", common: false },
+    { id: "dragon7", label: "Dragon 7 40:1", edgeName: "Dragon 7", common: false },
   ];
-  if (state.bc.ez) {
-    rows.push(["dragon7", "Dragon 7 40:1", "Dragon 7"]);
-    rows.push(["panda8", "Panda 8 25:1", "Panda 8"]);
-  }
+  if (state.bc.ez) rows.push({ id: "panda8", label: "Panda 8 25:1", edgeName: "Panda 8", common: false });
   return rows;
+}
+
+function bcVisibleSides() {
+  return bcSideCatalog().filter(function (row) { return state.bc.allSides || row.common; });
 }
 
 function renderBcPlay() {
@@ -2779,10 +2803,19 @@ function renderBcPlay() {
     const cents = n * 100;
     return '<button type="button" data-act="bc-stake" data-stake="' + cents + '" aria-label="' + n + ' practice chips" aria-pressed="' + (state.bc.stake === cents ? "true" : "false") + '">' + chipSVG(n) + "</button>";
   }).join("");
-  $("bc-sides").innerHTML = bcSideCatalog().map(function (row) {
-    const on = state.bc.sides.indexOf(row[0]) !== -1;
-    const edge = B.formatEdge(B.findEdge("Baccarat", row[2]));
-    return '<button type="button" data-act="bc-sidebet" data-name="' + row[0] + '" aria-pressed="' + (on ? "true" : "false") + '">' + row[1] + " · " + edge + "</button>";
+  const allBtn = $("bc-all-sides");
+  allBtn.setAttribute("aria-pressed", state.bc.allSides ? "true" : "false");
+  allBtn.textContent = state.bc.allSides ? "Showing all 7" : "All 7 side bets";
+  $("bc-sides-note").textContent = state.bc.allSides
+    ? (state.bc.ez
+      ? "All seven side bets, plus Panda 8 while EZ Baccarat is on."
+      : "All seven side bets. Each edge opens the Edges table.")
+    : "Four most common pair bets. Each edge opens the Edges table.";
+  $("bc-sides").innerHTML = bcVisibleSides().map(function (row) {
+    const on = state.bc.sides.indexOf(row.id) !== -1;
+    const edge = B.formatEdge(B.findEdge("Baccarat", row.edgeName));
+    return '<div class="bc-rail-row"><button type="button" data-act="bc-sidebet" data-name="' + row.id + '" aria-pressed="' + (on ? "true" : "false") + '">' + row.label + "</button>" +
+      '<a class="bc-edge" href="#edges" data-act="bc-edge" data-bet="' + row.edgeName + '" aria-label="' + row.edgeName + " house edge " + edge + ', open the Edges table">' + edge + "</a></div>";
   }).join("");
   const err = $("bc-error");
   if (state.bc.error) { err.hidden = false; err.textContent = state.bc.error; }
@@ -3430,8 +3463,26 @@ function onClick(event) {
   if (act === "bc-stake") { state.bc.stake = Number(el.dataset.stake); save(); renderBaccarat(); return; }
   if (act === "bc-ez") {
     state.bc.ez = !state.bc.ez;
-    if (!state.bc.ez) state.bc.sides = state.bc.sides.filter(function (n) { return n !== "dragon7" && n !== "panda8"; });
+    if (!state.bc.ez) state.bc.sides = state.bc.sides.filter(function (n) { return n !== "panda8"; });
     renderBaccarat();
+    return;
+  }
+  if (act === "bc-all-sides") {
+    state.bc.allSides = !state.bc.allSides;
+    if (!state.bc.allSides) {
+      const keep = {};
+      bcSideCatalog().forEach(function (row) { if (row.common) keep[row.id] = true; });
+      state.bc.sides = state.bc.sides.filter(function (n) { return keep[n]; });
+    }
+    save();
+    renderBaccarat();
+    return;
+  }
+  if (act === "bc-edge") {
+    event.preventDefault();
+    state.edge.focus = el.dataset.bet;
+    if (location.hash !== "#edges") location.hash = "#edges";
+    else showTab("edges");
     return;
   }
   if (act === "bc-sidebet") {
