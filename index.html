@@ -463,6 +463,32 @@
   .wheel-svg { width: min(100%, 268px); }
   .board { margin-top: 8px; }
   .stakes { padding-bottom: 4px; }
+  @media (max-width: 430px) {
+    .panel, .panel > *, .felt, .bj-felt, .bacc-felt, .ro-felt, .board,
+    .zones, .zone, .cards, .pcards, .grid, .outside, .stakes, #edge-table, .head-copy {
+      min-width: 0;
+      max-width: 100%;
+    }
+    .bj-felt, .bacc-felt, .ro-felt, .felt {
+      --rail: 10px;
+      padding: 12px 8px 10px;
+    }
+    .bj-felt::after, .bacc-felt::after, .ro-felt::after, .felt::after {
+      inset: calc(5px - var(--rail));
+    }
+    .zones { gap: 6px; }
+    .zone { padding: 6px; }
+    .bacc-felt .cards { width: 100%; gap: 6px; }
+    .bacc-felt .sq-wrap { flex: 1 1 0; width: auto; max-width: 72px; min-width: 0; }
+    .bacc-felt .sq { width: 100%; height: auto; aspect-ratio: 5 / 7; }
+    #bc-yesno, .actions { padding-left: 0; padding-right: 0; }
+    .pcards { width: 100%; }
+    .pcards .pcard { flex: 1 1 0; width: auto; max-width: 58px; height: auto; aspect-ratio: 58 / 84; }
+    .grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) 44px; }
+    .num { min-width: 0; padding: 0 2px; }
+    .stakes { overflow-x: auto; }
+    #edge-table { overflow-x: auto; }
+  }
 </style>
 </head>
 <body>
