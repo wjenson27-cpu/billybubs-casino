@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="390" height="420" viewBox="0 0 390 420"><defs><radialGradient id="iv" cx=".35" cy=".3" r=".9"><stop offset="0" stop-color="#FFFDF6"/><stop offset="1" stop-color="#E6DCC4"/></radialGradient><radialGradient id="pip" cx=".4" cy=".35"><stop offset="0" stop-color="#C8102E"/><stop offset="1" stop-color="#6E0A1A"/></radialGradient></defs>
+<defs><radialGradient id="dome" cx=".38" cy=".3" r=".8"><stop offset="0" stop-color="#CFE0FF" stop-opacity=".55"/><stop offset=".55" stop-color="#3D74E6" stop-opacity=".18"/><stop offset="1" stop-color="#0A1F5C" stop-opacity=".55"/></radialGradient>
+<linearGradient id="ru" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E8284A"/><stop offset=".5" stop-color="#C8102E"/><stop offset="1" stop-color="#6E0A1A"/></linearGradient>
+<radialGradient id="sp" cx=".5" cy=".3" r=".9"><stop offset="0" stop-color="#3D74E6"/><stop offset="1" stop-color="#0A1F5C"/></radialGradient></defs>
+<ellipse cx="195" cy="300" rx="170" ry="34" fill="#000" opacity=".4"/>
+<path d="M30 260 Q195 230 360 260 L340 380 Q195 410 50 380 Z" fill="url(#ru)" stroke="#D9B66A" stroke-width="2"/>
+<rect x="120" y="318" width="150" height="44" rx="10" fill="url(#sp)" stroke="#D9B66A" stroke-width="1.5"/>
+<text x="195" y="347" font-family="DejaVu Serif" font-weight="bold" font-size="17" letter-spacing="3" fill="#F6EFDF" text-anchor="middle">BILLYBUBS</text>
+<ellipse cx="195" cy="258" rx="150" ry="26" fill="url(#sp)" stroke="#D9B66A" stroke-width="2"/>
+<ellipse cx="195" cy="254" rx="128" ry="18" fill="#0E3A8A"/>
+<g transform="translate(130,196) rotate(-10 50 50) scale(.6)"><rect x="2" y="2" width="96" height="96" rx="18.0" fill="url(#iv)" stroke="#B8A57E" stroke-width="2"/><circle cx="24.0" cy="24.0" r="8.5" fill="url(#pip)"/><circle cx="76.0" cy="24.0" r="8.5" fill="url(#pip)"/><circle cx="24.0" cy="50.0" r="8.5" fill="url(#pip)"/><circle cx="76.0" cy="50.0" r="8.5" fill="url(#pip)"/><circle cx="24.0" cy="76.0" r="8.5" fill="url(#pip)"/><circle cx="76.0" cy="76.0" r="8.5" fill="url(#pip)"/></g><g transform="translate(200,192) rotate(12 50 50) scale(.6)"><rect x="2" y="2" width="96" height="96" rx="18.0" fill="url(#iv)" stroke="#B8A57E" stroke-width="2"/><circle cx="24.0" cy="24.0" r="8.5" fill="url(#pip)"/><circle cx="76.0" cy="24.0" r="8.5" fill="url(#pip)"/><circle cx="50.0" cy="50.0" r="8.5" fill="url(#pip)"/><circle cx="24.0" cy="76.0" r="8.5" fill="url(#pip)"/><circle cx="76.0" cy="76.0" r="8.5" fill="url(#pip)"/></g>
+<path d="M67 254 A128 128 0 0 1 323 254 A128 18 0 0 1 67 254Z" fill="url(#dome)" stroke="#F6EFDF" stroke-opacity=".7" stroke-width="2"/>
+<path d="M100 220 Q110 160 160 136" fill="none" stroke="#fff" stroke-opacity=".45" stroke-width="8" stroke-linecap="round"/>
+<circle cx="195" cy="122" r="0"/></svg>

@@ -1881,8 +1881,8 @@ function syncDice() {
   if (host.querySelectorAll(".cube").length !== 2) {
     host.innerHTML = cubeMarkup("a") + cubeMarkup("b");
     const cubes = host.querySelectorAll(".cube");
-    const d1 = game.lastDice ? game.lastDice.d1 : 5;
-    const d2 = game.lastDice ? game.lastDice.d2 : 2;
+    const d1 = game.lastDice ? game.lastDice.d1 : 6;
+    const d2 = game.lastDice ? game.lastDice.d2 : 5;
     cubes[0].dataset.face = String(d1);
     cubes[1].dataset.face = String(d2);
   }
@@ -3178,12 +3178,38 @@ function panelHTML() {
   return homeHTML();
 }
 
+function homeMachineSVG() {
+  return "<svg class='hood' viewBox='0 0 390 420' role='img' aria-label='Bubble craps machine'>" +
+    "<defs><radialGradient id='hm-dome' cx='.38' cy='.3' r='.8'><stop offset='0' stop-color='#CFE0FF' stop-opacity='.28'/><stop offset='.6' stop-color='#3D74E6' stop-opacity='.08'/><stop offset='1' stop-color='#0A1F5C' stop-opacity='.2'/></radialGradient>" +
+    "<linearGradient id='hm-ru' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='#E8284A'/><stop offset='.5' stop-color='#C8102E'/><stop offset='1' stop-color='#6E0A1A'/></linearGradient>" +
+    "<radialGradient id='hm-sp' cx='.5' cy='.3' r='.9'><stop offset='0' stop-color='#3D74E6'/><stop offset='1' stop-color='#0A1F5C'/></radialGradient></defs>" +
+    "<ellipse cx='195' cy='300' rx='170' ry='34' fill='#000' opacity='.4'/>" +
+    "<path d='M30 260 Q195 230 360 260 L340 380 Q195 410 50 380 Z' fill='url(#hm-ru)' stroke='#D9B66A' stroke-width='2'/>" +
+    "<rect x='120' y='318' width='150' height='44' rx='10' fill='url(#hm-sp)' stroke='#D9B66A' stroke-width='1.5'/>" +
+    "<text x='195' y='347' font-family='Georgia, Times New Roman, serif' font-weight='bold' font-size='17' letter-spacing='3' fill='#F6EFDF' text-anchor='middle'>BILLYBUBS</text>" +
+    "<ellipse cx='195' cy='258' rx='150' ry='26' fill='url(#hm-sp)' stroke='#D9B66A' stroke-width='2'/>" +
+    "<ellipse cx='195' cy='254' rx='128' ry='18' fill='#0E3A8A'/>" +
+    "<path d='M67 254 A128 128 0 0 1 323 254 A128 18 0 0 1 67 254Z' fill='url(#hm-dome)' stroke='#F6EFDF' stroke-opacity='.75' stroke-width='2'/>" +
+    "<path d='M100 220 Q110 160 160 136' fill='none' stroke='#fff' stroke-opacity='.5' stroke-width='8' stroke-linecap='round'/></svg>";
+}
+function homePairSVG() {
+  const die = (pips, ox) => {
+    const circles = pips.map((p) => "<circle cx='" + p[0] + "' cy='" + p[1] + "' r='8.5' fill='url(#hp" + ox + "p)'/>").join("");
+    return "<g transform='translate(" + ox + ",0)'><rect x='2' y='2' width='96' height='96' rx='18' fill='url(#hp" + ox + "v)' stroke='#B8A57E' stroke-width='2'/>" + circles + "</g>";
+  };
+  return "<svg class='static-dice' viewBox='0 0 230 110' role='img' aria-label='Dice showing six and five'>" +
+    "<defs><radialGradient id='hp0v' cx='.35' cy='.3' r='.9'><stop offset='0' stop-color='#FFFDF6'/><stop offset='1' stop-color='#E6DCC4'/></radialGradient>" +
+    "<radialGradient id='hp0p' cx='.4' cy='.35'><stop offset='0' stop-color='#E8284A'/><stop offset='1' stop-color='#C8102E'/></radialGradient>" +
+    "<radialGradient id='hp120v' cx='.35' cy='.3' r='.9'><stop offset='0' stop-color='#FFFDF6'/><stop offset='1' stop-color='#E6DCC4'/></radialGradient>" +
+    "<radialGradient id='hp120p' cx='.4' cy='.35'><stop offset='0' stop-color='#E8284A'/><stop offset='1' stop-color='#C8102E'/></radialGradient></defs>" +
+    die([[24, 24], [76, 24], [24, 50], [76, 50], [24, 76], [76, 76]], 0) +
+    die([[24, 24], [76, 24], [50, 50], [24, 76], [76, 76]], 120) + "</svg>";
+}
 function homeHTML() {
   return "<section class='home'><div class='hometop'><span class='chippill'><img src='assets/chips/chip-brand-Bb.svg' alt=''>$1,000</span>" +
     "<button class='pill" + (settings.tutorOn ? " on" : "") + "' data-act='tips' aria-pressed='" + settings.tutorOn + "'>BILLY TIPS " + (settings.tutorOn ? "ON" : "OFF") + "</button></div>" +
     "<img class='logo' src='assets/logos/billybubs-bubble-craps-color-dark.svg' alt='Billy Bubs Bubble Craps'>" +
-    "<div class='home-hero'><img class='hood' src='assets/dome/dome-hood-cold-warm@2x.webp' alt=''>" +
-    dieImg(5, "home-d1") + dieImg(5, "home-d2") +
+    "<div class='home-hero'>" + homeMachineSVG() + homePairSVG() +
     "<img class='hello billy' src='assets/mascots/dealer-billy/billy-A-hello.svg' alt='Dealer Billy'>" +
     "<img class='hello billie' src='assets/mascots/billie/billie-C-hello.svg' alt='Bubbles Billie'>" +
     "<p class='speech'>Bets down! Air's coming on.</p></div>" +

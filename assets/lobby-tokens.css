@@ -1,0 +1,38 @@
+/* BillyBubs lobby tokens. Phone-first 360-430px. Ruby + sapphire primary, gold = trim only. */
+:root{
+ --bb-ruby:#C8102E;--bb-ruby-hi:#E8284A;--bb-ruby-deep:#6E0A1A;
+ --bb-sapphire:#1F4FB8;--bb-sapphire-hi:#3D74E6;--bb-sapphire-deep:#0A1F5C;--bb-night:#060F2A;
+ --bb-ivory:#F6EFDF;--bb-ivory-dim:#C9C2B2;--bb-gold:#D9B66A;--bb-gold-soft:rgba(217,182,106,.45);
+ --bb-grad-ruby:linear-gradient(180deg,var(--bb-ruby-hi),var(--bb-ruby) 50%,var(--bb-ruby-deep));
+ --bb-grad-card:linear-gradient(160deg,rgba(61,116,230,.30),rgba(10,31,92,.85) 60%,rgba(110,10,26,.35));
+ --bb-font-display:"Georgia","Times New Roman",serif;
+ --bb-font-ui:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+ --bb-s1:4px;--bb-s2:8px;--bb-s3:12px;--bb-s4:16px;--bb-s5:20px;--bb-radius:18px;
+ --bb-ease:cubic-bezier(.2,.8,.2,1);
+}
+.bb-lobby{min-height:100vh;margin:0;color:var(--bb-ivory);font-family:var(--bb-font-ui);
+ background:var(--bb-night) url(lobby-bg.png) top center/100% auto no-repeat;}
+@media (min-resolution:2dppx){.bb-lobby{background-image:url(lobby-bg@2x.png)}}
+.bb-header{height:128px;display:flex;align-items:center;gap:var(--bb-s3);padding:0 var(--bb-s4);box-sizing:border-box}
+.bb-header img{width:84px;height:84px;filter:drop-shadow(0 4px 8px rgba(0,0,0,.6))}
+.bb-title{font-family:var(--bb-font-display);font-weight:700;font-size:26px;letter-spacing:.14em;margin:0;color:var(--bb-ivory);text-shadow:0 2px 0 var(--bb-ruby-deep)}
+.bb-title span{color:var(--bb-gold)} /* optional gold accent on one letter group only */
+.bb-sub{margin:2px 0 0;font-size:13px;color:var(--bb-ivory-dim)}
+.bb-grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--bb-s3);padding:var(--bb-s5) var(--bb-s4) var(--bb-s4)}
+.bb-tile{display:flex;flex-direction:column;align-items:center;text-align:center;gap:var(--bb-s2);
+ padding:var(--bb-s3) var(--bb-s2) var(--bb-s4);border-radius:var(--bb-radius);text-decoration:none;color:inherit;
+ background:var(--bb-grad-card);border:1px solid var(--bb-gold-soft);
+ box-shadow:0 8px 18px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.12);
+ transition:transform .18s var(--bb-ease),box-shadow .18s var(--bb-ease),border-color .18s;-webkit-tap-highlight-color:transparent}
+.bb-tile img{width:80px;height:80px}
+.bb-tile h2{margin:0;font-family:var(--bb-font-display);font-size:17px;color:var(--bb-ivory)}
+.bb-tile p{margin:0;font-size:12px;line-height:1.3;color:var(--bb-ivory-dim)}
+.bb-tile--wide{grid-column:1/-1;flex-direction:row;text-align:left;padding:var(--bb-s3) var(--bb-s4)}
+.bb-tile--wide img{width:64px;height:64px}
+@media (hover:hover){.bb-tile:hover{transform:translateY(-2px);border-color:var(--bb-gold);box-shadow:0 12px 24px rgba(0,0,0,.5),0 0 0 2px rgba(200,16,46,.45)}}
+.bb-tile:active{transform:scale(.97);box-shadow:0 3px 8px rgba(0,0,0,.5),inset 0 0 0 2px var(--bb-ruby)}
+.bb-tile:focus-visible{outline:2px solid var(--bb-sapphire-hi);outline-offset:2px}
+.bb-footer{margin:var(--bb-s2) var(--bb-s4) var(--bb-s5);padding:var(--bb-s2) var(--bb-s3);border-radius:999px;text-align:center;font-size:12px;
+ color:var(--bb-ivory);background:rgba(110,10,26,.55);border:1px solid var(--bb-gold-soft)}
+@media (max-width:370px){.bb-tile img{width:72px;height:72px}.bb-title{font-size:22px}}
+@media (prefers-reduced-motion:reduce){.bb-tile{transition:none}}

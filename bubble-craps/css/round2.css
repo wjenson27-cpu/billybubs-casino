@@ -1,0 +1,42 @@
+/* Round 2: home machine. The play dome frame is unchanged.
+   Before the felt refit runs, a short landscape still has the portrait felt.
+   Shift that felt up so the Field is under the rotate card, not the 18+ line. */
+@media (orientation: landscape) and (max-height: 399px) {
+  .app.play .felt.bfx.lay-tall { transform: translateY(-130px); }
+}
+.home-hero {
+  height: auto;
+  width: min(100%, 340px);
+  aspect-ratio: 390 / 420;
+  max-height: 250px;
+  margin: 6px auto 8px;
+}
+.home-hero .hood {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transform: none;
+  object-fit: contain;
+  object-position: center center;
+}
+.home-hero .speech {
+  left: 50%;
+  bottom: auto;
+  top: 2px;
+  max-width: 78%;
+  transform: translateX(-50%);
+  z-index: 5;
+  text-align: center;
+}
+.home-hero .static-dice {
+  position: absolute;
+  z-index: 4;
+  left: 50%;
+  top: 56%;
+  width: 36%;
+  height: auto;
+  transform: translate(-50%, -50%);
+  filter: brightness(1.38) contrast(1.08) drop-shadow(0 6px 4px rgba(0, 0, 0, .45));
+  pointer-events: none;
+}
