@@ -1,0 +1,199 @@
+/* Bubble Craps chrome only. Lobby tokens: navy, ruby, gold.
+   The dome image, dice faces, and the betting felt are not restyled here.
+   Short landscape still has the portrait felt until the refit runs. Shift that
+   felt up so the Field sits under the rotate card. */
+
+@media (orientation: landscape) and (max-height: 399px) {
+  .app.play .felt.bfx.lay-tall { transform: translateY(-130px); }
+}
+
+html, body {
+  background: #060F2A;
+  color: #F6EFDF;
+}
+.app {
+  background: #060F2A;
+  color: #F6EFDF;
+}
+
+.app .hud {
+  background: linear-gradient(180deg, #0A1F5C, #060F2A);
+  border-bottom-color: rgba(217, 182, 106, .45);
+}
+.app .hud-row2 {
+  background: rgba(6, 15, 42, .55);
+  border-color: rgba(217, 182, 106, .45);
+}
+.app .hud-bank small { color: #C9C2B2; }
+.app .hud-bank strong,
+.app .pointname { color: #F6EFDF; }
+.app .pointname { color: #D9B66A; }
+.app .pill,
+.app .icon-btn,
+.app .homebtn {
+  border-color: rgba(217, 182, 106, .45);
+  color: #D9B66A;
+}
+.app .pill.on { background: rgba(217, 182, 106, .16); }
+.app .modeseg { background: rgba(6, 15, 42, .55); }
+.app .modeseg button { color: #F6EFDF; }
+.app .modeseg button.on {
+  background: linear-gradient(180deg, #F6EFDF, #D9B66A 55%, #8C6E3A);
+  color: #2A1A00;
+}
+.app .fairchip {
+  border-color: #D9B66A;
+  color: #D9B66A;
+}
+
+.app .legal {
+  background: #060F2A;
+  color: #C9C2B2;
+}
+.app .legal a { color: #D9B66A; }
+
+.app .dots { background: #060F2A; }
+.app .dot::after { background: rgba(217, 182, 106, .35); }
+.app .dot.on::after {
+  background: #D9B66A;
+  box-shadow: 0 0 8px rgba(217, 182, 106, .7);
+}
+.app .edgepill {
+  border-color: rgba(217, 182, 106, .55);
+  color: #F6EFDF;
+  background: rgba(10, 31, 92, .55);
+}
+
+.app .tabs {
+  background: #060F2A;
+  border-top-color: rgba(217, 182, 106, .45);
+}
+.app .tab { color: #C9C2B2; }
+.app .tab.on { color: #D9B66A; }
+
+.app .home {
+  background:
+    radial-gradient(80% 42% at 50% 16%, rgba(61, 116, 230, .28), transparent 58%),
+    #060F2A;
+}
+.app .chippill {
+  border-color: rgba(217, 182, 106, .55);
+  color: #F6EFDF;
+  background: rgba(10, 31, 92, .55);
+}
+.app .choose { color: #D9B66A; }
+.app .mode-card,
+.app .card,
+.app .disclaimer {
+  background: linear-gradient(160deg, rgba(61, 116, 230, .30), rgba(10, 31, 92, .92) 62%, rgba(110, 10, 26, .40));
+  border-color: rgba(217, 182, 106, .45);
+  color: #F6EFDF;
+}
+.app .mode-card span,
+.app .disclaimer { color: #C9C2B2; }
+.app .mode-card.on { box-shadow: inset 0 0 0 1.6px #D9B66A; }
+.app .cta {
+  background: linear-gradient(180deg, #C8102E, #6E0A1A);
+  color: #F6EFDF;
+  border: 1px solid rgba(217, 182, 106, .7);
+}
+.app .ghost,
+.app .boardlink {
+  border-color: rgba(217, 182, 106, .45);
+  color: #F6EFDF;
+  background: rgba(10, 31, 92, .35);
+}
+.app .filters button,
+.app .seg button,
+.app .run {
+  border-color: rgba(217, 182, 106, .45);
+  color: #F6EFDF;
+}
+.app .filters button.on,
+.app .seg button.on {
+  background: #D9B66A;
+  border-color: #D9B66A;
+  color: #2A1A00;
+}
+
+.app .dock {
+  background: #060F2A;
+  border-top-color: rgba(217, 182, 106, .28);
+}
+.app .rack {
+  background: linear-gradient(180deg, #1A3E86, #0A1F5C);
+  box-shadow: inset 0 0 0 1px rgba(217, 182, 106, .45);
+}
+.app .trough {
+  background: linear-gradient(180deg, #24324C, #10192C 35%, #182236 70%, #2A354C);
+}
+.app .roll-btn {
+  background: radial-gradient(120% 90% at 50% 18%, #C8102E, #8E1024 50%, #6E0A1A);
+  color: #F6EFDF;
+  box-shadow:
+    0 0 0 3px #2A0A12,
+    0 0 0 6px rgba(217, 182, 106, .95),
+    0 0 0 8px #2A0A12,
+    0 0 40px rgba(200, 16, 46, .35);
+}
+.app .ring {
+  background: conic-gradient(#D9B66A var(--p, 0%), rgba(217, 182, 106, .2) 0);
+  filter: drop-shadow(0 0 5px rgba(217, 182, 106, .8));
+}
+.app .press-btn.live,
+.app .press-btn:not(:disabled) {
+  color: #F6EFDF;
+  box-shadow: inset 0 0 0 1.6px #D9B66A, 0 0 14px rgba(217, 182, 106, .28);
+}
+.app .press-btn .pl1 em { color: #F6EFDF; }
+.app .press-btn.power.live,
+.app .press-btn.power:not(:disabled) {
+  background: linear-gradient(180deg, #C8102E, #6E0A1A);
+  color: #F6EFDF;
+  box-shadow: inset 0 0 0 1.6px #D9B66A, 0 0 12px rgba(200, 16, 46, .35);
+}
+.app .undodisc,
+.app .clearchip {
+  border-color: #D9B66A;
+  color: #F6EFDF;
+}
+.app .context .key,
+.app .stopkey {
+  border-color: rgba(217, 182, 106, .45);
+  color: #F6EFDF;
+  background: rgba(10, 31, 92, .72);
+}
+.app .context .key.primary,
+.app .sheet .actions .go,
+.app .key.primary {
+  background: linear-gradient(180deg, #F6EFDF, #D9B66A 55%, #8C6E3A);
+  color: #2A1A00;
+}
+
+.app .overlay { background: rgba(6, 15, 42, .78); }
+.app .sheet,
+.app .lingo-sheet,
+.app .lingo-screen {
+  background: #0A1F5C;
+  border-color: rgba(217, 182, 106, .7);
+  color: #F6EFDF;
+}
+.app .sheet .actions button { color: #F6EFDF; border-color: rgba(217, 182, 106, .45); }
+.app .switch { background: #12244A; }
+.app .switch.on { background: #C8102E; }
+.app .track { background: #12244A; }
+.app .track span { background: linear-gradient(90deg, #1F4FB8, #D9B66A); }
+.app.play .toast.seven {
+  background: rgba(6, 15, 42, .96);
+  border-color: rgba(217, 182, 106, .55);
+}
+
+@media (min-width: 1400px) {
+  body {
+    background:
+      radial-gradient(70% 50% at 18% 40%, #1F4FB8, transparent 55%),
+      radial-gradient(70% 50% at 82% 40%, #6E0A1A, transparent 55%),
+      #060F2A;
+  }
+  .app { box-shadow: 0 0 0 10px #D9B66A, 0 24px 70px rgba(0, 0, 0, .45); }
+}
