@@ -27,7 +27,7 @@
   #hud .hud-row2 { gap: 2px; }
 }
 
-/* iPhone SE (320). Scale the play column so the felt and ROLL stay on screen. 360+ is unchanged. */
+/* 320px phones (320). Scale the play column so the felt and ROLL stay on screen. 360+ is unchanged. */
 @media (max-width: 359px) {
   .app.play { zoom: calc(100vw / 352px); }
   .app.play .dockgrid { grid-template-columns: 1fr 96px; }

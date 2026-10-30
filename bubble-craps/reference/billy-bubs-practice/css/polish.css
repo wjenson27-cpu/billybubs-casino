@@ -1554,7 +1554,7 @@ a:focus-visible {
 /* Container units (Safari 16+). Older engines keep the original fixed layout and no side buttons. */
 @supports (height: 1cqh) {
 @media (orientation: portrait) and (max-width: 700px) {
-  /* The bubble machine used fixed heights. On short screens (iPhone SE, or Safari with its
+  /* The bubble machine used fixed heights. On short screens (320px phones, or Safari with its
      toolbars showing) the base overflowed onto the main Roll button and swallowed taps.
      The stage is now a size container and the glass height comes from the space left over. */
   .pane-bubble .bubble-stage {
