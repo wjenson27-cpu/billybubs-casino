@@ -1,0 +1,15 @@
+/* Billy Bubs app fonts (all SIL OFL 1.1, subset Latin). Drop in css/fonts.css and @import or <link> before app.css. */
+@font-face{font-family:"Cinzel";src:url("../assets/fonts/cinzel-var.woff2") format("woff2");font-weight:400 900;font-display:swap}
+@font-face{font-family:"Cinzel Decorative";src:url("../assets/fonts/cinzel-decorative-900.woff2") format("woff2");font-weight:900;font-display:swap}
+@font-face{font-family:"Archivo";src:url("../assets/fonts/archivo-var.woff2") format("woff2");font-weight:100 900;font-stretch:62% 125%;font-display:swap}
+@font-face{font-family:"Fredoka";src:url("../assets/fonts/fredoka-var.woff2") format("woff2");font-weight:300 700;font-display:swap}
+@font-face{font-family:"Orbitron";src:url("../assets/fonts/orbitron-var.woff2") format("woff2");font-weight:400 900;font-display:swap}
+@font-face{font-family:"VT323";src:url("../assets/fonts/vt323.woff2") format("woff2");font-weight:400;font-display:swap}
+:root{
+  --serif:"Cinzel",Palatino,Georgia,serif;      /* felt print labels, numbers, titles */
+  --deco:"Cinzel Decorative","Cinzel",serif;    /* BIG WIN stamp only, letters only */
+  --sans:"Archivo",system-ui,sans-serif;        /* UI, balances (tabular), buttons */
+  --mono:"Orbitron",sans-serif;                 /* LED captions */
+  --dot:"VT323",monospace;                      /* dot-matrix status */
+  --fun:"Fredoka",sans-serif;                   /* Billy / Billie speech bubbles only */
+}

@@ -1,0 +1,63 @@
+/* Run 12: store-screenshot polish. Loaded last. */
+
+/* Gold and legendary titles wrap onto two balanced lines instead of truncating. */
+.badgetoast.marquee b {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  white-space: normal;
+  text-wrap: balance;
+  line-height: 1.15;
+  padding-right: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: clip;
+}
+
+/* Landscape and the wide phone column: the heat word was pushing FAIR off the row. */
+@media (max-height: 500px) and (orientation: landscape),
+       (min-width: 900px) {
+  #hud .heater b { display: none; }
+  #hud .hud-money { gap: 8px; }
+  #hud .hud-row2 { gap: 4px; }
+}
+
+/* 375: FAIR sat 2px past the HUD card. One pixel of gap pulls it inside. */
+@media (max-width: 380px) {
+  #hud .hud-row2 { gap: 2px; }
+}
+
+/* iPhone SE (320). Scale the play column so the felt and ROLL stay on screen. 360+ is unchanged. */
+@media (max-width: 359px) {
+  .app.play { zoom: calc(100vw / 352px); }
+  .app.play .dockgrid { grid-template-columns: 1fr 96px; }
+  .app.play .roll-btn { width: 86px; height: 86px; }
+  #hud .hud-roll { min-width: 0; }
+  #hud .hud-bank strong { font-size: 13px; }
+  #hud .hud-money { gap: 4px; }
+  #hud .hud-row2 { gap: 2px; }
+  #hud .hud-bank small { letter-spacing: 0; font-size: 7px; }
+  .app.play .homebtn,
+  .app.play .homebtn img { width: 44px; height: 44px; }
+}
+
+.winstamp em {
+  display: block;
+  max-width: 300px;
+  margin: 6px auto 0;
+  font: 600 13px/1.3 Archivo, sans-serif;
+  font-style: normal;
+  color: #F4EEDF;
+  text-align: center;
+  background: rgba(15, 74, 49, .88);
+  border: 1px solid #C9A961;
+  border-radius: 10px;
+  padding: 4px 10px;
+}
+
+/* The dome strip fills its screen so one tile does not shrink the measure. */
+.dome-screen .rollstrip {
+  width: 100%;
+  max-width: 100%;
+  justify-content: center;
+}

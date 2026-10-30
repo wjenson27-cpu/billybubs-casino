@@ -1,0 +1,137 @@
+/* Run 14: dome fits the page, top-left lockup, Field rings. Loaded last. */
+
+/* Short portrait: the glass flexes inside the page so the result and strip stay on screen. */
+@media (max-height: 720px) and (orientation: portrait) {
+  .app.play .page:has(.dome-screen) { overflow: hidden; }
+  .app.play .dome-screen {
+    flex: 1 1 auto;
+    height: 100%;
+    min-height: 0;
+  }
+  .app.play .dome-screen .machine {
+    flex: 1 1 auto;
+    height: auto;
+    min-height: 200px;
+    max-height: 280px;
+  }
+}
+
+/* The 320 zoom rule pinned the glass in CSS pixels. Let it flex instead. */
+@media (max-width: 359px) and (max-height: 720px) and (orientation: portrait) {
+  .app.play .dome-screen .machine {
+    flex: 1 1 auto;
+    height: auto;
+    min-height: 200px;
+    max-height: 280px;
+  }
+}
+
+/* Landscape: the 280px pin was cutting the result line. The glass yields. */
+@media (max-height: 500px) and (orientation: landscape) {
+  .app.play .page:has(.dome-screen) { overflow: hidden; }
+  .app.play .dome-screen {
+    flex: 1 1 auto;
+    height: 100%;
+    min-height: 0;
+  }
+  .app.play .dome-screen .machine {
+    flex: 1 1 auto;
+    height: auto;
+    min-height: 0;
+    max-height: none;
+  }
+  .app.play .dome-screen .rollstrip { display: flex; }
+}
+
+/* Portrait header: avatar stays square, lockup sits on the left edge of the HUD. */
+.app.play .hud-row1 {
+  justify-content: flex-start;
+  width: 100%;
+  max-width: none;
+  padding: 0 12px;
+  box-sizing: border-box;
+  gap: 8px;
+}
+.app.play .hud-row1 .modeseg { margin-left: auto; }
+.app.play .homebtn {
+  width: 36px;
+  height: 36px;
+  flex: 0 0 36px;
+  box-shadow: none;
+  background: none;
+  border-radius: 50%;
+}
+.app.play .homebtn img {
+  width: 36px;
+  height: 36px;
+  max-width: none;
+  object-fit: contain;
+  object-position: center center;
+}
+.app.play .homebtn .home-mark { display: none; }
+.app.play .hud-row1 .lockup {
+  display: block;
+  height: 36px;
+  width: auto;
+  flex: 0 0 auto;
+  margin: 0;
+}
+
+@media (max-height: 500px) and (orientation: landscape) {
+  .app.play .hud-row1 {
+    width: auto;
+    padding: 0 0 0 max(6px, env(safe-area-inset-left));
+    gap: 6px;
+  }
+  .app.play .hud-row1 .modeseg { margin-left: 0; }
+  .app.play .homebtn,
+  .app.play .homebtn img {
+    width: 32px;
+    height: 32px;
+    flex-basis: 32px;
+  }
+  .app.play .homebtn .home-avatar { display: none; }
+  .app.play .homebtn .home-mark { display: block; }
+  .app.play .hud-row1 .lockup { display: none; }
+}
+
+@media (max-width: 359px) {
+  .app.play .homebtn,
+  .app.play .homebtn img {
+    width: 36px;
+    height: 36px;
+    flex-basis: 36px;
+  }
+  .app.play .hud-row1 .lockup { height: 30px; }
+}
+
+/* 2 and 12 are the same numeral size as the other Field numbers, in a larger ring. */
+.app.play .fieldnums { justify-content: center; gap: 6px; }
+.app.play .fieldnums .fn.dbl {
+  flex: 0 0 26px;
+  width: 26px;
+  height: 26px;
+  font-size: 15px;
+  border: 1.5px solid #C9A961;
+  color: #FFD36A;
+}
+.app.play .fieldnums .fn.dbl.triple {
+  box-shadow: inset 0 0 0 1.5px #C9A961;
+}
+.app.play .spot.field small {
+  font-size: 10px;
+  letter-spacing: .06em;
+}
+
+/* 360: FAIR was 4px past the screen once a point and the last dice are up.
+   320 keeps its tighter zoomed gap. Zero the row gap only in this 10px band
+   so the chip stays inside the pill instead of clipping on the right edge. */
+@media (min-width: 360px) and (max-width: 370px) {
+  #hud .hud-money { gap: 6px; }
+  #hud .hud-bank strong { font-size: 14px; }
+  #hud .hud-row2 { gap: 0; }
+  #hud .hud-roll { margin-left: 0; }
+  #hud .lastdice .mini-die { width: 16px; height: 16px; }
+  #hud .lastdice .readout { padding-right: 0; gap: 2px; }
+  #hud .hud-point .pointname { font-size: 12px; letter-spacing: 0; }
+}

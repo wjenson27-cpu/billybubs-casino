@@ -1,0 +1,186 @@
+/* Run 9: mini-die pips, pip readouts, marquee stacking, felt puck, coach. Loaded last. */
+
+.hopdice .mini-die,
+.lastdice .mini-die {
+  box-sizing: border-box;
+  padding: 2px;
+  gap: 0;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-rows: repeat(3, minmax(0, 1fr));
+}
+.hopdice .mini-die { width: 18px; height: 18px; }
+.hopdice .mini-die .pip { width: 3.5px; height: 3.5px; }
+.lastdice .mini-die { width: 18px; height: 18px; }
+.lastdice .mini-die .pip { width: 4px; height: 4px; }
+
+#overlay:not(:empty) {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+}
+.dice-live { z-index: 40; }
+body.has-coach .dome-cast { visibility: hidden; }
+
+.feltpuck {
+  top: 4px;
+  right: 4px;
+  width: 30px;
+  height: 30px;
+}
+
+.hud-money {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  flex: 0 0 auto;
+}
+.hud-roll strong {
+  font-family: "Cinzel", Palatino, Georgia, serif;
+  font-variant-numeric: lining-nums tabular-nums;
+  font-feature-settings: "zero" 0;
+}
+
+.edgepill { white-space: nowrap; }
+
+.badgetoast {
+  z-index: 50;
+  top: min(calc(var(--dots-top, var(--dock-top, 72%)) - 8px), calc(100vh - 12px));
+}
+
+.dome-screen .rollstrip { margin-bottom: 18px; }
+.dome-screen { padding-bottom: 8px; }
+
+.readout {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  vertical-align: middle;
+}
+.readout .dieface {
+  width: var(--die, 16px);
+  height: var(--die, 16px);
+  display: block;
+  border-radius: 18%;
+  background: #f6edd8;
+}
+.readout .readbadge {
+  font-family: "Cinzel", Palatino, Georgia, serif;
+  font-weight: 700;
+  line-height: 1;
+  color: #f6edd8;
+}
+.readout.s32 .readbadge { font-size: 28px; }
+.readout.s24 .readbadge { font-size: 22px; }
+.readout.s20 .readbadge { font-size: 18px; }
+.readout.s18 .readbadge { font-size: 16px; }
+.readout.s16 .readbadge { font-size: 16px; }
+.readout.s14 .readbadge { font-size: 12px; }
+.readbadge.seven,
+.readout .readbadge.seven { color: #c21f2e; }
+.hardtag {
+  display: inline-block;
+  background: #3A2A00;
+  color: #FFD36A;
+  border-radius: 999px;
+  padding: 1px 6px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .02em;
+  white-space: nowrap;
+}
+.readcall {
+  font-family: "Cinzel", Palatino, Georgia, serif;
+  font-weight: 700;
+  letter-spacing: .04em;
+}
+.result-line {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+.result-line .readcall { font-size: 18px; color: #f6edd8; }
+.toast .readcall { font-size: 13px; color: #f6edd8; }
+.led .readout .readbadge { color: #3dff6e; }
+.led .readout .readbadge.seven { color: #c21f2e; }
+
+.rollstrip { gap: 4px; }
+.rolltile {
+  width: 30px;
+  height: 30px;
+  box-sizing: border-box;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-content: center;
+  column-gap: 2px;
+  padding: 0;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  background: #10281c;
+  color: #f6edd8;
+}
+.rolltile .dieface { width: 14px; height: 14px; border-radius: 2px; }
+.rolltile b {
+  flex: 0 0 100%;
+  font-size: 11px;
+  line-height: 11px;
+  text-align: center;
+  font-family: "Cinzel", Palatino, Georgia, serif;
+}
+.rolltile.seven { box-shadow: inset 0 0 0 2px #c21f2e; }
+.rolltile.seven b { color: #fff; }
+.rolltile.latest { outline: 2px solid #FFD36A; outline-offset: 1px; }
+.rollstrip.totals .rolltile .dieface { display: none; }
+.rollstrip.totals .rolltile {
+  width: 28px;
+  height: 28px;
+  align-items: center;
+}
+.rollstrip.totals .rolltile b { flex: 0 0 auto; font-size: 13px; line-height: 1; }
+.rollstrip.totals .rolltile.dbl b::after {
+  content: "";
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  margin-left: 2px;
+  border-radius: 50%;
+  background: #FFD36A;
+  vertical-align: middle;
+}
+.fair .rollstrip,
+.fairstrip { flex-wrap: wrap; max-width: 340px; }
+.last20 { display: flex; flex-wrap: wrap; gap: 8px; }
+.fairhist {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 360px;
+  overflow: auto;
+}
+.fairhist .pinhand { position: sticky; top: 0; z-index: 1; background: #102418; }
+.fairhist li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(246, 237, 216, .12);
+  font-size: 12px;
+}
+.fairhist .hn { width: 2.2em; color: #e4cc8f; font-variant-numeric: tabular-nums; }
+.fairhist time { width: 4.6em; color: rgba(246, 237, 216, .7); }
+.endedon {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin: 4px 0;
+}
+.boardmain .endedon { font-size: 12px; }
+
+.factrow b { font-size: 13px; line-height: 1.25; }
+
+@media (max-height: 500px) and (orientation: landscape) {
+  .edgepill { white-space: nowrap; }
+  .dome-screen .rollstrip { margin-bottom: 8px; }
+}

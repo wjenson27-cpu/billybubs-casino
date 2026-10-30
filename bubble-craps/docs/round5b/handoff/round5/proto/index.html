@@ -1,0 +1,10 @@
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Billy Bubs round 5 prototype</title>
+<style>body{font:15px/1.4 system-ui;background:#07100B;color:#F6EDD8;padding:16px;max-width:760px;margin:auto}a{color:#FFD36A;display:inline-block;min-height:44px;line-height:44px;margin-right:14px}h1{font-family:Georgia,serif}</style>
+<h1>Round 5 (week of Oct 19) — design prototype</h1>
+<p>Runs inside a test copy of each app (tools/mkcopy.sh). Nothing here is a build.</p>
+<script>
+const S=[["history","1 Session history"],["historyall","1b All sessions"],["dice","2 Enter your own dice"],["rules","3 Table rules"],["speed","4 Fast roll"],["quick","5 Across / Inside / Outside"],["drill","6 Payout drill"],["drillfb","6b Drill feedback"]];
+for(const [app,p] of [["Bubble Craps","/app/index.html"],["Table Craps","/app/table/index.html"]]){document.write("<h2>"+app+"</h2>");for(const [s,n] of S)document.write(`<a href="${p}?r5=${s}">${n}</a>`)}
+document.write('<h2>iPad</h2><a href="ipad.html?app=bc">Bubble Craps iPad</a><a href="ipad.html?app=tc">Table Craps iPad</a>');
+</script>

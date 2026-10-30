@@ -1,0 +1,47 @@
+/* Point-hit celebration (M3) + Big Win inside it (M7, capped at 2.5s). Shared by Bubble Craps and Table Craps.
+   NEW. The whole layer is pointer-events:none, so bets and ROLL/SHOOT stay live underneath. */
+:root{--pc-gold:#FFD36A;--pc-gold-2:#C9A961;--pc-ink:#1B1204;--pc-dur:1200ms;--pc-big:2500ms}
+.pc-layer{position:fixed;inset:0;z-index:60;pointer-events:none;overflow:hidden;contain:layout paint}
+.pc-layer *{pointer-events:none}
+/* glow ring hugging the target (puck and point number box) */
+.pc-glow{position:absolute;border-radius:16px;box-shadow:0 0 0 3px var(--pc-gold),0 0 22px 6px rgba(255,211,106,.75),inset 0 0 18px rgba(255,211,106,.45);
+  opacity:0;animation:pc-glow var(--pc-dur) cubic-bezier(.2,.8,.2,1) forwards}
+.pc-glow.puck{border-radius:50%}
+@keyframes pc-glow{0%{opacity:0;transform:scale(.92)}12%{opacity:1;transform:scale(1.04)}25%{opacity:.55}38%{opacity:1;transform:scale(1)}75%{opacity:.9}100%{opacity:0}}
+/* 12 gold sparkles + 4 mini chips (M3: no confetti on point hit) */
+.pc-burst{position:absolute;width:0;height:0}
+.pc-burst i{position:absolute;left:-4px;top:-4px;width:8px;height:8px;border-radius:2px;background:var(--pc-gold);box-shadow:0 0 6px #fff3c4;
+  transform:rotate(calc(var(--a)*30deg)) translateY(0) scale(.4);opacity:0;animation:pc-spark 600ms 120ms cubic-bezier(.15,.7,.3,1) forwards}
+.pc-burst i:nth-child(odd){width:6px;height:6px;border-radius:50%}
+.pc-burst img{position:absolute;left:-11px;top:-11px;width:22px;height:22px;opacity:0;
+  transform:rotate(calc(var(--a)*90deg + 45deg)) translateY(0);animation:pc-chip 700ms 160ms cubic-bezier(.2,.7,.3,1) forwards}
+@keyframes pc-spark{0%{opacity:0}15%{opacity:1}100%{opacity:0;transform:rotate(calc(var(--a)*30deg)) translateY(calc(-1*var(--r,46px))) scale(1)}}
+@keyframes pc-chip{0%{opacity:0}20%{opacity:1}100%{opacity:0;transform:rotate(calc(var(--a)*90deg + 45deg)) translateY(calc(-.8*var(--r,46px))) rotateX(70deg)}}
+/* the call plate: reuses the BC toast/marquee look. Billie is the only mascot image. */
+.pc-plate{position:absolute;display:flex;align-items:center;gap:8px;max-width:min(340px,calc(100vw - 16px));padding:6px 12px 6px 6px;border-radius:14px;
+  background:linear-gradient(180deg,#2a1e08,#140e04);border:1.5px solid var(--pc-gold-2);box-shadow:0 8px 24px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,231,160,.35);
+  opacity:0;transform:translateY(12px);animation:pc-plate var(--pc-dur) cubic-bezier(.25,1,.5,1) forwards}
+.pc-plate img{width:46px;height:46px;flex:0 0 46px}
+.pc-plate .who{display:block;font:800 9.5px/1 var(--sans,system-ui);letter-spacing:.14em;color:#E4CC8F;text-transform:uppercase}
+.pc-plate b{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;font:800 15px/1.2 var(--serif,Georgia),serif;color:var(--pc-gold);white-space:normal;overflow:hidden;max-width:min(300px,calc(100vw - 96px))}
+.pc-plate .cheer,.pc-plate .sting{display:block;font:700 13px/1.2 var(--sans,system-ui);color:#F6EDD8}
+.pc-layer.quiet .pc-burst,.pc-layer.quiet .pc-rays,.pc-layer.reduce .pc-burst,.pc-layer.reduce .pc-rays{display:none}
+.pc-plate .amt{font:800 15px/1.1 var(--sans,system-ui);color:#7DFFB3;font-variant-numeric:tabular-nums}
+.pc-plate .bigtag{display:inline-block;margin-left:6px;padding:2px 6px;border-radius:999px;background:var(--pc-gold);color:var(--pc-ink);font:900 10px/1.2 var(--sans,system-ui);letter-spacing:.08em}
+@keyframes pc-plate{0%{opacity:0;transform:translateY(12px)}22%{opacity:1;transform:none}82%{opacity:1}100%{opacity:0}}
+/* Huge brings the sunburst back. The BIG WIN tag is a separate class and only marks a real big win. */
+.pc-layer.rays .pc-rays{position:absolute;inset:0;-webkit-mask-image:radial-gradient(circle at var(--cx) var(--cy),#000 0,#000 18vmin,transparent 46vmin);mask-image:radial-gradient(circle at var(--cx) var(--cy),#000 0,#000 18vmin,transparent 46vmin);background:repeating-conic-gradient(from 0deg at var(--cx) var(--cy),rgba(255,211,106,.16) 0 8deg,transparent 8deg 22deg);
+  opacity:0;animation:pc-rays var(--pc-dur) linear forwards}
+.pc-layer.bigwin .pc-plate b{font-size:20px}
+.pc-layer.bigwin .pc-plate .amt{font-size:22px}
+@keyframes pc-rays{0%{opacity:0}12%{opacity:1}85%{opacity:.8}100%{opacity:0}}
+.pc-layer.out{transition:opacity 120ms;opacity:0}
+/* one mascot on screen: hide every other mascot while the layer is up */
+body.pc-on .toast-billy,body.pc-on .toast-billie,body.pc-on .dome-billy,body.pc-on .dome-billie,body.pc-on .coach-billie,body.pc-on .coach-top img,body.pc-on .win-billie,
+body.pc-on [data-mascot]:not(.pc-plate){visibility:hidden}
+/* reduced motion: glow-only fade, no sparks/chips/rays/translate */
+.pc-layer.reduce .pc-burst,.pc-layer.reduce .pc-rays{display:none}
+.pc-layer.reduce .pc-glow{animation:pc-fade var(--pc-dur) linear forwards;transform:none}
+.pc-layer.reduce .pc-plate{animation:pc-fade var(--pc-dur) linear forwards;transform:none}
+@keyframes pc-fade{0%{opacity:0}15%{opacity:1}80%{opacity:1}100%{opacity:0}}
+@media (prefers-reduced-motion:reduce){.pc-burst,.pc-rays{display:none}.pc-glow,.pc-plate{animation-name:pc-fade!important;transform:none!important}}

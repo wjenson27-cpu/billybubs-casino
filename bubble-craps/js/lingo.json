@@ -1,0 +1,3540 @@
+{
+ "version": "rev15d-1",
+ "spec": "two-games-spec.md rev 15d, S4.5",
+ "categories": {
+  "dice": "Dice calls",
+  "bets": "Bets",
+  "actions": "Actions",
+  "table": "Table talk"
+ },
+ "sources": {
+  "wiki-glossary": "https://en.wikipedia.org/wiki/Glossary_of_craps_terms",
+  "wiki-craps": "https://en.wikipedia.org/wiki/Craps (names of rolls)",
+  "wov-stick": "https://wizardofvegas.com/forum/gambling/craps/27549-what-are-the-common-phrases-used-by-the-stickman-to-call-a-craps-game/",
+  "crapsjourney": "https://www.crapsjourney.com/glossary/",
+  "artofcraps": "https://www.artofcraps.com/ (hop bet, horn bet, Iron Cross pages)",
+  "ballys-ac": "Bally's Atlantic City craps gaming guide (PDF): hardways on the hop, 30 to 1",
+  "parlaynation": "https://parlaynation.com/glossary",
+  "spec": "two-games-spec.md (the apps' own rules)"
+ },
+ "terms": [
+  {
+   "id": "aces",
+   "term": "Aces / Snake eyes",
+   "aliases": [
+    "snake eyes",
+    "two",
+    "2",
+    "one one",
+    "1-1",
+    "aces"
+   ],
+   "category": "dice",
+   "alsoIn": [],
+   "dice": {
+    "total": 2,
+    "pairs": [
+     "1-1"
+    ]
+   },
+   "meaning": "A two: one and one. A craps number on the come-out in Regular rules.",
+   "call": "Aces! Craps, line away.",
+   "say": "AY-siz",
+   "srLabel": "Aces, or snake eyes: a two",
+   "apps": [
+    "bubble",
+    "table"
+   ],
+   "appliesTo": [
+    "bubble-regular",
+    "bubble-crapless",
+    "table"
+   ],
+   "tag": "Both apps",
+   "link": {
+    "bubble": "hop:1-1",
+    "table": "hop:1-1"
+   },
+   "notes": {
+    "crapless": "In Crapless a come-out two is a point: \"Aces, the point is two. Mark it!\""
+   },
+   "related": [
+    "craps",
+    "horn",
+    "boxcars"
+   ],
+   "etiquette": null,
+   "sources": [
+    "wiki-glossary",
+    "wiki-craps",
+    "wov-stick"
+   ]
+  },
+  {
+   "id": "ace_deuce",
+   "term": "Ace-deuce",
+   "aliases": [
+    "three",
+    "3",
+    "1-2",
+    "acey deucey"
+   ],
+   "category": "dice",
+   "alsoIn": [],
+   "dice": {
+    "total": 3,
+    "pairs": [
+     "1-2"
+    ]
+   },
+   "meaning": "A three: one and two. A craps number on the come-out in Regular rules.",
+   "call": "Ace-deuce! Craps, line away.",
+   "say": "ACE-doose",
+   "srLabel": "Ace-deuce: a three",
+   "apps": [
+    "bubble",
+    "table"
+   ],
+   "appliesTo": [
+    "bubble-regular",
+    "bubble-crapless",
+    "table"
+   ],
+   "tag": "Both apps",
+   "link": {
+    "bubble": "hop:1-2",
+    "table": "hop:1-2"
+   },
+   "notes": {
+    "crapless": "In Crapless a come-out three is a point: \"Ace-deuce, point is three.\""
+   },
+   "related": [
+    "craps",
+    "horn"
+   ],
+   "etiquette": null,
+   "sources": [
+    "wiki-glossary",
+    "wiki-craps",
+    "wov-stick"
+   ]
+  },
+  {
+   "id": "easy_four",
+   "term": "Easy four",
+   "aliases": [
+    "four easy",
+    "4",
+    "1-3",
+    "3-1"
+   ],
+   "category": "dice",
+   "alsoIn": [],
+   "dice": {
+    "total": 4,
+    "pairs": [
+     "1-3"
+    ]
+   },
+   "meaning": "A four made with one and three, not a pair. An easy four loses a Hard 4 bet.",
+   "call": "Four, easy four.",
+   "say": null,
+   "srLabel": "Easy four: one and three",
+   "apps": [
+    "bubble",
+    "table"
+   ],
+   "appliesTo": [
+    "bubble-regular",
+    "bubble-crapless",
+    "table"
+   ],
+   "tag": "Both apps",
+   "link": {
+    "bubble": "hardway:4",
+    "table": "hardway:4"
+   },
+   "notes": {},
+   "related": [
+    "hard_four",
+    "hardways"
+   ],
+   "etiquette": null,
+   "sources": [
+    "wiki-glossary",
+    "wiki-craps",
+    "wov-stick"
+   ]
+  },
+  {
+   "id": "hard_four",
+   "term": "Hard four",
+   "aliases": [
+    "four the hard way",
+    "2-2",
+    "ballerina"
+   ],
+   "category": "dice",
+   "alsoIn": [],
+   "dice": {
+    "total": 4,
+    "pairs": [
+     "2-2"
+    ]
+   },
+   "meaning": "A four made with two and two. It wins a Hard 4 bet.",
+   "call": "Four, the hard way!",
+   "say": null,
+   "srLabel": "Hard four: two and two",
+   "apps": [
+    "bubble",
+    "table"
+   ],
+   "appliesTo": [
+    "bubble-regular",
+    "bubble-crapless",
+    "table"
+   ],
+   "tag": "Both apps",
+   "link": {
+    "bubble": "hardway:4",
+    "table": "hardway:4"
+   },
+   "notes": {},
+   "related": [
+    "little_joe",
+    "hardways",
+    "hop_hard_way"
+   ],
+   "etiquette": null,
+   "sources": [
+    "wiki-glossary",
+    "wiki-craps",
+    "wov-stick"
+   ]
+  },
+  {
+   "id": "little_joe",
+   "term": "Little Joe",
+   "aliases": [
+    "little joe from kokomo",
+    "joe",
+    "four"
+   ],
+   "category": "dice",
+   "alsoIn": [],
+   "dice": {
+    "total": 4,
+    "pairs": [
+     "2-2",
+     "1-3"
+    ]
+   },
+   "meaning": "A four, most often the hard four (two and two). Rhyming slang: \"Little Joe from Kokomo.\"",
+   "call": "Little Joe, four the hard way!",
+   "say": "little JOE from KOH-kuh-moh",
+   "srLabel": "Little Joe",
+   "apps": [
+    "bubble",
+    "table"
+   ],
+   "appliesTo": [
+    "bubble-regular",
+    "bubble-crapless",
+    "table"
+   ],
+   "tag": "Both apps",
+   "link": {
+    "bubble": "hardway:4",
+    "table": "hardway:4"
+   },
+   "notes": {},
+   "related": [
+    "hard_four"
+   ],
+   "etiquette": null,
+   "sources": [
+    "wiki-glossary",
+    "wiki-craps"
+   ]
+  },
+  {
+   "id": "fever_five",
+   "term": "Fever five",
+   "aliases": [
+    "fever",
+    "five",
+    "5",
+    "phoebe",
+    "little phoebe"
+   ],
+   "category": "dice",
+   "alsoIn": [],
+   "dice": {
+    "total": 5,
+    "pairs": [
+     "1-4",
+     "2-3"
+    ]
+   },
+   "meaning": "A five. Old table slang; you'll also hear just \"fever\".",
+   "call": "Five, fever five.",
+   "say": null,
+   "srLabel": "Fever five: a five",
+   "apps": [
+    "bubble",
+    "table"
+   ],
+   "appliesTo": [
+    "bubble-regular",
+    "bubble-crapless",
+    "table"
+   ],
+   "tag": "Both apps",
+   "link": {
+    "bubble": "place:5",
+    "table": "place:5"
+   },
+   "notes": {},
+   "related": [
+    "no_field_five"
+   ],
+   "etiquette": null,
+   "sources": [
+    "wiki-glossary",
+    "wiki-craps"
+   ]
+  },
+  {
+   "id": "no_field_five",
+   "term": "No field five",
+   "aliases": [
+    "five no field",
+    "five",
+    "5"
+   ],
+   "category": "dice",
+   "alsoIn": [],
+   "dice": {
+    "total": 5,
+    "pairs": [
+     "1-4",
+     "2-3"
+    ]
+   },
+   "meaning": "A five, called so the table knows the Field loses: 5 isn't a Field number.",
+   "call": "Five, no field five.",
+   "say": null,
+   "srLabel": "No field five: a five; the Field loses",
+   "apps": [
+    "bubble",
+    "table"
+   ],
+   "appliesTo": [
+    "bubble-regular",
+    "bubble-crapless",
+    "table"
+   ],
+   "tag": "Both apps",
+   "link": {
+    "bubble": "field",
+    "table": "field"
+   },
+   "notes": {},
+   "related": [
+    "field",
+    "fever_five"
+   ],
+   "etiquette": null,
+   "sources": [
+    "wiki-glossary",
+    "wiki-craps",
+    "wov-stick"
+   ]
+  },
+  {
+   "id": "easy_six",
+   "term": "Easy six",
+   "aliases": [
+    "six easy",
+    "6",
+    "1-5",
+    "2-4"
+   ],
+   "category": "dice",
+   "alsoIn": [],
+   "dice": {
+    "total": 6,
+    "pairs": [
+     "1-5",
+     "2-4"
+    ]
+   },
+   "meaning": "A six that isn't a pair (one-five or two-four). It loses a Hard 6 bet.",
+   "call": "Six, easy six.",
+   "say": null,
+   "srLabel": "Easy six",
+   "apps": [
+    "bubble",
+    "table"
+   ],
+   "appliesTo": [
+    "bubble-regular",
+    "bubble-crapless",
+    "table"
+   ],
+   "tag": "Both apps",
+   "link": {
+    "bubble": "hardway:6",
+    "table": "hardway:6"
+   },
+   "notes": {},
+   "related": [
+    "hard_six",
+    "jimmy_hicks"
+   ],
+   "etiquette": null,
+   "sources": [
+    "wiki-glossary",
+    "wiki-craps",
+    "wov-stick"
+   ]
+  },
+  {
+   "id": "hard_six",
+   "term": "Hard six",
+   "aliases": [
+    "six the hard way",
+    "3-3"
+   ],
+   "category": "dice",
+   "alsoIn": [],
+   "dice": {
+    "total": 6,
+    "pairs": [
+     "3-3"
+    ]
+   },
+   "meaning": "A six made with three and three. It wins a Hard 6 bet.",
+   "call": "Six, the hard way!",
+   "say": null,
+   "srLabel": "Hard six: three and three",
+   "apps": [
+    "bubble",
+    "table"
+   ],
+   "appliesTo": [
+    "bubble-regular",
+    "bubble-crapless",
+    "table"
+   ],
+   "tag": "Both apps",
+   "link": {
+    "bubble": "hardway:6",
+    "table": "hardway:6"
+   },
+   "notes": {},
+   "related": [
+    "hardways",
+    "hop_hard_way"
+   ],
+   "etiquette": null,
+   "sources": [
+    "wiki-glossary",
+    "wiki-craps",
+    "wov-stick"
+   ]
+  },
+  {
+   "id": "jimmy_hicks",
+   "term": "Jimmy Hicks",
+   "aliases": [
+    "jimmie hicks",
+    "jimmy hicks from the sticks",
+    "jimmy hix",
+    "six",
+    "6"
+   ],
+   "category": "dice",
+   "alsoIn": [],
+   "dice": {
+    "total": 6,
+    "pairs": [
+     "1-5",
+     "2-4",
+     "3-3"
+    ]
+   },
+   "meaning": "A six. Rhyming slang: \"Jimmy Hicks from the sticks.\"",
+   "call": "Jimmy Hicks from the sticks, six!",
+   "say": "JIM-ee HIKS",
+   "srLabel": "Jimmy Hicks",
+   "apps": [
+    "bubble",
+    "table"
+   ],
+   "appliesTo": [
+    "bubble-regular",
+    "bubble-crapless",
+    "table"
+   ],
+   "tag": "Both apps",
+   "link": {
+    "bubble": "place:6",
+    "table": "place:6"
+   },
+   "notes": {},
+   "related": [
+    "easy_six",
+    "hard_six"
+   ],
+   "etiquette": null,
+   "sources": [
+    "wiki-glossary",
+    "wiki-craps"
+   ]
+  },
+  {
+   "id": "big_red",
+   "term": "Big Red",
+   "aliases": [
+    "seven",
+    "7",
+    "any seven",
+    "any 7",
+    "red",
+    "six ace"
+   ],
+   "category": "dice",
+   "alsoIn": [
+    "bets"
+   ],
+   "dice": {
+    "total": 7,
+    "pairs": [
+     "1-6",
+     "2-5",
+     "3-4"
+    ]
+   },
+   "meaning": "A seven, and the one-roll Any Seven bet (4 to 1, 16.67% edge). Players say \"Big Red\" so they don't say \"seven\" while the dice are out.",
+   "call": "Big Red, one roll.",
+   "say": null,
+   "srLabel": "Big Red: seven, or the Any Seven bet",
+   "apps": [
+    "bubble",
+    "table"
+   ],
+   "appliesTo": [
+    "bubble-regular",
+    "bubble-crapless",
+    "table"
+   ],
+   "tag": "Both apps",
+   "link": {
+    "bubble": "any7",
+    "table": "any7"
+   },
+   "notes": {},
+   "related": [
+    "seven_out",
+    "natural"
+   ],
+   "etiquette": "no_seven",
+   "sources": [
+    "wiki-glossary",
+    "wiki-craps"
+   ]
+  },
+  {
+   "id": "easy_eight",
+   "term": "Easy eight",
+   "aliases": [
+    "eight easy",
+    "8",
+    "2-6",
+    "3-5"
+   ],
+   "category": "dice",
+   "alsoIn": [],
+   "dice": {
+    "total": 8,
+    "pairs": [
+     "2-6",
+     "3-5"
+    ]
+   },
+   "meaning": "An eight that isn't a pair (two-six or three-five). It loses a Hard 8 bet.",
+   "call": "Eight, easy eight.",
+   "say": null,
+   "srLabel": "Easy eight",
+   "apps": [
+    "bubble",
+    "table"
+   ],
+   "appliesTo": [
+    "bubble-regular",
+    "bubble-crapless",
+    "table"
+   ],
+   "tag": "Both apps",
+   "link": {
+    "bubble": "hardway:8",
+    "table": "hardway:8"
+   },
+   "notes": {},
+   "related": [
+    "hard_eight"
+   ],
+   "etiquette": null,
+   "sources": [
+    "wiki-glossary",
+    "wiki-craps",
+    "wov-stick"
+   ]
+  },
+  {
+   "id": "hard_eight",
+   "term": "Hard eight",
+   "aliases": [
+    "eight the hard way",
+    "4-4",
+    "square pair",
+    "eighter from decatur"
+   ],
+   "category": "dice",
+   "alsoIn": [],
+   "dice": {
+    "total": 8,
+    "pairs": [
+     "4-4"
+    ]
+   },
+   "meaning": "An eight made with four and four. It wins a Hard 8 bet. Also called a \"square pair\".",
+   "call": "Eight, the hard way!",
+   "say": null,
+   "srLabel": "Hard eight: four and four",
+   "apps": [
+    "bubble",
+    "table"
+   ],
+   "appliesTo": [
+    "bubble-regular",
+    "bubble-crapless",
+    "table"
+   ],
+   "tag": "Both apps",
+   "link": {
+    "bubble": "hardway:8",
+    "table": "hardway:8"
+   },
+   "notes": {},
+   "related": [
+    "hardways",
+    "hop_hard_way"
+   ],
+   "etiquette": null,
+   "sources": [
+    "wiki-glossary",
+    "wiki-craps"
+   ]
+  },
+  {
+   "id": "nina",
+   "term": "Nina from Pasadena",
+   "aliases": [
+    "nina",
+    "niner",
+    "nine",
+    "9",
+    "nina at the marina"
+   ],
+   "category": "dice",
+   "alsoIn": [],
+   "dice": {
+    "total": 9,
+    "pairs": [
+     "3-6",
+     "4-5"
+    ]
+   },
+   "meaning": "A nine. Rhyming slang; often just \"Nina\".",
+   "call": "Nine, Nina from Pasadena!",
+   "say": "NEE-nuh from pass-uh-DEE-nuh",
+   "srLabel": "Nina from Pasadena",
+   "apps": [
+    "bubble",
+    "table"
+   ],
+   "appliesTo": [
+    "bubble-regular",
+    "bubble-crapless",
+    "table"
+   ],
+   "tag": "Both apps",
+   "link": {
+    "bubble": "place:9",
+    "table": "place:9"
+   },
+   "notes": {},
+   "related": [
+    "center_field_nine"
+   ],
+   "etiquette": null,
+   "sources": [
+    "wiki-glossary",
+    "wiki-craps"
+   ]
+  },
+  {
+   "id": "center_field_nine",
+   "term": "Center field nine",
+   "aliases": [
+    "centerfield nine",
+    "nine field",
+    "nine",
+    "9"
+   ],
+   "category": "dice",
+   "alsoIn": [],
+   "dice": {
+    "total": 9,
+    "pairs": [
+     "3-6",
+     "4-5"
+    ]
+   },
+   "meaning": "A nine. 9 sits in the middle of the Field numbers (2 3 4 9 10 11 12), so the Field wins.",
+   "call": "Nine, center field!",
+   "say": null,
+   "srLabel": "Center field nine: a nine; the Field wins",
+   "apps": [
+    "bubble",
+    "table"
+   ],
+   "appliesTo": [
+    "bubble-regular",
+    "bubble-crapless",
+    "table"
+   ],
+   "tag": "Both apps",
+   "link": {
+    "bubble": "field",
+    "table": "field"
+   },
+   "notes": {},
+   "related": [
+    "field",
+    "nina"
+   ],
+   "etiquette": null,
+   "sources": [
+    "wiki-glossary",
+    "wiki-craps"
+   ]
+  },
+  {
+   "id": "easy_ten",
+   "term": "Easy ten",
+   "aliases": [
+    "ten easy",
+    "10",
+    "4-6"
+   ],
+   "category": "dice",
+   "alsoIn": [],
+   "dice": {
+    "total": 10,
+    "pairs": [
+     "4-6"
+    ]
+   },
+   "meaning": "A ten made with four and six. It loses a Hard 10 bet.",
+   "call": "Ten, easy ten.",
+   "say": null,
+   "srLabel": "Easy ten: four and six",
+   "apps": [
+    "bubble",
+    "table"
+   ],
+   "appliesTo": [
+    "bubble-regular",
+    "bubble-crapless",
+    "table"
+   ],
+   "tag": "Both apps",
+   "link": {
+    "bubble": "hardway:10",
+    "table": "hardway:10"
+   },
+   "notes": {},
+   "related": [
+    "hard_ten"
+   ],
+   "etiquette": null,
+   "sources": [
+    "wiki-glossary",
+    "wiki-craps",
+    "wov-stick"
+   ]
+  },
+  {
+   "id": "hard_ten",
+   "term": "Hard ten",
+   "aliases": [
+    "ten the hard way",
+    "5-5",
+    "puppy paws"
+   ],
+   "category": "dice",
+   "alsoIn": [],
+   "dice": {
+    "total": 10,
+    "pairs": [
+     "5-5"
+    ]
+   },
+   "meaning": "A ten made with five and five. It wins a Hard 10 bet.",
+   "call": "Ten, the hard way!",
+   "say": null,
+   "srLabel": "Hard ten: five and five",
+   "apps": [
+    "bubble",
+    "table"
+   ],
+   "appliesTo": [
+    "bubble-regular",
+    "bubble-crapless",
+    "table"
+   ],
+   "tag": "Both apps",
+   "link": {
+    "bubble": "hardway:10",
+    "table": "hardway:10"
+   },
+   "notes": {},
+   "related": [
+    "hardways",
+    "hop_hard_way"
+   ],
+   "etiquette": null,
+   "sources": [
+    "wiki-glossary",
+    "wiki-craps",
+    "wov-stick"
+   ]
+  },
+  {
+   "id": "yo",
+   "term": "Yo / Yo-leven",
+   "aliases": [
+    "yo",
+    "yoleven",
+    "yo eleven",
+    "eleven",
+    "11",
+    "5-6",
+    "six five"
+   ],
+   "category": "dice",
+   "alsoIn": [
+    "bets"
+   ],
+   "dice": {
+    "total": 11,
+    "pairs": [
+     "5-6"
+    ]
+   },
+   "meaning": "An eleven, and the one-roll bet on 11 (15 to 1). Dealers say \"yo\" so \"eleven\" isn't heard as \"seven\".",
+   "call": "Yo-leven! Yo pays fifteen to one.",
+   "say": "yoh-LEV-en",
+   "srLabel": "Yo-leven: eleven",
+   "apps": [
+    "bubble",
+    "table"
+   ],
+   "appliesTo": [
+    "bubble-regular",
+    "bubble-crapless",
+    "table"
+   ],
+   "tag": "Both apps",
+   "link": {
+    "bubble": "hop:5-6",
+    "table": "hop:5-6"
+   },
+   "notes": {
+    "crapless": "In Crapless an 11 on the come-out is a point, not a winner: \"Yo, mark the eleven!\""
+   },
+   "related": [
+    "horn",
+    "ce",
+    "natural"
+   ],
+   "etiquette": null,
+   "sources": [
+    "wiki-glossary",
+    "wiki-craps",
+    "crapsjourney",
+    "wov-stick"
+   ]
+  },
+  {
+   "id": "boxcars",
+   "term": "Boxcars / Midnight",
+   "aliases": [
+    "midnight",
+    "twelve",
+    "12",
+    "6-6",
+    "boxcar"
+   ],
+   "category": "dice",
+   "alsoIn": [],
+   "dice": {
+    "total": 12,
+    "pairs": [
+     "6-6"
+    ]
+   },
+   "meaning": "A twelve: six and six. A craps number on the come-out in Regular rules, where it pushes Don't Pass (bar 12).",
+   "call": "Boxcars, midnight! Craps, line away.",
+   "say": "BOX-cars",
+   "srLabel": "Boxcars, or midnight: a twelve",
+   "apps": [
+    "bubble",
+    "table"
+   ],
+   "appliesTo": [
+    "bubble-regular",
+    "bubble-crapless",
+    "table"
+   ],
+   "tag": "Both apps",
+   "link": {
+    "bubble": "hop:6-6",
+    "table": "hop:6-6"
+   },
+   "notes": {
+    "crapless": "In Crapless a come-out twelve is a point: \"Boxcars, the point is twelve.\""
+   },
+   "related": [
+    "craps",
+    "dont_pass",
+    "horn"
+   ],
+   "etiquette": null,
+   "sources": [
+    "wiki-glossary",
+    "wiki-craps",
+    "wov-stick"
+   ]
+  },
+  {
+   "id": "craps",
+   "term": "Craps / Crap out",
+   "aliases": [
+    "crap out",
+    "crapped out",
+    "craps number"
+   ],
+   "category": "dice",
+   "alsoIn": [],
+   "dice": {
+    "total": null,
+    "pairs": [
+     "1-1",
+     "1-2",
+     "6-6"
+    ]
+   },
+   "meaning": "2, 3 or 12. On a come-out roll it loses the Pass line (\"crap out\"); the shooter keeps the dice.",
+   "call": "Three craps, line away. Pay the don'ts.",
+   "say": null,
+   "srLabel": "Craps: two, three or twelve",
+   "apps": [
+    "bubble",
+    "table"
+   ],
+   "appliesTo": [
+    "bubble-regular",
+    "bubble-crapless",
+    "table"
+   ],
+   "tag": "Both apps",
+   "link": {
+    "bubble": "anyCraps",
+    "table": "anyCraps"
+   },
+   "notes": {
+    "crapless": "Crapless has no come-out craps: 2, 3, 11 and 12 become points."
+   },
+   "related": [
+    "any_craps",
+    "aces",
+    "ace_deuce",
+    "boxcars"
+   ],
+   "etiquette": null,
+   "sources": [
+    "wiki-glossary",
+    "wov-stick"
+   ]
+  },
+  {
+   "id": "natural",
+   "term": "Natural",
+   "aliases": [
+    "front line winner",
+    "seven winner",
+    "7 or 11"
+   ],
+   "category": "dice",
+   "alsoIn": [],
+   "dice": {
+    "total": null,
+    "pairs": null
+   },
+   "meaning": "A 7 or 11 on the come-out. The Pass line wins at once.",
+   "call": "Seven, front line winner! Pay the line, take the don'ts.",
+   "say": null,
+   "srLabel": "Natural: seven or eleven on the come-out",
+   "apps": [
+    "bubble",
+    "table"
+   ],
+   "appliesTo": [
+    "bubble-regular",
+    "bubble-crapless",
+    "table"
+   ],
+   "tag": "Both apps",
+   "link": {
+    "bubble": "pass",
+    "table": "pass"
+   },
+   "notes": {
+    "crapless": "In Crapless only a 7 is a natural; an 11 sets a point."
+   },
+   "related": [
+    "come_out",
+    "pass_line"
+   ],
+   "etiquette": null,
+   "sources": [
+    "wiki-glossary",
+    "wov-stick"
+   ]
+  },
+  {
+   "id": "pass_line",
+   "term": "Pass line",
+   "aliases": [
+    "pass",
+    "front line",
+    "line bet",
+    "do"
+   ],
+   "category": "bets",
+   "alsoIn": [],
+   "dice": null,
+   "meaning": "The main bet with the shooter. Wins on a come-out 7 or 11, loses on 2, 3 or 12, otherwise needs the point before a 7.",
+   "call": "Pay the line!",
+   "say": null,
+   "srLabel": "Pass line",
+   "apps": [
+    "bubble",
+    "table"
+   ],
+   "appliesTo": [
+    "bubble-regular",
+    "bubble-crapless",
+    "table"
+   ],
+   "tag": "Both apps",
+   "link": {
+    "bubble": "pass",
+    "table": "pass"
+   },
+   "notes": {
+    "crapless": "Only a come-out 7 wins; every other number is a point."
+   },
+   "related": [
+    "odds",
+    "point",
+    "right_way",
+    "contract_bet"
+   ],
+   "etiquette": null,
+   "sources": [
+    "wiki-glossary",
+    "spec"
+   ]
+  },
+  {
+   "id": "dont_pass",
+   "term": "Don't Pass",
+   "aliases": [
+    "dont pass",
+    "back line",
+    "bar 12",
+    "dont"
+   ],
+   "category": "bets",
+   "alsoIn": [],
+   "dice": null,
+   "meaning": "The bet against the shooter. Wins on a come-out 2 or 3, pushes on 12 (\"bar 12\"), and wins if a 7 comes before the point.",
+   "call": "Seven out! Pay the don'ts.",
+   "say": null,
+   "srLabel": "Don't Pass",
+   "apps": [
+    "bubble",
+    "table"
+   ],
+   "appliesTo": [
+    "bubble-regular",
+    "table"
+   ],
+   "tag": "Both apps · not in Crapless",
+   "link": {
+    "bubble": "dontPass",
+    "table": "dontPass"
+   },
+   "notes": {
+    "crapless": "Not in Crapless: there's no Don't side."
+   },
+   "related": [
+    "dark_side",
+    "lay_odds",
+    "dont_come"
+   ],
+   "etiquette": "dark_side",
+   "sources": [
+    "wiki-glossary",
+    "spec"
+   ]
+  },
+  {
+   "id": "come",
+   "term": "Come bet",
+   "aliases": [
+    "come"
+   ],
+   "category": "bets",
+   "alsoIn": [],
+   "dice": null,
+   "meaning": "Like a Pass line bet, made after the point is set. The next roll is its own come-out; a box number moves the bet to that number.",
+   "call": "Come bet to the six.",
+   "say": null,
+   "srLabel": "Come bet",
+   "apps": [
+    "bubble",
+    "table"
+   ],
+   "appliesTo": [
+    "bubble-regular",
+    "bubble-crapless",
+    "table"
+   ],
+   "tag": "Both apps",
+   "link": {
+    "bubble": "come",
+    "table": "come"
+   },
+   "notes": {},
+   "related": [
+    "pass_line",
+    "odds",
+    "working"
+   ],
+   "etiquette": null,
+   "sources": [
+    "wiki-glossary",
+    "spec"
+   ]
+  },
+  {
+   "id": "dont_come",
+   "term": "Don't Come",
+   "aliases": [
+    "dont come",
+    "dc"
+   ],
+   "category": "bets",
+   "alsoIn": [],
+   "dice": null,
+   "meaning": "Like Don't Pass, made after the point is set. It moves behind the next box number and wins if a 7 comes first.",
+   "call": "Don't Come, down behind the four.",
+   "say": null,
+   "srLabel": "Don't Come",
+   "apps": [
+    "bubble",
+    "table"
+   ],
+   "appliesTo": [
+    "bubble-regular",
+    "table"
+   ],
+   "tag": "Both apps · not in Crapless",
+   "link": {
+    "bubble": "dontCome",
+    "table": "dontCome"
+   },
+   "notes": {
+    "crapless": "Not in Crapless."
+   },
+   "related": [
+    "dont_pass",
+    "lay_odds"
+   ],
+   "etiquette": null,
+   "sources": [
+    "wiki-glossary",
+    "wov-stick",
+    "spec"
+   ]
+  },
+  {
+   "id": "odds",
+   "term": "Odds / Taking odds",
+   "aliases": [
+    "free odds",
+    "take the odds",
+    "odds",
+    "behind the line",
+    "pass odds",
+    "come odds"
+   ],
+   "category": "bets",
+   "alsoIn": [],
+   "dice": null,
+   "meaning": "An extra bet behind your Pass or Come bet once there's a point. It's paid at true odds: 0% house edge.",
+   "call": "Take the odds, zero edge.",
+   "say": null,
+   "srLabel": "Odds",
+   "apps": [
+    "bubble",
+    "table"
+   ],
+   "appliesTo": [
+    "bubble-regular",
+    "bubble-crapless",
+    "table"
+   ],
+   "tag": "Both apps",
+   "link": {
+    "bubble": "passOdds",
+    "table": "passOdds"
+   },
+   "notes": {
+    "bubble": "Up to 3-4-5x in Regular; 3x on 2/3/11/12 in Crapless.",
+    "table": "3-4-5x Standard; 5x and 10x in Premium. Odds aren't capped by the $500 table max."
+   },
+   "related": [
+    "lay_odds",
+    "working"
+   ],
+   "etiquette": null,
+   "sources": [
+    "wiki-glossary",
+    "spec"
+   ]
+  },
+  {
+   "id": "lay_odds",
+   "term": "Lay odds",
+   "aliases": [
+    "laying odds",
+    "lay the odds",
+    "dont odds"
+   ],
+   "category": "bets",
+   "alsoIn": [],
+   "dice": null,
+   "meaning": "Odds behind a Don't Pass or Don't Come bet. You risk more to win less, at true odds: 0% house edge.",
+   "call": "Lay the odds behind the four.",
+   "say": null,
+   "srLabel": "Lay odds",
+   "apps": [
+    "bubble",
+    "table"
+   ],
+   "appliesTo": [
+    "bubble-regular",
+    "table"
+   ],
+   "tag": "Both apps · not in Crapless",
+   "link": {
+    "bubble": "ui:layTab",
+    "table": "dontPassOdds"
+   },
+   "notes": {
+    "bubble": "Bubble's LAY tab holds lay odds for Don't Pass / Don't Come. It's Regular only, hidden in Crapless. It isn't a Lay bet.",
+    "table": "Up to 6x the flat bet. Exempt from the $500 table max."
+   },
+   "related": [
+    "lay",
+    "dont_pass"
+   ],
+   "etiquette": null,
+   "sources": [
+    "wiki-glossary",
+    "spec"
+   ]
+  },
+  {
+   "id": "place",
+   "term": "Place bet",
+   "aliases": [
+    "place",
+    "place the six",
+    "place 6"
+   ],
+   "category": "bets",
+   "alsoIn": [],
+   "dice": null,
+   "meaning": "A bet that a number rolls before a 7. Pays 9 to 5 on 4/10, 7 to 5 on 5/9, 7 to 6 on 6/8. Off on the come-out unless you turn it on.",
+   "call": "Place the six and eight.",
+   "say": null,
+   "srLabel": "Place bet",
+   "apps": [
+    "bubble",
+    "table"
+   ],
+   "appliesTo": [
+    "bubble-regular",
+    "bubble-crapless",
+    "table"
+   ],
+   "tag": "Both apps",
+   "link": {
+    "bubble": "place:6",
+    "table": "place:6"
+   },
+   "notes": {
+    "crapless": "Crapless adds Place 2, 3, 11 and 12. Buy them instead: it costs less."
+   },
+   "related": [
+    "buy",
+    "inside",
+    "across",
+    "off_on"
+   ],
+   "etiquette": "hands_off_bets",
+   "sources": [
+    "wiki-glossary",
+    "spec"
+   ]
+  },
+  {
+   "id": "buy",
+   "term": "Buy bet",
+   "aliases": [
+    "buy",
+    "buy the four",
+    "buy 4"
+   ],
+   "category": "bets",
+   "alsoIn": [],
+   "dice": null,
+   "meaning": "Like a Place bet, but paid at true odds less a 5% commission on the win. On 4/10 and 5/9 it costs less than placing.",
+   "call": "Buy the ten.",
+   "say": null,
+   "srLabel": "Buy bet",
+   "apps": [
+    "bubble",
+    "table"
+   ],
+   "appliesTo": [
+    "bubble-regular",
+    "bubble-crapless",
+    "table"
+   ],
+   "tag": "Both apps",
+   "link": {
+    "bubble": "buy:4",
+    "table": "buy:4"
+   },
+   "notes": {
+    "bubble": "Billy's Way (Bubble only) buys 4, 5, 9, 10 and places 6 and 8 in one tap.",
+    "crapless": "Crapless adds Buy 2, 3, 11 and 12."
+   },
+   "related": [
+    "vig",
+    "place",
+    "lay"
+   ],
+   "etiquette": null,
+   "sources": [
+    "wiki-glossary",
+    "spec"
+   ]
+  },
+  {
+   "id": "lay",
+   "term": "Lay bet",
+   "aliases": [
+    "lay",
+    "lay the four",
+    "lay 4"
+   ],
+   "category": "bets",
+   "alsoIn": [],
+   "dice": null,
+   "meaning": "A bet that a 7 rolls before a number. Paid at true odds less a 5% commission on the win.",
+   "call": "Lay the four.",
+   "say": null,
+   "srLabel": "Lay bet",
+   "apps": [
+    "bubble",
+    "table"
+   ],
+   "appliesTo": [
+    "table"
+   ],
+   "tag": "Table Craps",
+   "link": {
+    "bubble": null,
+    "table": "lay:4"
+   },
+   "notes": {
+    "bubble": "Not in Bubble Craps. Bubble's LAY tab is lay odds on a Don't bet, not a Lay bet.",
+    "table": "Works on the come-out by default (T-30). Commission on wins only (Standard)."
+   },
+   "related": [
+    "lay_odds",
+    "vig",
+    "dark_side"
+   ],
+   "etiquette": null,
+   "sources": [
+    "wiki-glossary",
+    "spec"
+   ]
+  },
+  {
+   "id": "vig",
+   "term": "Vig / Commission",
+   "aliases": [
+    "vig",
+    "vigorish",
+    "commission",
+    "juice"
+   ],
+   "category": "bets",
+   "alsoIn": [],
+   "dice": null,
+   "meaning": "The 5% fee on a Buy bet (and in Table Craps a Lay bet). In both apps it's taken only from a win.",
+   "call": "Buy the four, vig on the win.",
+   "say": null,
+   "srLabel": "Vig, the commission",
+   "apps": [
+    "bubble",
+    "table"
+   ],
+   "appliesTo": [
+    "bubble-regular",
+    "bubble-crapless",
+    "table"
+   ],
+   "tag": "Both apps",
+   "link": {
+    "bubble": "buy:4",
+    "table": "buy:4"
+   },
+   "notes": {
+    "bubble": "Buy commission only; there are no Lay bets in Bubble.",
+    "table": "Buy and Lay commission. Premium can charge it up front (T-5, T-7)."
+   },
+   "related": [
+    "buy",
+    "lay"
+   ],
+   "etiquette": null,
+   "sources": [
+    "wiki-glossary",
+    "spec"
+   ]
+  },
+  {
+   "id": "field",
+   "term": "Field",
+   "aliases": [
+    "the field",
+    "garden",
+    "field bet"
+   ],
+   "category": "bets",
+   "alsoIn": [],
+   "dice": null,
+   "meaning": "A one-roll bet on 2, 3, 4, 9, 10, 11 or 12. Pays even money; 2 and 12 pay double. 5, 6, 7 and 8 lose.",
+   "call": "Nine, field roll! Pay the field.",
+   "say": null,
+   "srLabel": "Field",
+   "apps": [
+    "bubble",
+    "table"
+   ],
+   "appliesTo": [
+    "bubble-regular",
+    "bubble-crapless",
+    "table"
+   ],
+   "tag": "Both apps",
+   "link": {
+    "bubble": "field",
+    "table": "field"
+   },
+   "notes": {},
+   "related": [
+    "center_field_nine",
+    "no_field_five",
+    "iron_cross"
+   ],
+   "etiquette": null,
+   "sources": [
+    "wiki-glossary",
+    "wov-stick",
+    "spec"
+   ]
+  },
+  {
+   "id": "big_6_8",
+   "term": "Big 6 / Big 8",
+   "aliases": [
+    "big six",
+    "big eight",
+    "big 6",
+    "big 8"
+   ],
+   "category": "bets",
+   "alsoIn": [],
+   "dice": null,
+   "meaning": "An even-money bet that a 6 (or 8) rolls before a 7. Placing the 6 or 8 pays 7 to 6 for the same win, so Big 6/8 costs more (9.09% vs 1.52%).",
+   "call": "Big 6 wins, even money.",
+   "say": null,
+   "srLabel": "Big six, big eight",
+   "apps": [
+    "bubble",
+    "table"
+   ],
+   "appliesTo": [
+    "table"
+   ],
+   "tag": "Table Craps",
+   "link": {
+    "bubble": null,
+    "table": "big:6"
+   },
+   "notes": {
+    "bubble": "Not in Bubble Craps. Place the 6 or 8 instead.",
+    "table": "Off by default; turn it on with the board toggle."
+   },
+   "related": [
+    "place"
+   ],
+   "etiquette": null,
+   "sources": [
+    "spec"
+   ]
+  },
+  {
+   "id": "hardways",
+   "term": "Hardways",
+   "aliases": [
+    "hard way",
+    "hardway",
+    "hard ways",
+    "hardies",
+    "the hard way"
+   ],
+   "category": "bets",
+   "alsoIn": [],
+   "dice": null,
+   "meaning": "A bet that 4, 6, 8 or 10 rolls as a pair before it rolls easy or a 7. Hard 4/10 pay 7 to 1; Hard 6/8 pay 9 to 1.",
+   "call": "Hardways working!",
+   "say": null,
+   "srLabel": "Hardways",
+   "apps": [
+    "bubble",
+    "table"
+   ],
+   "appliesTo": [
+    "bubble-regular",
+    "bubble-crapless",
+    "table"
+   ],
+   "tag": "Both apps",
+   "link": {
+    "bubble": "hardway:8",
+    "table": "hardway:8"
+   },
+   "notes": {
+    "bubble": "They work on the come-out by default (B-10).",
+    "table": "They work on the come-out by default. Many casinos have them off on the come-out unless you call them on."
+   },
+   "related": [
+    "hard_four",
+    "hard_six",
+    "hard_eight",
+    "hard_ten",
+    "hard_way_all_day",
+    "hop_hard_way"
+   ],
+   "etiquette": null,
+   "sources": [
+    "wiki-glossary",
+    "ballys-ac",
+    "spec"
+   ]
+  },
+  {
+   "id": "any_craps",
+   "term": "Any Craps",
+   "aliases": [
+    "any craps",
+    "craps bet"
+   ],
+   "category": "bets",
+   "alsoIn": [],
+   "dice": null,
+   "meaning": "A one-roll bet that the next roll is 2, 3 or 12. Pays 7 to 1.",
+   "call": "Any craps, one roll.",
+   "say": null,
+   "srLabel": "Any Craps",
+   "apps": [
+    "bubble",
+    "table"
+   ],
+   "appliesTo": [
+    "bubble-regular",
+    "bubble-crapless",
+    "table"
+   ],
+   "tag": "Both apps",
+   "link": {
+    "bubble": "anyCraps",
+    "table": "anyCraps"
+   },
+   "notes": {},
+   "related": [
+    "ce",
+    "craps"
+   ],
+   "etiquette": null,
+   "sources": [
+    "wiki-glossary",
+    "spec"
+   ]
+  },
+  {
+   "id": "horn",
+   "term": "Horn",
+   "aliases": [
+    "horn bet",
+    "the horn"
+   ],
+   "category": "bets",
+   "alsoIn": [],
+   "dice": null,
+   "meaning": "A one-roll bet split four ways on 2, 3, 11 and 12. A 2 or 12 pays 30 to 1 on its part, a 3 or 11 pays 15 to 1; the other parts lose.",
+   "call": "Horn bet, one roll.",
+   "say": null,
+   "srLabel": "Horn",
+   "apps": [
+    "bubble",
+    "table"
+   ],
+   "appliesTo": [
+    "bubble-regular",
+    "bubble-crapless",
+    "table"
+   ],
+   "tag": "Both apps",
+   "link": {
+    "bubble": "horn",
+    "table": "horn"
+   },
+   "notes": {
+    "bubble": "Posted in $4 units.",
+    "table": "Posted in $4 units."
+   },
+   "related": [
+    "horn_high",
+    "whirl",
+    "aces",
+    "ace_deuce",
+    "yo",
+    "boxcars"
+   ],
+   "etiquette": null,
+   "sources": [
+    "wiki-glossary",
+    "spec"
+   ]
+  },
+  {
+   "id": "horn_high",
+   "term": "Horn high",
+   "aliases": [
+    "horn high yo",
+    "horn high aces",
+    "horn high midnight",
+    "horn high ace deuce"
+   ],
+   "category": "bets",
+   "alsoIn": [],
+   "dice": null,
+   "meaning": "A 5-unit Horn with the extra unit on one number you name, like \"$5 horn high yo\".",
+   "call": "Five-dollar horn, high yo.",
+   "say": null,
+   "srLabel": "Horn high",
+   "apps": [
+    "bubble",
+    "table"
+   ],
+   "appliesTo": [],
+   "tag": "Live table",
+   "link": {
+    "bubble": "horn",
+    "table": "horn"
+   },
+   "notes": {
+    "bubble": "There's no Horn high spot. Build it: a Horn plus one more unit on that Horn number.",
+    "table": "There's no Horn high spot. Build it: a Horn plus one more unit on that Horn number."
+   },
+   "related": [
+    "horn"
+   ],
+   "etiquette": null,
+   "sources": [
+    "wiki-glossary",
+    "artofcraps"
+   ]
+  },
+  {
+   "id": "ce",
+   "term": "C&E",
+   "aliases": [
+    "c and e",
+    "c & e",
+    "ce",
+    "craps and eleven",
+    "craps eleven"
+   ],
+   "category": "bets",
+   "alsoIn": [],
+   "dice": null,
+   "meaning": "A one-roll bet split between Any Craps and Eleven. One half pays on 2, 3 or 12 (7 to 1); the other pays on 11 (15 to 1).",
+   "call": "C and E, one roll.",
+   "say": "see and EE",
+   "srLabel": "C and E: craps and eleven",
+   "apps": [
+    "bubble",
+    "table"
+   ],
+   "appliesTo": [
+    "bubble-regular",
+    "bubble-crapless",
+    "table"
+   ],
+   "tag": "Both apps",
+   "link": {
+    "bubble": "ce",
+    "table": "ce"
+   },
+   "notes": {},
+   "related": [
+    "any_craps",
+    "yo"
+   ],
+   "etiquette": null,
+   "sources": [
+    "wiki-glossary",
+    "spec"
+   ]
+  },
+  {
+   "id": "hop",
+   "term": "Hop / On the hop",
+   "aliases": [
+    "hop bet",
+    "on the hop",
+    "hopping"
+   ],
+   "category": "bets",
+   "alsoIn": [],
+   "dice": null,
+   "meaning": "A one-roll bet on one exact pair of dice, like \"3-2 on the hop\". Easy hops pay 15 to 1, hard hops 30 to 1.",
+   "call": "Three-two on the hop.",
+   "say": null,
+   "srLabel": "Hop bet",
+   "apps": [
+    "bubble",
+    "table"
+   ],
+   "appliesTo": [
+    "bubble-regular",
+    "bubble-crapless",
+    "table"
+   ],
+   "tag": "Both apps",
+   "link": {
+    "bubble": "hop:2-3",
+    "table": "hop:2-3"
+   },
+   "notes": {
+    "bubble": "All 21 hops are on the left Side-bets screen. A winning hop stays up.",
+    "table": "All 21 hops are on the left Side-bets screen. A winning hop stays up."
+   },
+   "related": [
+    "hop_hard_way",
+    "horn"
+   ],
+   "etiquette": null,
+   "sources": [
+    "wiki-glossary",
+    "artofcraps",
+    "ballys-ac",
+    "spec"
+   ]
+  },
+  {
+   "id": "hop_hard_way",
+   "term": "Hop the hard way",
+   "aliases": [
+    "hard hop",
+    "hardway on the hop",
+    "hop the hardways",
+    "on the hop hard"
+   ],
+   "category": "bets",
+   "alsoIn": [],
+   "dice": null,
+   "meaning": "A one-roll bet that the next roll is one exact pair, like \"eight the hard way on the hop\". Pays 30 to 1. A Hardway bet waits several rolls; a hard hop is one roll.",
+   "call": "Eight the hard way, on the hop.",
+   "say": null,
+   "srLabel": "Hop the hard way",
+   "apps": [
+    "bubble",
+    "table"
+   ],
+   "appliesTo": [
+    "bubble-regular",
+    "bubble-crapless",
+    "table"
+   ],
+   "tag": "Both apps",
+   "link": {
+    "bubble": "hop:4-4",
+    "table": "hop:4-4"
+   },
+   "notes": {
+    "bubble": "Hard hops are in the hop grid. \"Hop the hardways\" (all four at once) isn't one button: bet each hard hop.",
+    "table": "Hard hops are in the hop grid. \"Hop the hardways\" (all four at once) isn't one button: bet each hard hop."
+   },
+   "related": [
+    "hop",
+    "hardways"
+   ],
+   "etiquette": null,
+   "sources": [
+    "artofcraps",
+    "ballys-ac"
+   ]
+  },
+  {
+   "id": "whirl",
+   "term": "World / Whirl",
+   "aliases": [
+    "world",
+    "whirl",
+    "world bet",
+    "whirl bet"
+   ],
+   "category": "bets",
+   "alsoIn": [],
+   "dice": null,
+   "meaning": "A 5-unit one-roll bet: a Horn plus Any Seven. On a 7 it's about a push; on 2, 3, 11 or 12 one part pays.",
+   "call": "Five-dollar world, one roll.",
+   "say": "WURL",
+   "srLabel": "World, or whirl",
+   "apps": [
+    "bubble",
+    "table"
+   ],
+   "appliesTo": [],
+   "tag": "Live table",
+   "link": {
+    "bubble": "horn",
+    "table": "horn"
+   },
+   "notes": {
+    "bubble": "There's no World spot. Build it: a $4 Horn plus $1 on Big Red.",
+    "table": "There's no World spot. Build it: a $4 Horn plus $1 on Big Red."
+   },
+   "related": [
+    "horn",
+    "big_red"
+   ],
+   "etiquette": null,
+   "sources": [
+    "wiki-glossary"
+   ]
+  },
+  {
+   "id": "ats",
+   "term": "ATS (All Tall Small)",
+   "aliases": [
+    "all tall small",
+    "all small",
+    "all tall",
+    "make em all",
+    "low rolls",
+    "high rolls",
+    "roll em all",
+    "small tall all"
+   ],
+   "category": "bets",
+   "alsoIn": [],
+   "dice": null,
+   "meaning": "Side bets on rolling every number on one side before a 7. The app calls them Low Rolls (2-6), High Rolls (8-12) and Roll 'Em All (all ten). Any 7 loses.",
+   "call": "Low Rolls: one more to go.",
+   "say": "A-T-S",
+   "srLabel": "A T S: All Tall Small",
+   "apps": [
+    "bubble",
+    "table"
+   ],
+   "appliesTo": [
+    "bubble-regular",
+    "bubble-crapless",
+    "table"
+   ],
+   "tag": "Both apps",
+   "link": {
+    "bubble": "small",
+    "table": "small"
+   },
+   "notes": {
+    "bubble": "31 / 31 / 156 FOR 1, Regular and Crapless. Stays up after a hit.",
+    "table": "31 / 31 / 156 FOR 1. Stays up after a hit."
+   },
+   "related": [
+    "repeaters",
+    "hard_way_all_day",
+    "prop_bets"
+   ],
+   "etiquette": null,
+   "sources": [
+    "spec"
+   ]
+  },
+  {
+   "id": "fire_bet",
+   "term": "Fire Bet",
+   "aliases": [
+    "fire",
+    "fire bet"
+   ],
+   "category": "bets",
+   "alsoIn": [],
+   "dice": null,
+   "meaning": "A side bet, made only before a new shooter's first roll, on how many different points the shooter makes before the seven-out. 4, 5 or 6 points pay 24, 249 or 999 to 1.",
+   "call": "Fire Bet's open: new shooter, before the first roll.",
+   "say": null,
+   "srLabel": "Fire Bet",
+   "apps": [
+    "table"
+   ],
+   "appliesTo": [
+    "table"
+   ],
+   "tag": "Table Craps",
+   "link": {
+    "bubble": null,
+    "table": "fire"
+   },
+   "notes": {
+    "table": "Table Craps only. Under 4 points pays nothing; all six pays at once."
+   },
+   "related": [
+    "new_shooter",
+    "point"
+   ],
+   "etiquette": null,
+   "sources": [
+    "spec"
+   ]
+  },
+  {
+   "id": "repeaters",
+   "term": "Repeaters",
+   "aliases": [
+    "repeater",
+    "repeater bet",
+    "repeat bet"
+   ],
+   "category": "bets",
+   "alsoIn": [],
+   "dice": null,
+   "meaning": "A side bet that a number rolls a set number of times before a 7: twice for 2 or 12, up to six times for 6 or 8.",
+   "call": "Six, that's four of six on the repeater!",
+   "say": null,
+   "srLabel": "Repeater bets",
+   "apps": [
+    "bubble",
+    "table"
+   ],
+   "appliesTo": [
+    "bubble-regular",
+    "bubble-crapless",
+    "table"
+   ],
+   "tag": "Both apps",
+   "link": {
+    "bubble": "repeater:6",
+    "table": "repeater:6"
+   },
+   "notes": {
+    "bubble": "40 / 50 / 65 / 80 / 90 FOR 1. Any 7 loses, the come-out 7 too.",
+    "table": "40 / 50 / 65 / 80 / 90 FOR 1. Any 7 loses, the come-out 7 too."
+   },
+   "related": [
+    "ats",
+    "hard_way_all_day"
+   ],
+   "etiquette": null,
+   "sources": [
+    "spec"
+   ]
+  },
+  {
+   "id": "hard_way_all_day",
+   "term": "Hard Way All Day",
+   "aliases": [
+    "hwad",
+    "hard ways all day",
+    "all the hardways"
+   ],
+   "category": "bets",
+   "alsoIn": [],
+   "dice": null,
+   "meaning": "One side bet that Hard 4, 6, 8 and 10 all roll before a 7. Easy numbers don't hurt it; only a 7 loses.",
+   "call": "Hard eight, that's three of four for Hard Way All Day!",
+   "say": null,
+   "srLabel": "Hard Way All Day",
+   "apps": [
+    "bubble",
+    "table"
+   ],
+   "appliesTo": [
+    "bubble-regular",
+    "bubble-crapless",
+    "table"
+   ],
+   "tag": "Both apps",
+   "link": {
+    "bubble": "hardAllDay",
+    "table": "hardAllDay"
+   },
+   "notes": {
+    "bubble": "165 FOR 1. Stays up after a win.",
+    "table": "165 FOR 1. Stays up after a win."
+   },
+   "related": [
+    "hardways",
+    "ats"
+   ],
+   "etiquette": null,
+   "sources": [
+    "spec"
+   ]
+  },
+  {
+   "id": "prop_bets",
+   "term": "Prop bets / Center action",
+   "aliases": [
+    "props",
+    "proposition bets",
+    "center action",
+    "one roll bets",
+    "one-roll bet"
+   ],
+   "category": "bets",
+   "alsoIn": [],
+   "dice": null,
+   "meaning": "The bets in the middle of the table: Big Red, Any Craps, C&E, Horn, hops and hardways. Most are one-roll bets with high edges.",
+   "call": "Center action, one roll.",
+   "say": null,
+   "srLabel": "Prop bets",
+   "apps": [
+    "bubble",
+    "table"
+   ],
+   "appliesTo": [
+    "bubble-regular",
+    "bubble-crapless",
+    "table"
+   ],
+   "tag": "Both apps",
+   "link": {
+    "bubble": "horn",
+    "table": "horn"
+   },
+   "notes": {},
+   "related": [
+    "stickman",
+    "horn",
+    "hop",
+    "big_red"
+   ],
+   "etiquette": null,
+   "sources": [
+    "wiki-glossary",
+    "spec"
+   ]
+  },
+  {
+   "id": "contract_bet",
+   "term": "Contract bet",
+   "aliases": [
+    "contract",
+    "cant take down",
+    "can't take it down"
+   ],
+   "category": "bets",
+   "alsoIn": [],
+   "dice": null,
+   "meaning": "A Pass or Come bet after its point is set. You can't take it down or reduce it until it wins or loses.",
+   "call": "Pass line stays up: it's a contract bet.",
+   "say": null,
+   "srLabel": "Contract bet",
+   "apps": [
+    "bubble",
+    "table"
+   ],
+   "appliesTo": [
+    "bubble-regular",
+    "bubble-crapless",
+    "table"
+   ],
+   "tag": "Both apps",
+   "link": {
+    "bubble": "pass",
+    "table": "pass"
+   },
+   "notes": {},
+   "related": [
+    "pass_line",
+    "take_it_down"
+   ],
+   "etiquette": null,
+   "sources": [
+    "spec"
+   ]
+  },
+  {
+   "id": "press_it",
+   "term": "Press it",
+   "aliases": [
+    "press",
+    "pressing",
+    "press it up",
+    "press a unit"
+   ],
+   "category": "actions",
+   "alsoIn": [],
+   "dice": null,
+   "meaning": "Make a winning bet bigger, often doubling it, using the win. More is at risk on a 7; the edge per bet doesn't change.",
+   "call": "Pressing your six, up to twelve.",
+   "say": null,
+   "srLabel": "Press it",
+   "apps": [
+    "bubble",
+    "table"
+   ],
+   "appliesTo": [
+    "bubble-regular",
+    "bubble-crapless",
+    "table"
+   ],
+   "tag": "Both apps",
+   "link": {
+    "bubble": "ui:pressKey",
+    "table": "place:6"
+   },
+   "notes": {
+    "bubble": "The PRESS key adds your original bet; POWER PRESS moves it to the next step of Bill's ladder.",
+    "table": "Done by hand (T9 Regression, T10 Press Progressions). There's no PRESS key in Table Craps."
+   },
+   "related": [
+    "same_bet",
+    "regress"
+   ],
+   "etiquette": null,
+   "sources": [
+    "wiki-glossary",
+    "spec"
+   ]
+  },
+  {
+   "id": "same_bet",
+   "term": "Same bet",
+   "aliases": [
+    "same",
+    "leave it",
+    "same again"
+   ],
+   "category": "actions",
+   "alsoIn": [],
+   "dice": null,
+   "meaning": "Leave a winning bet as it was and take the win. It's not a press.",
+   "call": "Same bet on the eight.",
+   "say": null,
+   "srLabel": "Same bet",
+   "apps": [
+    "bubble",
+    "table"
+   ],
+   "appliesTo": [
+    "bubble-regular",
+    "bubble-crapless",
+    "table"
+   ],
+   "tag": "Both apps",
+   "link": {
+    "bubble": null,
+    "table": null
+   },
+   "notes": {
+    "bubble": "Paid bets stay up on their own; the win goes to your chips.",
+    "table": "Paid bets stay up on their own; the win goes to your rail."
+   },
+   "related": [
+    "press_it",
+    "regress"
+   ],
+   "etiquette": null,
+   "sources": [
+    "wiki-glossary"
+   ]
+  },
+  {
+   "id": "regress",
+   "term": "Regress",
+   "aliases": [
+    "regression",
+    "regress it"
+   ],
+   "category": "actions",
+   "alsoIn": [],
+   "dice": null,
+   "meaning": "Make a bet smaller after it wins, like taking $18 on the 6 down to $6, so more of the win goes to your chips.",
+   "call": "Regress the six, down to six dollars.",
+   "say": null,
+   "srLabel": "Regress",
+   "apps": [
+    "bubble",
+    "table"
+   ],
+   "appliesTo": [
+    "bubble-regular",
+    "bubble-crapless",
+    "table"
+   ],
+   "tag": "Both apps",
+   "link": {
+    "bubble": "place:6",
+    "table": "place:6"
+   },
+   "notes": {
+    "bubble": "Strategy B5 teaches it.",
+    "table": "Strategy T9 teaches it."
+   },
+   "related": [
+    "press_it",
+    "take_it_down"
+   ],
+   "etiquette": null,
+   "sources": [
+    "spec"
+   ]
+  },
+  {
+   "id": "take_it_down",
+   "term": "Take it down / Come down",
+   "aliases": [
+    "take down",
+    "takedown",
+    "come down",
+    "down",
+    "bets down",
+    "take my bets down"
+   ],
+   "category": "actions",
+   "alsoIn": [],
+   "dice": null,
+   "meaning": "Remove a bet from the table and get the chips back. Place, Buy, odds and props can come down; Pass and Come flats can't.",
+   "call": "Taking your eight down.",
+   "say": null,
+   "srLabel": "Take it down",
+   "apps": [
+    "bubble",
+    "table"
+   ],
+   "appliesTo": [
+    "bubble-regular",
+    "bubble-crapless",
+    "table"
+   ],
+   "tag": "Both apps",
+   "link": {
+    "bubble": "place:8",
+    "table": "place:8"
+   },
+   "notes": {
+    "bubble": "Taking down a Don't bet gives up its edge; Billy warns first.",
+    "table": "Taking down a Don't bet gives up its edge; Billy warns first."
+   },
+   "related": [
+    "contract_bet",
+    "off_on",
+    "regress"
+   ],
+   "etiquette": null,
+   "sources": [
+    "wiki-glossary",
+    "spec"
+   ]
+  },
+  {
+   "id": "off_on",
+   "term": "Off / On",
+   "aliases": [
+    "off",
+    "on",
+    "bets off",
+    "your bets are off",
+    "turn it on"
+   ],
+   "category": "actions",
+   "alsoIn": [],
+   "dice": null,
+   "meaning": "An Off bet stays on the felt but can't win or lose. Place and Buy bets are off on the come-out unless you turn them on.",
+   "call": "Your bets are off on the come-out.",
+   "say": null,
+   "srLabel": "Off and on",
+   "apps": [
+    "bubble",
+    "table"
+   ],
+   "appliesTo": [
+    "bubble-regular",
+    "bubble-crapless",
+    "table"
+   ],
+   "tag": "Both apps",
+   "link": {
+    "bubble": "ui:betsOff",
+    "table": "place:6"
+   },
+   "notes": {
+    "bubble": "BETS OFF parks your Place and Buy bets.",
+    "table": "Place and Buy are off on the come-out (Premium T-9 can turn them on)."
+   },
+   "related": [
+    "working",
+    "puck",
+    "come_out"
+   ],
+   "etiquette": null,
+   "sources": [
+    "wiki-glossary",
+    "spec"
+   ]
+  },
+  {
+   "id": "working",
+   "term": "Working",
+   "aliases": [
+    "in action",
+    "odds working",
+    "working on the come out"
+   ],
+   "category": "actions",
+   "alsoIn": [],
+   "dice": null,
+   "meaning": "A bet that's in play on this roll. \"Odds working\" asks for Come odds to work on a come-out roll.",
+   "call": "Your come odds are working.",
+   "say": null,
+   "srLabel": "Working",
+   "apps": [
+    "bubble",
+    "table"
+   ],
+   "appliesTo": [
+    "bubble-regular",
+    "bubble-crapless",
+    "table"
+   ],
+   "tag": "Both apps",
+   "link": {
+    "bubble": "comeOdds:6",
+    "table": "comeOdds:6"
+   },
+   "notes": {},
+   "related": [
+    "off_on"
+   ],
+   "etiquette": null,
+   "sources": [
+    "wiki-glossary",
+    "spec"
+   ]
+  },
+  {
+   "id": "color_up",
+   "term": "Color up",
+   "aliases": [
+    "colour up",
+    "color in",
+    "coloring up"
+   ],
+   "category": "actions",
+   "alsoIn": [],
+   "dice": null,
+   "meaning": "Trade lots of small chips for fewer big ones when you leave the table.",
+   "call": "Color coming in!",
+   "say": null,
+   "srLabel": "Color up",
+   "apps": [
+    "bubble",
+    "table"
+   ],
+   "appliesTo": [
+    "table"
+   ],
+   "tag": "Table Craps",
+   "link": {
+    "bubble": null,
+    "table": "ui:rail"
+   },
+   "notes": {
+    "bubble": "Live table only. Bubble Craps has no chip rail.",
+    "table": "The rail offers a color-up, and always colors up when you tap Leave table."
+   },
+   "related": [
+    "check_change",
+    "rail"
+   ],
+   "etiquette": "color_up",
+   "sources": [
+    "wiki-glossary",
+    "spec"
+   ]
+  },
+  {
+   "id": "change_only",
+   "term": "Change only",
+   "aliases": [
+    "change please",
+    "just change",
+    "buy in"
+   ],
+   "category": "actions",
+   "alsoIn": [],
+   "dice": null,
+   "meaning": "Said when you lay cash on the felt for chips and don't want a bet. Dealers say it out loud so no one thinks it's a bet.",
+   "call": "A hundred, change only!",
+   "say": null,
+   "srLabel": "Change only",
+   "apps": [
+    "bubble",
+    "table"
+   ],
+   "appliesTo": [],
+   "tag": "Live table",
+   "link": {
+    "bubble": null,
+    "table": null
+   },
+   "notes": {
+    "bubble": "Live table only: the app uses practice chips.",
+    "table": "Live table only: the app uses practice chips."
+   },
+   "related": [
+    "check_change",
+    "boxman"
+   ],
+   "etiquette": "buy_in",
+   "sources": [
+    "wiki-glossary",
+    "parlaynation"
+   ]
+  },
+  {
+   "id": "check_change",
+   "term": "Check change",
+   "aliases": [
+    "cheque change",
+    "checks change",
+    "change checks",
+    "checks"
+   ],
+   "category": "actions",
+   "alsoIn": [],
+   "dice": null,
+   "meaning": "Breaking a chip into smaller ones, like a $25 into five $5s. \"Checks\" is dealer talk for chips.",
+   "call": "Check change!",
+   "say": null,
+   "srLabel": "Check change",
+   "apps": [
+    "bubble",
+    "table"
+   ],
+   "appliesTo": [
+    "table"
+   ],
+   "tag": "Table Craps",
+   "link": {
+    "bubble": null,
+    "table": "ui:rail"
+   },
+   "notes": {
+    "bubble": "Live table only.",
+    "table": "The rail makes change by itself, with a short \"Change\" animation."
+   },
+   "related": [
+    "color_up",
+    "rail"
+   ],
+   "etiquette": null,
+   "sources": [
+    "wiki-glossary",
+    "parlaynation"
+   ]
+  },
+  {
+   "id": "call_bet",
+   "term": "Call bet",
+   "aliases": [
+    "calling a bet",
+    "verbal bet"
+   ],
+   "category": "actions",
+   "alsoIn": [],
+   "dice": null,
+   "meaning": "Telling the dealer a bet without putting chips down first. Many casinos won't book one; say it before the dice are out.",
+   "call": "No call bets, chips down please.",
+   "say": null,
+   "srLabel": "Call bet",
+   "apps": [
+    "bubble",
+    "table"
+   ],
+   "appliesTo": [],
+   "tag": "Live table",
+   "link": {
+    "bubble": null,
+    "table": null
+   },
+   "notes": {
+    "bubble": "Live table only: in the app every bet is chips on the felt.",
+    "table": "Live table only: in the app every bet is chips on the felt."
+   },
+   "related": [
+    "dice_out"
+   ],
+   "etiquette": "call_bets",
+   "sources": [
+    "parlaynation"
+   ]
+  },
+  {
+   "id": "iron_cross",
+   "term": "Iron Cross",
+   "aliases": [
+    "iron cross",
+    "field and place"
+   ],
+   "category": "actions",
+   "alsoIn": [],
+   "dice": null,
+   "meaning": "Field plus Place 5, 6 and 8. Every total but 7 pays something, and a 7 loses it all.",
+   "call": "Iron Cross, you're covered on everything but seven.",
+   "say": null,
+   "srLabel": "Iron Cross",
+   "apps": [
+    "bubble",
+    "table"
+   ],
+   "appliesTo": [
+    "bubble-regular",
+    "bubble-crapless",
+    "table"
+   ],
+   "tag": "Both apps",
+   "link": {
+    "bubble": "field",
+    "table": "field"
+   },
+   "notes": {
+    "bubble": "Bet it by hand: Field + Place 5, 6, 8.",
+    "table": "Strategy T7 ($44 Iron Cross)."
+   },
+   "related": [
+    "field",
+    "inside"
+   ],
+   "etiquette": null,
+   "sources": [
+    "artofcraps",
+    "spec"
+   ]
+  },
+  {
+   "id": "inside",
+   "term": "Inside",
+   "aliases": [
+    "inside numbers",
+    "44 inside",
+    "place the inside"
+   ],
+   "category": "actions",
+   "alsoIn": [],
+   "dice": null,
+   "meaning": "Buy 5 and 9 and Place 6 and 8, like \"$44 inside\" at a $10 table: Buy $10 on 5 and 9, Place $12 on 6 and 8.",
+   "call": "Forty-four inside.",
+   "say": null,
+   "srLabel": "Inside",
+   "apps": [
+    "bubble",
+    "table"
+   ],
+   "appliesTo": [
+    "bubble-regular",
+    "bubble-crapless",
+    "table"
+   ],
+   "tag": "Both apps",
+   "link": {
+    "bubble": "place:5",
+    "table": "place:5"
+   },
+   "notes": {
+    "table": "Strategy T6 ($44 Inside)."
+   },
+   "related": [
+    "across",
+    "outside",
+    "place"
+   ],
+   "etiquette": null,
+   "sources": [
+    "wiki-glossary",
+    "spec"
+   ]
+  },
+  {
+   "id": "outside",
+   "term": "Outside",
+   "aliases": [
+    "outside numbers"
+   ],
+   "category": "actions",
+   "alsoIn": [],
+   "dice": null,
+   "meaning": "Bets on 4, 5, 9 and 10. Buy 4 and 10 (and often 5 and 9) costs less than placing them.",
+   "call": "Outside numbers.",
+   "say": null,
+   "srLabel": "Outside",
+   "apps": [
+    "bubble",
+    "table"
+   ],
+   "appliesTo": [
+    "bubble-regular",
+    "bubble-crapless",
+    "table"
+   ],
+   "tag": "Both apps",
+   "link": {
+    "bubble": "buy:4",
+    "table": "buy:4"
+   },
+   "notes": {},
+   "related": [
+    "inside",
+    "across",
+    "buy"
+   ],
+   "etiquette": null,
+   "sources": [
+    "wiki-glossary",
+    "spec"
+   ]
+  },
+  {
+   "id": "across",
+   "term": "Across",
+   "aliases": [
+    "across the board",
+    "all across",
+    "32 across"
+   ],
+   "category": "actions",
+   "alsoIn": [],
+   "dice": null,
+   "meaning": "Bets on all six box numbers: 4, 5, 6, 8, 9 and 10, like \"$32 across\" at a $5 table.",
+   "call": "Thirty-two across.",
+   "say": null,
+   "srLabel": "Across",
+   "apps": [
+    "bubble",
+    "table"
+   ],
+   "appliesTo": [
+    "bubble-regular",
+    "bubble-crapless",
+    "table"
+   ],
+   "tag": "Both apps",
+   "link": {
+    "bubble": "place:4",
+    "table": "place:4"
+   },
+   "notes": {
+    "bubble": "Billy's Way (Bubble only) covers every number in one tap: Buy 4, 5, 9, 10 + Place 6 and 8.",
+    "table": "Place each number; there's no Billy's Way key."
+   },
+   "related": [
+    "inside",
+    "outside"
+   ],
+   "etiquette": null,
+   "sources": [
+    "spec"
+   ]
+  },
+  {
+   "id": "right_way",
+   "term": "Right way / Light side",
+   "aliases": [
+    "right way",
+    "light side",
+    "do side",
+    "right bettor"
+   ],
+   "category": "table",
+   "alsoIn": [],
+   "dice": null,
+   "meaning": "Betting with the shooter: Pass, Come and their odds.",
+   "call": "Right way, pay the line!",
+   "say": null,
+   "srLabel": "Right way",
+   "apps": [
+    "bubble",
+    "table"
+   ],
+   "appliesTo": [
+    "bubble-regular",
+    "bubble-crapless",
+    "table"
+   ],
+   "tag": "Both apps",
+   "link": {
+    "bubble": "pass",
+    "table": "pass"
+   },
+   "notes": {},
+   "related": [
+    "dark_side",
+    "pass_line"
+   ],
+   "etiquette": null,
+   "sources": [
+    "wiki-glossary"
+   ]
+  },
+  {
+   "id": "dark_side",
+   "term": "Dark side / Wrong way",
+   "aliases": [
+    "dark side",
+    "wrong way",
+    "wrong bettor",
+    "dont side"
+   ],
+   "category": "table",
+   "alsoIn": [],
+   "dice": null,
+   "meaning": "Betting against the shooter: Don't Pass, Don't Come, lay odds and Lay bets. It's allowed; the polite way is to win quietly.",
+   "call": "Seven out! Pay the don'ts.",
+   "say": null,
+   "srLabel": "Dark side",
+   "apps": [
+    "bubble",
+    "table"
+   ],
+   "appliesTo": [
+    "bubble-regular",
+    "table"
+   ],
+   "tag": "Both apps · not in Crapless",
+   "link": {
+    "bubble": "dontPass",
+    "table": "dontPass"
+   },
+   "notes": {
+    "crapless": "Crapless has no Don't side."
+   },
+   "related": [
+    "dont_pass",
+    "right_way"
+   ],
+   "etiquette": "dark_side",
+   "sources": [
+    "wiki-glossary"
+   ]
+  },
+  {
+   "id": "puck",
+   "term": "Puck on / off",
+   "aliases": [
+    "puck",
+    "on",
+    "off",
+    "marker",
+    "the puck"
+   ],
+   "category": "table",
+   "alsoIn": [],
+   "dice": null,
+   "meaning": "The disc that shows the point. OFF (black side up) means a come-out roll is next. ON sits on the point number.",
+   "call": "Puck's on the six.",
+   "say": null,
+   "srLabel": "Puck",
+   "apps": [
+    "bubble",
+    "table"
+   ],
+   "appliesTo": [
+    "bubble-regular",
+    "bubble-crapless",
+    "table"
+   ],
+   "tag": "Both apps",
+   "link": {
+    "bubble": "ui:puck",
+    "table": "ui:puck"
+   },
+   "notes": {},
+   "related": [
+    "point",
+    "come_out"
+   ],
+   "etiquette": null,
+   "sources": [
+    "spec"
+   ]
+  },
+  {
+   "id": "come_out",
+   "term": "Come-out roll",
+   "aliases": [
+    "come out",
+    "comeout"
+   ],
+   "category": "table",
+   "alsoIn": [],
+   "dice": null,
+   "meaning": "The first roll when no point is set. 7 or 11 wins the Pass line, 2, 3 or 12 loses, anything else sets the point.",
+   "call": "The point is six. Mark the six!",
+   "say": null,
+   "srLabel": "Come-out roll",
+   "apps": [
+    "bubble",
+    "table"
+   ],
+   "appliesTo": [
+    "bubble-regular",
+    "bubble-crapless",
+    "table"
+   ],
+   "tag": "Both apps",
+   "link": {
+    "bubble": "pass",
+    "table": "pass"
+   },
+   "notes": {
+    "crapless": "Only a 7 wins on the come-out, and nothing loses."
+   },
+   "related": [
+    "coming_out",
+    "natural",
+    "point"
+   ],
+   "etiquette": null,
+   "sources": [
+    "wiki-glossary",
+    "wov-stick"
+   ]
+  },
+  {
+   "id": "coming_out",
+   "term": "Coming out",
+   "aliases": [
+    "coming out",
+    "new come out"
+   ],
+   "category": "table",
+   "alsoIn": [],
+   "dice": null,
+   "meaning": "The stickman's call before a come-out roll, so everyone gets line bets down.",
+   "call": "Same shooter, coming out!",
+   "callBubble": "New hand, coming out!",
+   "say": null,
+   "srLabel": "Coming out",
+   "apps": [
+    "bubble",
+    "table"
+   ],
+   "appliesTo": [
+    "bubble-regular",
+    "bubble-crapless",
+    "table"
+   ],
+   "tag": "Both apps",
+   "link": {
+    "bubble": "pass",
+    "table": "pass"
+   },
+   "notes": {
+    "bubble": "No shooter in Bubble Craps: \"New hand, coming out!\""
+   },
+   "related": [
+    "come_out",
+    "new_shooter"
+   ],
+   "etiquette": null,
+   "sources": [
+    "spec"
+   ]
+  },
+  {
+   "id": "point",
+   "term": "Point",
+   "aliases": [
+    "the point",
+    "mark it",
+    "point is"
+   ],
+   "category": "table",
+   "alsoIn": [],
+   "dice": null,
+   "meaning": "The number (4, 5, 6, 8, 9 or 10) set on the come-out. The shooter needs it again before a 7.",
+   "call": "Six! The point is made. Pass line wins.",
+   "say": null,
+   "srLabel": "Point",
+   "apps": [
+    "bubble",
+    "table"
+   ],
+   "appliesTo": [
+    "bubble-regular",
+    "bubble-crapless",
+    "table"
+   ],
+   "tag": "Both apps",
+   "link": {
+    "bubble": "ui:puck",
+    "table": "ui:puck"
+   },
+   "notes": {
+    "crapless": "Crapless points can also be 2, 3, 11 or 12."
+   },
+   "related": [
+    "puck",
+    "seven_out",
+    "come_out"
+   ],
+   "etiquette": null,
+   "sources": [
+    "wiki-glossary",
+    "spec"
+   ]
+  },
+  {
+   "id": "seven_out",
+   "term": "Seven out, line away",
+   "aliases": [
+    "seven out",
+    "7 out",
+    "7-out",
+    "line away",
+    "sevened out"
+   ],
+   "category": "table",
+   "alsoIn": [],
+   "dice": null,
+   "meaning": "A 7 while a point is on. The hand ends: Pass and number bets lose, and the Don'ts win.",
+   "call": "Seven out, line away.",
+   "say": null,
+   "srLabel": "Seven out, line away",
+   "apps": [
+    "bubble",
+    "table"
+   ],
+   "appliesTo": [
+    "bubble-regular",
+    "bubble-crapless",
+    "table"
+   ],
+   "tag": "Both apps",
+   "link": {
+    "bubble": "pass",
+    "table": "pass"
+   },
+   "notes": {
+    "bubble": "A come-out 7 is a winner, never a seven-out.",
+    "table": "Solo: you keep the dice. Pass & play: the dice pass to the left."
+   },
+   "related": [
+    "pso",
+    "hand",
+    "big_red"
+   ],
+   "etiquette": null,
+   "sources": [
+    "wiki-glossary",
+    "wov-stick",
+    "spec"
+   ]
+  },
+  {
+   "id": "pso",
+   "term": "PSO",
+   "aliases": [
+    "point seven out",
+    "p s o"
+   ],
+   "category": "table",
+   "alsoIn": [],
+   "dice": null,
+   "meaning": "\"Point, seven out.\" Players use it for a hand that sets a point and sevens out quickly, often on the next roll.",
+   "call": "Seven out. That's a PSO.",
+   "say": "P-S-O",
+   "srLabel": "P S O: point, seven out",
+   "apps": [
+    "bubble",
+    "table"
+   ],
+   "appliesTo": [
+    "bubble-regular",
+    "bubble-crapless",
+    "table"
+   ],
+   "tag": "Both apps",
+   "link": {
+    "bubble": null,
+    "table": null
+   },
+   "notes": {
+    "bubble": "The app's PSO animation (S4.4) plays on every seven-out.",
+    "table": "The app's PSO animation (S4.4) plays on every seven-out."
+   },
+   "related": [
+    "seven_out"
+   ],
+   "etiquette": null,
+   "sources": [
+    "crapsjourney"
+   ]
+  },
+  {
+   "id": "new_shooter",
+   "term": "New shooter",
+   "aliases": [
+    "new shooter coming out",
+    "dice pass"
+   ],
+   "category": "table",
+   "alsoIn": [],
+   "dice": null,
+   "meaning": "After a seven-out the dice go to the next player to the left, who can shoot or pass.",
+   "call": "New shooter, coming out!",
+   "say": null,
+   "srLabel": "New shooter",
+   "apps": [
+    "bubble",
+    "table"
+   ],
+   "appliesTo": [
+    "table"
+   ],
+   "tag": "Table Craps",
+   "link": {
+    "bubble": null,
+    "table": null
+   },
+   "notes": {
+    "bubble": "No shooter in Bubble Craps: a seven-out just starts a new hand.",
+    "table": "Pass & play passes the dice; solo, you keep them."
+   },
+   "related": [
+    "shooter",
+    "hand",
+    "coming_out"
+   ],
+   "etiquette": null,
+   "sources": [
+    "spec"
+   ]
+  },
+  {
+   "id": "shooter",
+   "term": "Shooter",
+   "aliases": [
+    "thrower",
+    "roller"
+   ],
+   "category": "table",
+   "alsoIn": [],
+   "dice": null,
+   "meaning": "The player throwing the dice. They need a line bet down, throw with one hand, and hit the back wall.",
+   "call": "Shooter's coming out.",
+   "say": null,
+   "srLabel": "Shooter",
+   "apps": [
+    "bubble",
+    "table"
+   ],
+   "appliesTo": [
+    "table"
+   ],
+   "tag": "Table Craps",
+   "link": {
+    "bubble": null,
+    "table": null
+   },
+   "notes": {
+    "bubble": "No shooter in Bubble Craps: the machine rolls.",
+    "table": "You're the shooter. Setting the dice is a practice ritual; it can't change a roll."
+   },
+   "related": [
+    "new_shooter",
+    "hand"
+   ],
+   "etiquette": "one_hand_throw",
+   "sources": [
+    "spec"
+   ]
+  },
+  {
+   "id": "stickman",
+   "term": "Stickman",
+   "aliases": [
+    "stickperson",
+    "stick",
+    "stick man"
+   ],
+   "category": "table",
+   "alsoIn": [],
+   "dice": null,
+   "meaning": "The dealer with the long stick. Moves the dice, calls each roll and books the center bets. Dealer Billy plays this role.",
+   "call": "Dice are out!",
+   "say": null,
+   "srLabel": "Stickman",
+   "apps": [
+    "bubble",
+    "table"
+   ],
+   "appliesTo": [],
+   "tag": "Live table",
+   "link": {
+    "bubble": null,
+    "table": null
+   },
+   "notes": {
+    "bubble": "Live table role; Dealer Billy calls the rolls here.",
+    "table": "Live table role; Dealer Billy calls the rolls here."
+   },
+   "related": [
+    "boxman",
+    "prop_bets"
+   ],
+   "etiquette": null,
+   "sources": [
+    "wiki-glossary",
+    "parlaynation"
+   ]
+  },
+  {
+   "id": "boxman",
+   "term": "Boxman",
+   "aliases": [
+    "boxperson",
+    "box",
+    "pit"
+   ],
+   "category": "table",
+   "alsoIn": [],
+   "dice": null,
+   "meaning": "The casino supervisor seated between the base dealers. Watches the chips and the cash and settles disputes.",
+   "call": "Box, changing a hundred.",
+   "say": null,
+   "srLabel": "Boxman",
+   "apps": [
+    "bubble",
+    "table"
+   ],
+   "appliesTo": [],
+   "tag": "Live table",
+   "link": {
+    "bubble": null,
+    "table": null
+   },
+   "notes": {
+    "bubble": "Live table only.",
+    "table": "Live table only."
+   },
+   "related": [
+    "stickman",
+    "change_only"
+   ],
+   "etiquette": null,
+   "sources": [
+    "parlaynation"
+   ]
+  },
+  {
+   "id": "hand",
+   "term": "Hand",
+   "aliases": [
+    "a roll",
+    "long roll",
+    "the hand"
+   ],
+   "category": "table",
+   "alsoIn": [],
+   "dice": null,
+   "meaning": "Every roll from a come-out through the seven-out. A point made doesn't end it; only a seven-out does.",
+   "call": "What a roll, give the shooter a hand.",
+   "callBubble": "What a roll! That hand's over.",
+   "say": null,
+   "srLabel": "Hand",
+   "apps": [
+    "bubble",
+    "table"
+   ],
+   "appliesTo": [
+    "bubble-regular",
+    "bubble-crapless",
+    "table"
+   ],
+   "tag": "Both apps",
+   "link": {
+    "bubble": null,
+    "table": null
+   },
+   "notes": {
+    "bubble": "The Blazing meter and Longest Roll count hands this way (S4.1).",
+    "table": "The Blazing meter counts hands this way (S4.1)."
+   },
+   "related": [
+    "seven_out",
+    "new_shooter"
+   ],
+   "etiquette": null,
+   "sources": [
+    "spec"
+   ]
+  },
+  {
+   "id": "comp",
+   "term": "Comp",
+   "aliases": [
+    "comps",
+    "comped",
+    "rating"
+   ],
+   "category": "table",
+   "alsoIn": [],
+   "dice": null,
+   "meaning": "Free food, rooms and the like a casino gives based on how much and how long you bet. Never worth betting more for.",
+   "call": "Comps? Ask the floor.",
+   "say": null,
+   "srLabel": "Comp",
+   "apps": [
+    "bubble",
+    "table"
+   ],
+   "appliesTo": [],
+   "tag": "Live table",
+   "link": {
+    "bubble": null,
+    "table": null
+   },
+   "notes": {
+    "bubble": "Live table only. The app has no comps, rewards or prizes.",
+    "table": "Live table only. The app has no comps, rewards or prizes."
+   },
+   "related": [
+    "boxman",
+    "toke"
+   ],
+   "etiquette": null,
+   "sources": [
+    "spec"
+   ]
+  },
+  {
+   "id": "toke",
+   "term": "Toke",
+   "aliases": [
+    "tip",
+    "tipping",
+    "toking",
+    "bet for the dealers",
+    "for the boys"
+   ],
+   "category": "table",
+   "alsoIn": [],
+   "dice": null,
+   "meaning": "A tip for the dealers, often a small bet placed for them. Optional, and part of your budget.",
+   "call": "Thank you! That's a bet for the dealers.",
+   "say": "TOHK",
+   "srLabel": "Toke, a tip",
+   "apps": [
+    "bubble",
+    "table"
+   ],
+   "appliesTo": [],
+   "tag": "Live table",
+   "link": {
+    "bubble": null,
+    "table": null
+   },
+   "notes": {
+    "bubble": "Live table only. There's no tip or toke bet in the app.",
+    "table": "Live table only. There's no tip or toke bet in the app."
+   },
+   "related": [
+    "comp"
+   ],
+   "etiquette": "tipping",
+   "sources": [
+    "spec"
+   ]
+  },
+  {
+   "id": "rail",
+   "term": "Rail",
+   "aliases": [
+    "chip rail",
+    "the rail"
+   ],
+   "category": "table",
+   "alsoIn": [],
+   "dice": null,
+   "meaning": "The groove around the table edge where you keep your chips. Only bets go on the felt.",
+   "call": "Chips in the rail, please.",
+   "say": null,
+   "srLabel": "Rail",
+   "apps": [
+    "bubble",
+    "table"
+   ],
+   "appliesTo": [
+    "table"
+   ],
+   "tag": "Table Craps",
+   "link": {
+    "bubble": null,
+    "table": "ui:rail"
+   },
+   "notes": {
+    "bubble": "Live table only; Bubble uses the chip rack.",
+    "table": "Your rail shows chips that aren't bet."
+   },
+   "related": [
+    "color_up",
+    "check_change"
+   ],
+   "etiquette": "chips_in_rail",
+   "sources": [
+    "spec"
+   ]
+  },
+  {
+   "id": "no_roll",
+   "term": "No roll",
+   "aliases": [
+    "no-roll",
+    "no dice",
+    "off the table"
+   ],
+   "category": "table",
+   "alsoIn": [],
+   "dice": null,
+   "meaning": "A throw that doesn't count, like a die off the table. Nothing is settled and the shooter throws again.",
+   "call": "No roll! Same dice?",
+   "say": null,
+   "srLabel": "No roll",
+   "apps": [
+    "bubble",
+    "table"
+   ],
+   "appliesTo": [
+    "table"
+   ],
+   "tag": "Table Craps",
+   "link": {
+    "bubble": null,
+    "table": null
+   },
+   "notes": {
+    "bubble": "Bubble Craps never has a no-roll.",
+    "table": "Practice no-rolls never count toward the hand."
+   },
+   "related": [
+    "shooter"
+   ],
+   "etiquette": "same_dice",
+   "sources": [
+    "spec"
+   ]
+  },
+  {
+   "id": "dice_out",
+   "term": "Dice are out",
+   "aliases": [
+    "dice out",
+    "hands up",
+    "hands high"
+   ],
+   "category": "table",
+   "alsoIn": [],
+   "dice": null,
+   "meaning": "The call that the shooter has the dice. Bets are set, and hands come off the felt.",
+   "call": "Dice are out! Hands up.",
+   "say": null,
+   "srLabel": "Dice are out",
+   "apps": [
+    "bubble",
+    "table"
+   ],
+   "appliesTo": [
+    "bubble-regular",
+    "bubble-crapless",
+    "table"
+   ],
+   "tag": "Both apps",
+   "link": {
+    "bubble": null,
+    "table": null
+   },
+   "notes": {
+    "bubble": "At the machine, betting closes when you tap ROLL.",
+    "table": "Bets lock while the dice are out."
+   },
+   "related": [
+    "call_bet",
+    "stickman"
+   ],
+   "etiquette": "hands_clear",
+   "sources": [
+    "spec"
+   ]
+  }
+ ],
+ "callMap": {
+  "_rule": "Resolve from the settled roll object {d1,d2,total,hard,phaseBefore,result} only, in this order. Never re-derive from text.",
+  "byResult": {
+   "seven-out": "seven_out",
+   "no-roll": "no_roll"
+  },
+  "comeOutSeven": "natural",
+  "byTotal": {
+   "2": "aces",
+   "3": "ace_deuce",
+   "5": "no_field_five",
+   "9": "center_field_nine",
+   "11": "yo",
+   "12": "boxcars"
+  },
+  "byTotalHard": {
+   "4": "hard_four",
+   "6": "hard_six",
+   "8": "hard_eight",
+   "10": "hard_ten"
+  },
+  "byTotalEasy": {
+   "4": "easy_four",
+   "6": "easy_six",
+   "8": "easy_eight",
+   "10": "easy_ten"
+  },
+  "byCallId": {
+   "call_co_7": "natural",
+   "call_co_11": "yo",
+   "call_co_2": "aces",
+   "call_co_3": "ace_deuce",
+   "call_co_12": "boxcars",
+   "call_point_n": "point",
+   "call_point_made": "point",
+   "call_seven_out": "seven_out",
+   "call_9": "center_field_nine",
+   "call_5": "no_field_five",
+   "call_11": "yo",
+   "call_2": "aces",
+   "call_3": "ace_deuce",
+   "call_12": "boxcars",
+   "call_comeout": "coming_out",
+   "call_comeout_new": "coming_out",
+   "call_dice_out": "dice_out",
+   "call_hard_n": "hard_{n}",
+   "call_easy_n": "easy_{n}"
+  }
+ },
+ "search": {
+  "normalize": [
+   "lowercase",
+   "strip accents",
+   "& -> and",
+   "remove punctuation and apostrophes",
+   "collapse spaces",
+   "hyphen -> space"
+  ],
+  "numberWords": {
+   "2": "two",
+   "3": "three",
+   "4": "four",
+   "5": "five",
+   "6": "six",
+   "7": "seven",
+   "8": "eight",
+   "9": "nine",
+   "10": "ten",
+   "11": "eleven",
+   "12": "twelve"
+  },
+  "fields": [
+   "term",
+   "aliases",
+   "dice.total (as digits and words)",
+   "dice.pairs"
+  ],
+  "rank": [
+   "exact term or alias (also ignoring spaces)",
+   "prefix (queries of 3+ chars)",
+   "whole-word substring, a 5+ char substring ignoring spaces, or every query word starts a word of the key ('nina pasadena')",
+   "same dice total as an exact hit",
+   "typo fallback only when nothing above matched: Damerau-Levenshtein <= 1 (4-6 chars) or <= 2 (7+ chars) against a whole term/alias or a word of 4+ letters, shown under 'Did you mean'"
+  ],
+  "minQuery": 1,
+  "maxResults": 30
+ }
+}

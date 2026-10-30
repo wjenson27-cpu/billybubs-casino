@@ -1,0 +1,77 @@
+/* Run 11: pip tiles side by side, landscape coach, one mascot on sheets, HUD fit. Loaded last. */
+
+.rolltile {
+  border: 0;
+  height: 30px;
+}
+.rolltile .dieface {
+  flex: 0 0 14px;
+  width: 14px;
+  height: 14px;
+}
+.rolltile.latest { outline-offset: -2px; }
+
+@media (max-height: 500px) and (orientation: landscape) {
+  #overlay .coach {
+    right: auto;
+    width: calc(100% - 200px);
+    max-width: 600px;
+  }
+}
+
+/* Any sheet or card in the overlay that brings its own mascot hides the dome Billy. */
+body:has(#overlay img[src*="mascots/"]) .dome-cast { visibility: hidden; }
+
+#hud .lastdice { min-width: max-content; }
+#hud .lastdice .readout { width: auto; }
+
+@media (max-width: 440px) {
+  #hud .hud-money { gap: 8px; }
+  #hud .hud-row2 { gap: 3px; }
+  #hud .hud-bank small { letter-spacing: .08em; }
+  #hud .heater.compact { margin-right: 0; }
+  /* Four states stay readable: stack the pips so Hot (3) and Blazing (4) differ, and FAIR stays on screen. */
+  #hud .heater.compact .segs {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+  #hud .heater.compact .segs i,
+  #hud .heater.compact .segs i:last-child {
+    display: block;
+    width: 12px;
+    height: 5px;
+    flex: 0 0 5px;
+  }
+}
+
+.endedon { flex-wrap: nowrap; }
+.endedon .readout { flex: 0 0 auto; width: auto; }
+.endedon > span:first-child { white-space: nowrap; }
+.endedon .outtag { white-space: nowrap; }
+
+.bigwin .readout { width: auto; }
+.bigwin .readout .hardtag {
+  display: inline-block;
+  width: auto;
+  font-size: 16px;
+  line-height: 1.2;
+  padding: 2px 10px;
+  letter-spacing: .02em;
+  color: #FFD36A;
+  -webkit-text-fill-color: #FFD36A;
+  background: #3A2A00;
+  -webkit-background-clip: border-box;
+  background-clip: border-box;
+  animation: none;
+}
+
+@media (max-width: 400px) {
+  .badgetoast.marquee b {
+    padding-right: 84px;
+    box-sizing: border-box;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}

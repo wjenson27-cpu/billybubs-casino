@@ -1,0 +1,19 @@
+/* Table Craps 3D dice + set-dice (SHIPS). Right-handed die; orientation math in js/tc-dice.mjs.
+   Faces sit at their canonical normals (maths coords, y up): 1:+y 6:-y 2:+z 5:-z 3:+x 4:-x.
+   The cube gets: transform: var(--view) matrix3d(cssMatrix(top, front)). --view is the camera tilt. */
+.tc-cube{--s:44px;width:var(--s);height:var(--s);perspective:calc(var(--s)*8);--view:rotateX(-32deg) rotateY(-24deg)}
+.tc-cube.sm{--s:34px}.tc-cube.lg{--s:66px}
+.tc-cube .c{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform 260ms cubic-bezier(.2,1.3,.4,1)}
+.tc-cube .f{position:absolute;inset:0;border-radius:16%;background-size:cover;backface-visibility:hidden;box-shadow:inset 0 0 calc(var(--s)*.08) rgba(0,0,0,.2)}
+.tc-cube .f1{transform:rotateX(90deg) translateZ(calc(var(--s)/2))}
+.tc-cube .f6{transform:rotateX(-90deg) translateZ(calc(var(--s)/2))}
+.tc-cube .f2{transform:translateZ(calc(var(--s)/2))}
+.tc-cube .f5{transform:rotateY(180deg) translateZ(calc(var(--s)/2))}
+.tc-cube .f3{transform:rotateY(90deg) translateZ(calc(var(--s)/2))}
+.tc-cube .f4{transform:rotateY(-90deg) translateZ(calc(var(--s)/2))}
+/* lighting: the top (lit) face stays bright; the front is mid, the right side darker. Set by JS via data-top/front. */
+.tc-cube .f{filter:brightness(.78)}
+.tc-cube[data-top="1"] .f1,.tc-cube[data-top="2"] .f2,.tc-cube[data-top="3"] .f3,.tc-cube[data-top="4"] .f4,.tc-cube[data-top="5"] .f5,.tc-cube[data-top="6"] .f6{filter:none}
+.tc-cube[data-front="1"] .f1,.tc-cube[data-front="2"] .f2,.tc-cube[data-front="3"] .f3,.tc-cube[data-front="4"] .f4,.tc-cube[data-front="5"] .f5,.tc-cube[data-front="6"] .f6{filter:brightness(.92)}
+.tc-cube::after{content:"";display:block;width:90%;height:14%;margin:2% auto 0;border-radius:50%;background:radial-gradient(rgba(0,0,0,.55),transparent 70%)}
+@media (prefers-reduced-motion:reduce){.tc-cube .c{transition:none}}

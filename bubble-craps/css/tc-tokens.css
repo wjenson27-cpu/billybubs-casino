@@ -1,0 +1,39 @@
+/* Billy Bubs TABLE CRAPS tokens. Ships. Load after fonts.css.
+   Core colours from bb-mockups/DESIGN-SYSTEM.md §6; App 2 family tint from §9b. */
+:root{
+  --onyx:#07100B; --gold:#E2BC62; --gold-hi:#FFF1C2; --gold-lo:#9C7428; --champ:#F4D27A;
+  --ivory:#F6EDD8; --ivory-card:#FBF5E8; --cherry:#C21F2E; --cherry-hi:#E8394A;
+  --win:#7DFFB3; --loss:#FF8D8D; --amber:#FFD36A; --sky:#9CC3F0;
+  --edge-g:#7DFFB3; --edge-a:#FFD36A; --edge-r:#FF8D8D;
+  --serif:"Cinzel",Palatino,Georgia,serif; --sans:"Archivo",system-ui,sans-serif;
+  --fun:"Fredoka",sans-serif; --mono:"Orbitron",sans-serif;
+  /* chip colours (DESIGN-SYSTEM §6, no $10 chip) */
+  --chip-1:#F1ECE1; --chip-5:#C21F2E; --chip-25:#1C7C45; --chip-100:#1A1A1D; --chip-500:#5A2A88;
+  /* Fire Bet (never the Blazing gauge colours) */
+  --fire-core:#FFE7A0; --fire-ring:#C8501E; --fire-off:#3A2A22;
+  /* Blazing meter tiers */
+  --heat-cold:#8FA3B3; --heat-warm:#FFB347; --heat-hot:#FF7A1A; --heat-blazing:#FFD36A;
+  /* Comparison chart: Okabe-Ito colour-blind-safe set, always paired with a dash pattern */
+  --cmp-1:#E69F00; --cmp-2:#56B4E9; --cmp-3:#009E73; --cmp-4:#F0E442; --cmp-5:#CC79A7; --cmp-6:#FFFFFF;
+}
+/* Felt themes: set data-theme on .tc-app. "billy" (Billy navy) is the App 2 DEFAULT (rev 15b). "midnight" is an alternate. */
+.tc-app,.tc-app[data-theme="billy"]{
+  --felt:#123764; --felt-hi:#1C4C86; --felt-lo:#0A2242; --line:#E9D6A6; --ink:#F4D27A;
+  --come-ink:#E8394A; --rail-a:#4A2716; --rail-b:#21100A; --bg-a:#132A47; --bg-b:#04060A;
+  --panel:#0B1626; --panel-line:rgba(156,195,240,.22); --accent:var(--sky);
+}
+.tc-app[data-theme="midnight"]{
+  --felt:#0C1A33; --felt-hi:#152A4E; --felt-lo:#060E1E; --line:#C9D6EE; --ink:#E9D6A6;
+  --come-ink:#FF6B78; --rail-a:#2C2238; --rail-b:#120D18; --bg-a:#0A1426; --bg-b:#020308;
+  --panel:#070D1A; --panel-line:rgba(201,214,238,.22); --accent:#9CC3F0;
+}
+.tc-app[data-theme="classic"]{
+  --felt:#0B5A2B; --felt-hi:#11703B; --felt-lo:#063418; --line:#F3E27A; --ink:#FFE98A;
+  --come-ink:#FF8A93; --rail-a:#6A4A24; --rail-b:#2E1E0E; --bg-a:#10301F; --bg-b:#040806;
+  --panel:#0A1A11; --panel-line:rgba(243,226,122,.22); --accent:#9EE6B8;
+}
+.tc-app[data-theme="highlimit"]{
+  --felt:#1A1814; --felt-hi:#2A2620; --felt-lo:#0C0B09; --line:#E0C36A; --ink:#E0C36A;
+  --come-ink:#FF5A66; --rail-a:#3A3018; --rail-b:#15110A; --bg-a:#1A1712; --bg-b:#050403;
+  --panel:#110F0C; --panel-line:rgba(224,195,106,.24); --accent:#E0C36A;
+}

@@ -1,0 +1,235 @@
+/* ==========================================================================
+   Board fix v3: Regular + Crapless (run 15). Load AFTER css/run14.css.
+   Replaces handoff-assets/crapless-board/crapless-board.css.
+   Scope: .app.play .felt.bfx   (JS adds .bfx + .mode-regular|.mode-crapless
+          + one layout class .lay-tall|.lay-short|.lay-land, and sets
+          --fw/--fh (felt size, felt px) + --felt-k (scale) via fitFelt v2.)
+   Felt px = CSS px before the --felt-k scale.
+   ========================================================================== */
+
+/* ---------- 0. Tokens ---------- */
+.app.play .felt.bfx {
+  --bf-gold: #e9d6a6;
+  --bf-label: 10.5px;                 /* every felt label: 8.0px at k .765, 6.9px at 320 (min 6.8) */
+  --bf-amt: 11.5px;                   /* bet amount pills */
+  --bf-z: 1;                          /* the 320 column zoom, see media query */
+  --hit: calc(44px / var(--felt-k, 1) / var(--bf-z));   /* exactly 44 screen px */
+}
+@media (max-width: 359px) { .app.play .felt.bfx { --bf-z: .9091; --bf-label: 11px; } }   /* 320: labels 7.2px (proportional min 6.8) */
+.app.play .felt.bfx.mode-regular { --bf-amt: 10.5px; }
+
+/* ---------- 1. Felt frame: size from fitFelt v2, centred, never grows ---------- */
+.app.play .felt.bfx.scaled {
+  width: var(--fw, 354px);
+  height: var(--fh, 471px);
+  margin-left: calc((100% - var(--fw, 354px)) / 2);   /* negative is fine: centres the scaled felt */
+  margin-right: 0;
+  margin-bottom: calc(var(--fh, 471px) * (var(--felt-k, 1) - 1));
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 3px;
+  align-items: stretch;
+}
+.app.play .rail:has(> .app.play .felt.bfx) { overflow-x: clip; }   /* the unscaled box is wider than the rail on short/land */
+
+/* grid areas (children are the existing boardHTML() blocks) */
+.app.play .felt.bfx > .feltprint { grid-area: print; }
+.app.play .felt.bfx > .ats       { grid-area: ats; }
+.app.play .felt.bfx > .nums      { grid-area: nums; }
+.app.play .felt.bfx > .band.comeband  { grid-area: come; }
+.app.play .felt.bfx > .band.fieldband { grid-area: field; }
+.app.play .felt.bfx > .prop      { grid-area: props; }
+.app.play .felt.bfx > .band.passline  { grid-area: pass; }
+
+/* tall portrait (390x844, 430x932): 354 x 471 */
+.app.play .felt.bfx.lay-tall.mode-crapless { grid-template: "print" 16px "ats" 48px "nums" 156px "come" var(--hit) "field" 44px "props" minmax(0,1fr) "pass" 30px / minmax(0,1fr); }
+.app.play .felt.bfx.lay-tall.mode-regular  { grid-template: "print" 16px "ats" 48px "nums" 104px "come" var(--hit) "field" 44px "props" minmax(0,1fr) "pass" 30px / minmax(0,1fr); }
+/* short portrait (320/360/375): felt as wide as the rail, no print */
+.app.play .felt.bfx.lay-short.mode-crapless { grid-template: "ats ats" 40px "nums nums" max(132px, calc(88px / var(--felt-k, 1) / var(--bf-z) + 6px)) "come come" var(--hit) "field pass" 38px "props props" minmax(76px,1fr) / minmax(0,1fr) 150px; }
+.app.play .felt.bfx.lay-short.mode-regular  { grid-template: "ats" 40px "nums" 82px "come" var(--hit) "field" 38px "props" minmax(68px,1fr) "pass" 28px / minmax(0,1fr); }
+.app.play .felt.bfx.lay-short > .feltprint { display: none; }
+/* landscape (844x390, 932x430): two columns */
+.app.play .felt.bfx.lay-land { column-gap: 8px; }
+.app.play .felt.bfx.lay-land.mode-crapless { grid-template: "ats print" 14px "ats field" 44px "nums props" minmax(150px,1fr) "come pass" var(--hit) / minmax(0,1fr) minmax(0,1fr); }
+.app.play .felt.bfx.lay-land.mode-regular  { grid-template: "ats print" 14px "ats field" 44px "nums props" minmax(92px,1fr) "come pass" var(--hit) / minmax(0,1fr) minmax(0,1fr); }
+
+.app.play .felt.bfx > * { min-height: 0; min-width: 0; margin: 0; }
+.app.play .felt.bfx .feltprint { display: grid; place-items: center; line-height: 0; }
+.app.play .felt.bfx .feltprint img { height: 100%; max-height: 16px; width: auto; }
+
+/* ---------- 2. Every spot: fixed box, labels >= --bf-label, bets as corner badges ---------- */
+.app.play .felt.bfx .spot { min-height: 0; height: 100%; overflow: visible; padding: 1px 2px; }
+.app.play .felt.bfx .spot > small, .app.play .felt.bfx .spot > b { font-size: var(--bf-label); line-height: 1.05; letter-spacing: .02em; white-space: nowrap; }
+/* A bet REPLACES the pay line: chips + amount pill sit where "7 TO 1" was, the name stays.
+   Same rule as the number boxes (the bet replaces BUY/PLACE). Spots never grow, nothing overlaps. */
+.app.play .felt.bfx .spot.has { display: flex; flex-flow: row wrap; justify-content: center; align-content: center; column-gap: 0; row-gap: 1px; }
+.app.play .felt.bfx .spot.has > small { display: none; }
+.app.play .felt.bfx .spot.has > b { order: 2; flex: 0 0 100%; text-align: center; }
+.app.play .felt.bfx .spot.has > :where(:not(small):not(b):not(.stack):not(.amt)) { order: 3; flex: 0 0 100%; }
+.app.play .felt.bfx .spot.has > .stack {
+  order: 1; position: relative; inset: auto; flex: 0 0 13px; width: 13px; height: 14px; margin: 0; z-index: 1; pointer-events: none;
+}
+.app.play .felt.bfx .spot.has > .stack img { width: 13px; height: 13px; left: 0; bottom: calc(var(--i) * 1.5px); }
+.app.play .felt.bfx .spot.has > .amt {
+  order: 1; position: static; z-index: 2; margin: 0 0 0 -5px; pointer-events: none;
+  font: 800 var(--bf-amt)/1 var(--sans, Archivo, sans-serif); letter-spacing: -.01em; white-space: nowrap; color: #1E1606;
+  background: #F4EEDF; border-radius: 999px; padding: 1.5px 4px 1px 7px; box-shadow: 0 1px 1.5px rgba(0,0,0,.5);
+}
+.app.play .felt.bfx .spot.bigred.has > .amt { background: #FFF4D2; }
+/* Field: numbers row, then FIELD + bet on one line */
+.app.play .felt.bfx .spot.field.has > .fieldnums { order: 0; flex: 0 0 100%; }
+.app.play .felt.bfx .spot.field.has > b { order: 2; flex: 0 0 auto; margin-right: 8px; }
+.app.play .felt.bfx .spot.field.has > .stack, .app.play .felt.bfx .spot.field.has > .amt { order: 3; }
+
+/* ---------- 3. ATS strip ---------- */
+.app.play .felt.bfx .ats { height: 100%; margin: 0; grid-template-columns: 1fr 1.42fr 1fr; }
+.app.play .felt.bfx .ats .spot { justify-content: flex-start; padding-top: 2px; }
+.app.play .felt.bfx .ats .lamps { gap: 1.5px; flex-wrap: nowrap; margin-top: 1px; }
+.app.play .felt.bfx .ats .lamp { width: 12.5px; height: 12.5px; line-height: 12.5px; font-size: 10.3px; letter-spacing: -.04em; }
+
+/* ---------- 4. Number boxes ---------- */
+.app.play .felt.bfx .nums { height: 100%; margin: 0; display: grid; column-gap: 3px; row-gap: 8px; }
+.app.play .felt.bfx .nums.crap { grid-template-columns: repeat(5, minmax(0,1fr)); grid-template-rows: repeat(2, minmax(0,1fr)); column-gap: 4px; }
+.app.play .felt.bfx .nums.reg  { grid-template-columns: repeat(6, minmax(0,1fr)); grid-template-rows: minmax(0,1fr); }
+.app.play .felt.bfx.lay-short .nums.crap { row-gap: 6px; }
+.app.play .felt.bfx .numbox {
+  position: relative; display: grid; grid-template-columns: minmax(0,1fr);
+  justify-items: stretch; align-items: stretch; height: 100%; min-height: 0; padding: 0;
+  border: 1.6px solid var(--bf-gold); border-radius: 6px; overflow: visible; background: rgba(0,0,0,.18);
+}
+.app.play .felt.bfx.mode-crapless .numbox { grid-template-rows: 19px minmax(0,1fr) 19px; }
+.app.play .felt.bfx.mode-regular  .numbox { grid-template-rows: 17px 19px minmax(0,1fr) 19px; }
+.app.play .felt.bfx.lay-short.mode-crapless .numbox { grid-template-rows: 16px minmax(0,1fr) 16px; }
+.app.play .felt.bfx.lay-short.mode-crapless .numbox .feltpuck { top: -3px; right: -5px; width: 18px; height: 18px; }
+.app.play .felt.bfx.lay-short.mode-regular  .numbox { grid-template-rows: 14px 16px minmax(0,1fr) 16px; }
+.app.play .felt.bfx .numbox .face {
+  position: static; display: grid; place-items: center; min-height: 0; padding: 0;
+  font-size: 34px; line-height: .9; letter-spacing: 0;          /* digits 2-12 on both boards (R15-10) */
+}
+.app.play .felt.bfx.lay-short .numbox .face { line-height: .8; }
+.app.play .felt.bfx .numbox .half {
+  position: static; display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 0;
+  width: auto; max-width: none; min-width: 0; justify-self: stretch; min-height: 0; height: auto;
+  padding: 0 1px; margin: 0; border: 0; background: none; box-shadow: none;
+  font: 800 var(--bf-label)/1 var(--sans, Archivo, sans-serif); letter-spacing: .1em; color: var(--bf-gold);
+}
+.app.play .felt.bfx .numbox .half.lay   { border-bottom: 1px solid rgba(233,214,166,.30); }
+.app.play .felt.bfx .numbox .half.buy   { border-bottom: 1px solid rgba(233,214,166,.45); }
+.app.play .felt.bfx .numbox .half.place { border-top: 1px solid rgba(233,214,166,.45); }
+.app.play .felt.bfx .numbox .half::before { content: none; }
+.app.play .felt.bfx .numbox .half > span:not(.stack) { opacity: .8; font-size: var(--bf-label); letter-spacing: .08em; }
+.app.play .felt.bfx .numbox .half.lay > span:not(.stack) { opacity: .4; color: #F2A99F; }
+.app.play .felt.bfx .numbox .half.has > span:not(.stack) { display: none; }
+.app.play .felt.bfx .numbox .half.has { background: rgba(244,238,223,.10); }
+/* tap model: ONE target per box = the active bet type; the other halves only display */
+.app.play .felt.bfx .numbox .half { pointer-events: none; }
+.app.play .felt.bfx .numbox .half::after { content: none; position: absolute; inset: -2px; z-index: 3; border-radius: 7px; }
+.app.play .felt.bfx:not([data-numbet="buy"]):not([data-numbet="lay"]) .numbox .half.place,
+.app.play .felt.bfx[data-numbet="buy"] .numbox .half.buy,
+.app.play .felt.bfx[data-numbet="lay"] .numbox:not(.nolay) .half.lay { pointer-events: auto; }
+.app.play .felt.bfx:not([data-numbet="buy"]):not([data-numbet="lay"]) .numbox .half.place::after,
+.app.play .felt.bfx[data-numbet="buy"] .numbox .half.buy::after,
+.app.play .felt.bfx[data-numbet="lay"] .numbox:not(.nolay) .half.lay::after { content: ""; }
+.app.play .felt.bfx:not([data-numbet="buy"]):not([data-numbet="lay"]) .numbox .half.place > span,
+.app.play .felt.bfx[data-numbet="buy"] .numbox .half.buy > span { color: #FFF4D2; opacity: 1; }
+.app.play .felt.bfx[data-numbet="lay"] .numbox.nolay { opacity: .45; }
+/* bet = chips + amount pill (replaces the strip label) */
+.app.play .felt.bfx .numbox .half .stack { position: relative; flex: 0 0 12px; width: 12px; height: 16px; margin: 0; z-index: 1; }
+.app.play .felt.bfx .numbox .half .stack img { width: 12px; height: 12px; left: 0; bottom: calc(var(--i) * 2px); }
+.app.play .felt.bfx.lay-short .numbox .half .stack { height: 14px; }
+.app.play .felt.bfx .numbox .half .betamt {
+  font: 800 var(--bf-amt)/1 var(--sans, Archivo, sans-serif); letter-spacing: -.02em; white-space: nowrap;
+  color: #1E1606; background: #F4EEDF; border-radius: 999px; padding: 2px 3px 1.5px 6px; margin-left: -4px;
+  box-shadow: 0 1px 1.5px rgba(0,0,0,.5);
+}
+.app.play .felt.bfx.mode-regular .numbox .half .betamt { margin-left: -6px; padding-left: 7px; }
+.app.play .felt.bfx .numbox .half.buy .betamt { background: linear-gradient(180deg, #F3DFA0, #C9A961); }
+.app.play .felt.bfx .numbox .half.lay .betamt { background: #F6D2CB; color: #4A0E0E; box-shadow: 0 0 0 1px #C0392B inset, 0 1px 1.5px rgba(0,0,0,.5); }
+.app.play .felt.bfx .numbox .feltpuck { position: absolute; top: -8px; right: -6px; width: 22px; height: 22px; z-index: 6; pointer-events: none; filter: drop-shadow(0 1px 1px rgba(0,0,0,.6)); }
+.app.play .felt.bfx .numbox .cmark {
+  position: absolute; left: -4px; top: -8px; z-index: 6; pointer-events: none;
+  font: 800 var(--bf-amt)/1 var(--sans, Archivo, sans-serif); color: #0B2A14; background: #8BE28B;
+  border-radius: 999px; padding: 2px 4px 1.5px; white-space: nowrap; box-shadow: 0 1px 1.5px rgba(0,0,0,.5);
+}
+/* Crapless: a Come mark pushes the empty BUY label right so they never touch */
+.app.play .felt.bfx.mode-crapless .numbox:has(.cmark) .half.buy:not(.has) { justify-content: flex-end; padding-right: 5px; }
+/* Regular: the point puck sits on the top rule, centred; C sits in the LAY strip (their labels hide) */
+.app.play .felt.bfx.mode-regular .numbox .feltpuck { top: 0; right: auto; left: 50%; transform: translateX(-50%); width: 17px; height: 17px; }
+.app.play .felt.bfx.lay-short.mode-regular .numbox .feltpuck { width: 14px; height: 14px; }
+.app.play .felt.bfx.mode-regular .numbox .cmark { top: 2px; left: 2px; padding: 1.5px 4px 1px; }
+.app.play .felt.bfx.mode-regular .numbox:is(:has(.feltpuck), :has(.cmark)) .half.lay:not(.has) > span { visibility: hidden; }
+/* rare: a Don't Come on the same number as the point or a Come bet -> corners */
+.app.play .felt.bfx.mode-regular .numbox:has(.half.lay.has) .feltpuck { top: -9px; left: auto; right: -5px; transform: none; }
+.app.play .felt.bfx.mode-regular .numbox:has(.half.lay.has) .cmark { top: auto; bottom: 21px; left: -4px; }
+
+/* ---------- 5. Come row + bet-type toggle (one 44 screen-px row) ---------- */
+.app.play .felt.bfx .band.comeband { display: grid; gap: 4px; padding: 0; background: none; border: 0; height: 100%; }
+.app.play .felt.bfx.mode-crapless .band.comeband { grid-template-columns: minmax(0,1fr) auto; }
+.app.play .felt.bfx.mode-regular  .band.comeband { grid-template-columns: minmax(0,1fr) minmax(0,1fr) auto; }
+.app.play .felt.bfx .numbet {
+  display: flex; align-items: stretch; height: 100%; border: 0; padding: 0; border-radius: 6px; overflow: hidden;
+  box-shadow: inset 0 0 0 1.6px var(--bf-gold); background: rgba(0,0,0,.25);
+}
+.app.play .felt.bfx .numbet small {
+  display: grid; place-items: center; padding: 0 6px; text-align: center;
+  font: 700 var(--bf-label)/1.05 var(--serif, Cinzel, serif); color: var(--bf-gold); letter-spacing: .02em;
+}
+.app.play .felt.bfx.mode-regular .numbet small, .app.play .felt.bfx.lay-short .numbet small { display: none; }
+.app.play .felt.bfx .numbet button {
+  width: max(48px, var(--hit)); height: 100%; padding: 0; border: 0; border-left: 1.6px solid var(--bf-gold); background: transparent; cursor: pointer;
+  font: 800 var(--bf-amt)/1 var(--sans, Archivo, sans-serif); letter-spacing: .08em; color: var(--bf-gold); text-transform: uppercase;
+}
+.app.play .felt.bfx .numbet button:first-of-type { border-left: 0; }
+.app.play .felt.bfx .numbet small + button { border-left: 1.6px solid var(--bf-gold); }
+.app.play .felt.bfx .numbet button.on { background: linear-gradient(180deg, #F3DFA0, #C9A961); color: #2A1E05; }
+.app.play .felt.bfx .numbet button.lay.on { background: linear-gradient(180deg, #F6D2CB, #E39A8F); color: #3A0B0B; }
+.app.play .felt.bfx .numbet button:disabled { opacity: .35; cursor: default; }
+.app.play .felt.bfx .spot.come b { font-size: 18px; }
+
+/* ---------- 6. Field ---------- */
+.app.play .felt.bfx .band.fieldband { padding: 0; height: 100%; }
+.app.play .felt.bfx .spot.field { flex-flow: row wrap; justify-content: center; align-content: center; column-gap: 8px; row-gap: 2px; padding: 2px 6px 3px; }
+.app.play .felt.bfx .spot.field .fieldnums { flex: 0 0 100%; order: 1; gap: 4px; }
+.app.play .felt.bfx .spot.field .fieldnums .fn.dbl { flex-basis: 24px; width: 24px; height: 24px; font-size: 15px; }
+.app.play .felt.bfx .spot.field, .app.play .felt.bfx .spot.field.has { padding: 0 6px; row-gap: 1px; }
+.app.play .felt.bfx.lay-short .spot.field .fieldnums .fn.dbl { flex-basis: 22px; width: 22px; height: 22px; }
+.app.play .felt.bfx .spot.field > b { order: 2; font-size: 11px; line-height: 1; }
+.app.play .felt.bfx .spot.field > small { order: 3; font-size: var(--bf-label); line-height: 1; }
+
+/* ---------- 7. Pass band ---------- */
+.app.play .felt.bfx .band.passline { height: 100%; padding: 0; gap: 3px; display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0,1fr); }
+.app.play .felt.bfx.mode-crapless .band.passline { grid-template-columns: 1.4fr 1fr; }
+
+/* ---------- 8. Props: one 20-column grid, 3 rows (R15-9) ---------- */
+.app.play .felt.bfx .prop {
+  display: grid; grid-template-columns: repeat(20, minmax(0,1fr)); grid-template-rows: repeat(3, minmax(0,1fr));
+  gap: 3px; height: 100%; margin: 0; padding: 0; background: none; border: 0;
+}
+.app.play .felt.bfx .prop .horncol, .app.play .felt.bfx .prop .box2, .app.play .felt.bfx .prop .hornfoot, .app.play .felt.bfx .prop .midcol { display: contents; }
+.app.play .felt.bfx .prop .spot { border-radius: 5px; }
+.app.play .felt.bfx .prop [data-kind="hardway"][data-number="4"]  { grid-area: 1 / 1 / 2 / 5; }
+.app.play .felt.bfx .prop [data-kind="hardway"][data-number="6"]  { grid-area: 1 / 5 / 2 / 9; }
+.app.play .felt.bfx .prop [data-kind="hardway"][data-number="8"]  { grid-area: 1 / 9 / 2 / 13; }
+.app.play .felt.bfx .prop [data-kind="hardway"][data-number="10"] { grid-area: 1 / 13 / 2 / 17; }
+.app.play .felt.bfx .prop [data-kind="hardAllDay"]                { grid-area: 1 / 17 / 3 / 21; }
+.app.play .felt.bfx .prop [data-kind="hop"][data-pair="1-1"]      { grid-area: 2 / 1 / 3 / 4; }
+.app.play .felt.bfx .prop [data-kind="hop"][data-pair="1-2"]      { grid-area: 2 / 4 / 3 / 9; }
+.app.play .felt.bfx .prop [data-kind="hop"][data-pair="5-6"]      { grid-area: 2 / 9 / 3 / 12; }
+.app.play .felt.bfx .prop [data-kind="hop"][data-pair="6-6"]      { grid-area: 2 / 12 / 3 / 17; }
+.app.play .felt.bfx .prop [data-kind="anyCraps"]                  { grid-area: 3 / 1 / 4 / 6; }
+.app.play .felt.bfx .prop [data-kind="ce"]                        { grid-area: 3 / 6 / 4 / 10; }
+.app.play .felt.bfx .prop [data-kind="horn"]                      { grid-area: 3 / 10 / 4 / 13; }
+.app.play .felt.bfx .prop [data-kind="any7"]                      { grid-area: 3 / 13 / 4 / 21; }
+.app.play .felt.bfx .prop .spot.hwad { justify-content: center; }
+.app.play .felt.bfx .prop .spot.hwad .lamps { margin-top: 2px; gap: 2px; }
+.app.play .felt.bfx .prop .spot.hwad .lamp { width: 12.5px; height: 12.5px; line-height: 12.5px; font-size: 10.3px; }
+.app.play .felt.bfx .prop .spot.bigred b { font-size: 12px; }
+.app.play .felt.bfx.lay-short .ats .lamp { width: 11.5px; height: 11.5px; line-height: 11.5px; font-size: 9.6px; }
+.app.play .felt.bfx.lay-short .ats .spot { padding-top: 1px; }
+/* short phones: props rows are ~25 felt px, so a bet line (13) + name (10.5) must fit */
+.app.play .felt.bfx.lay-short .prop .spot { padding: 0 2px; row-gap: 0; }
+.app.play .felt.bfx.lay-short .prop .spot > small, .app.play .felt.bfx.lay-short .prop .spot > b { line-height: 1; }
+.app.play .felt.bfx.lay-short .spot.has > .amt { font-size: 10.5px; padding: 1px 4px .5px 7px; }
+.app.play .felt.bfx.lay-short .spot.has > .stack { height: 12px; flex-basis: 12px; width: 12px; }
+.app.play .felt.bfx.lay-short .spot.has > .stack img { width: 12px; height: 12px; }
+.app.play .felt.bfx.lay-short .prop .spot.bigred b { font-size: 11px; }

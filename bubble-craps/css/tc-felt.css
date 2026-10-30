@@ -1,0 +1,111 @@
+/* Table Craps felt (SHIPS). Locked layout (spec S4): ATS strip · numbers 4-10 (Lay/Buy above, Place below)
+   · Come | Don't Come · Field · Horn 2x2 | Big Red over Hard Way All Day | Hard Ways 2x2 · Pass | Odds | Don't Pass | Lay Odds.
+   Same method as the Bubble Craps run-15 board fix: fixed rows (≥44 px each), in-box amount pills, corner chip badges,
+   real digits 6 and 9, no squeeze, no scroll. Rows are set in px by fitTable(); fonts by --k. */
+.tc-stage:has(.tc-coach) .tc-felt{align-self:start;height:auto}
+.tc-felt{--k:1;position:relative;align-self:stretch;height:100%;width:100%;max-width:none;min-width:0;display:grid;gap:var(--g,3px);padding:var(--fp,6px);
+  border-radius:calc(22px*var(--k));
+  background:
+    radial-gradient(70% 45% at 50% 0%,rgba(255,255,255,.10),transparent 70%),
+    radial-gradient(120% 90% at 50% 50%,transparent 55%,rgba(0,0,0,.45)),
+    linear-gradient(180deg,var(--felt-hi),var(--felt) 35%,var(--felt-lo));
+  box-shadow:0 0 0 var(--ring,7px) var(--rail-b),0 0 0 calc(var(--ring,7px) + 1.5px) #C9A961,0 18px 40px rgba(0,0,0,.7);
+  grid-template-columns:100%;grid-template-areas:"ats" "nums" "come" "field" "props" "line"}
+.tc-felt::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:.35;mix-blend-mode:soft-light;
+  background-image:repeating-linear-gradient(45deg,rgba(255,255,255,.05) 0 1px,transparent 1px 3px)}
+.tc-felt .spot{position:relative;min-width:0;min-height:0;border:1.6px solid var(--line);border-radius:6px;color:var(--ink);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;overflow:visible;
+  font:700 calc(9.5px*var(--k))/1.05 var(--serif);letter-spacing:.06em;text-transform:uppercase;text-shadow:0 1px 0 rgba(0,0,0,.45);
+  background:rgba(0,0,0,.08)}
+.tc-felt .spot .lb{font-size:max(8px,calc(10px*var(--k)))}
+.tc-felt .spot .sub{font:800 max(8px,calc(9px*var(--k)))/1.1 var(--sans);letter-spacing:.06em;color:var(--line);opacity:.95}
+/* --- corner chip + amount badge (shared by every bet spot) --- */
+.tc-felt .bet{position:relative;z-index:3;display:flex;align-items:center;gap:2px;pointer-events:none;flex:0 0 auto}
+.tc-felt .bet img{width:calc(16px*var(--k));height:calc(16px*var(--k));min-width:13px;min-height:13px;border-radius:50%;box-shadow:0 1.5px 2px rgba(0,0,0,.6)}
+.tc-felt .amt{display:inline-block;padding:0 4px;border-radius:999px;background:#0A0C10;color:#fff;border:1px solid rgba(255,231,160,.65);
+  font:800 max(9px,calc(10px*var(--k)))/1.35 var(--sans);letter-spacing:0;text-transform:none;font-variant-numeric:tabular-nums;white-space:nowrap;text-shadow:none}
+.tc-felt .amt i{font-style:normal;color:#FFD36A;margin-right:2px}
+/* badges sit IN FLOW (lesson from the Bubble Craps board fix: absolute corner badges ended up over labels) */
+.tc-felt .spot{gap:max(1px,calc(2px*var(--k)))}
+.tc-felt .spot .lb,.tc-felt .spot .sub{white-space:nowrap}
+.tc-felt .ats .spot{display:grid;grid-template-columns:auto auto;grid-template-rows:auto auto;column-gap:4px;align-content:center;justify-content:center;align-items:center}
+.tc-felt .ats .spot .lb{grid-column:1}.tc-felt .ats .spot .bet{grid-column:2;grid-row:1}
+.tc-felt .ats .spot .lamps,.tc-felt .ats .spot .sub{grid-column:1/-1;justify-self:center}
+/* tiny cells: the pill alone carries the bet (chip art kept in roomy spots) */
+.tc-felt .horn .bet img,.tc-felt .hard .bet img{display:none}
+.tc-app.narrow .tc-felt .ats .bet img{display:none}
+.tc-felt .ats .spot .lb .payX{font:800 max(8px,calc(8.5px*var(--k)))/1 var(--sans);letter-spacing:.04em;color:var(--line);margin-left:3px}
+/* --- ATS --- */
+.tc-felt .ats{grid-area:ats;display:grid;grid-template-columns:1fr 1.25fr 1fr;gap:var(--g,3px)}
+.tc-felt .lamps{display:flex;gap:2px;margin-top:2px}.tc-felt .lamps i{width:calc(9px*var(--k));height:calc(9px*var(--k));border-radius:50%;
+  border:1px solid rgba(255,231,160,.45);font:800 calc(6px*var(--k))/calc(7.5px*var(--k)) var(--sans);color:#FFE7A0;font-style:normal}
+.tc-felt .lamps i.on{background:#FFD36A;border-color:#FFD36A;box-shadow:0 0 6px rgba(255,211,106,.8)}
+/* --- numbers --- */
+.tc-felt .nums{grid-area:nums;display:grid;grid-template-columns:repeat(6,1fr);gap:var(--g,3px)}
+.tc-felt .numbox{display:grid;grid-template-rows:var(--strip-lay) var(--strip) 1fr var(--strip);padding:0;justify-content:stretch}
+.tc-felt .numbox .half{display:flex;align-items:center;justify-content:center;min-height:0;overflow:hidden;border-bottom:1px solid rgba(233,214,166,.55);
+  font:800 max(8px,calc(8.5px*var(--k)))/1 var(--sans);letter-spacing:.06em;color:var(--line)}
+.tc-felt .numbox .half.place{border-bottom:0;border-top:1px solid rgba(233,214,166,.55)}
+.tc-felt .numbox .half.lay{opacity:.9}
+.tc-felt .numbox .half .amt{font-size:min(10px,max(9px,calc(10px*var(--k))));padding:0 3px;line-height:1.15}
+.tc-felt .numbox .face{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;min-height:0;position:relative}
+.tc-felt .numbox .face .d{display:block;height:calc(var(--digit,34px)*.86);font:900 var(--digit,34px)/.86 var(--serif);color:var(--ink);letter-spacing:0}
+.tc-felt .numbox .face .amt{font-size:max(9px,calc(10px*var(--k)));line-height:1.2}
+.tc-felt .numbox .amt{padding:0 2px;letter-spacing:-.01em}.tc-felt .numbox .amt i{margin-right:1px}
+
+.tc-felt .numbox .puck{position:absolute;top:2px;right:2px;width:calc(17px*var(--k));height:calc(17px*var(--k));min-width:14px;min-height:14px}
+.tc-felt .numbox.point{box-shadow:inset 0 0 0 1.5px #FFD36A}
+/* --- come / don't come / field --- */
+.tc-felt .comerow{grid-area:come;display:grid;grid-template-columns:minmax(0,1.25fr) auto minmax(0,1fr);gap:var(--g,3px)}
+.tc-felt .come{flex-direction:column}
+.tc-felt .come .lb{font:900 calc(26px*var(--k))/1 var(--serif);color:var(--come-ink);-webkit-text-stroke:.6px #E2BC62;letter-spacing:.06em}
+.tc-felt .field{grid-area:field;flex-direction:row;gap:calc(6px*var(--k));padding-bottom:calc(9px*var(--k))}
+.tc-felt .field .fn{font:900 calc(16px*var(--k))/1 var(--serif);color:var(--ink)}
+.tc-felt .field .fn.ring{display:grid;place-items:center;width:calc(24px*var(--k));height:calc(24px*var(--k));border:1.5px solid var(--ink);border-radius:50%}
+.tc-felt .field .fl{position:absolute;left:0;right:0;bottom:max(1px,calc(2px*var(--k)));font-size:max(8px,calc(8.5px*var(--k)))}
+/* --- props block: Horn 2x2 | Big Red over Hard Way All Day | Hard Ways 2x2 --- */
+.tc-felt .props{grid-area:props;display:grid;grid-template-columns:1fr 1.15fr 1fr;grid-template-rows:1fr 1fr;gap:var(--g,3px);
+  grid-template-areas:"horn bigred hard" "horn hwad hard"}
+.tc-felt .horn{grid-area:horn;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:var(--g,3px)}
+.tc-felt .hard{grid-area:hard;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:var(--g,3px)}
+.tc-felt .bigred{grid-area:bigred;background:linear-gradient(#C21F2E,#8E1420);color:#fff;border-color:#FFD36A}
+.tc-felt .bigred .lb{font:900 max(10px,calc(13px*var(--k)))/1 var(--serif);color:#fff}
+.tc-felt .bigred .sub{color:#FFE7A0}
+.tc-felt .hwad{grid-area:hwad}
+.tc-felt .pd{display:flex;gap:2px;justify-content:center}
+.tc-felt .pd img{width:calc(13px*var(--k));height:calc(13px*var(--k));min-width:11px;min-height:11px}
+.tc-felt .props .spot .sub{font-size:max(8px,calc(8.5px*var(--k)))}
+/* --- line row --- */
+.tc-felt .line{grid-area:line;display:grid;grid-template-columns:1.4fr .95fr 1.1fr .95fr;gap:var(--g,3px)}
+.tc-felt .pass{flex-direction:column}.tc-felt .pass .lb{font:900 calc(15px*var(--k))/1 var(--serif);letter-spacing:.08em}
+.tc-felt .print{position:absolute;left:50%;top:calc(-4px*var(--k));transform:translate(-50%,-100%);font:700 9px/1 var(--serif);letter-spacing:.2em;color:var(--line);opacity:.7;white-space:nowrap}
+/* ---------- landscape phones: props block on the left, main board on the right, line row full width ---------- */
+.tc-felt.land{max-width:none;min-width:0;height:100%;overflow:hidden;grid-template-columns:minmax(170px,.8fr) minmax(0,1.5fr);
+  grid-template-areas:"props ats" "props nums" "props come" "props field" "line line"}
+.tc-felt.land .spot{overflow:hidden}
+.tc-felt.land .come .lb{font-size:clamp(13px, 4.2vw, 18px);-webkit-text-stroke:0}
+.tc-felt.land .numbox{grid-template-rows:var(--strip-lay) var(--strip) minmax(0,1fr) var(--strip)}
+.tc-felt.land .numbox .half{font-size:8px;letter-spacing:0;overflow:hidden;min-height:16px}
+.tc-felt.land .numbox .half .amt,.tc-felt.land .numbox .face .amt{max-width:100%;overflow:hidden;text-overflow:ellipsis;font-size:9px;line-height:11px;padding:0 2px}
+.tc-felt.land .comerow{grid-template-columns:minmax(44px,1fr) auto minmax(44px,1fr);grid-template-rows:minmax(44px,1fr)}
+.tc-felt.land .comerow .come,.tc-felt.land .comerow .dc{min-height:44px}
+.tc-felt.land .comerow .numbet{width:auto;align-self:stretch}
+.tc-felt .horn .spot,.tc-felt .hard .spot{min-width:44px;min-height:44px}
+.tc-felt.land .props{grid-template-columns:1fr 1fr;grid-template-rows:repeat(4,minmax(44px,1fr));min-height:0;
+  grid-template-areas:"horn hard" "horn hard" "bigred bigred" "hwad hwad"}
+/* --- PLACE | BUY | LAY toggle: decides what a number-box tap bets (one number bet per number). 44x44 targets. --- */
+.tc-felt .numbet{display:flex;align-self:center;border-radius:10px;border:1px solid rgba(233,214,166,.6);overflow:hidden;background:rgba(0,0,0,.35)}
+.tc-felt .numbet button{width:44px;height:44px;min-width:44px;min-height:44px;border:0;background:none;color:var(--line);font:800 9px/1 var(--sans);letter-spacing:.06em;padding:0}
+.tc-felt .numbet button+button{border-left:1px solid rgba(233,214,166,.35)}
+.tc-felt .numbet button.on{background:linear-gradient(#FFE7A0,#E2BC62);color:#2A1A00}
+
+/* --- back wall diamond bumper & settled 3D dice on the felt --- */
+.tc-felt-wall{position:absolute;left:12px;right:12px;top:0;height:5px;pointer-events:none;z-index:2;border-radius:0 0 4px 4px;opacity:.72;
+  background:repeating-linear-gradient(90deg,#B8923E 0 7px,#4E3A14 7px 9px);transition:box-shadow 150ms,opacity 150ms}
+.tc-felt-wall.hit,.tc-shooter .wall.hit{opacity:1;box-shadow:0 2px 14px rgba(255,211,106,.95)}
+.tc-felt-dice{position:absolute;right:12px;top:43%;transform:translateY(-50%);pointer-events:none;z-index:4;display:flex;gap:6px;
+  padding:3px 5px;border-radius:10px;background:rgba(4,10,16,.42);border:1px solid rgba(255,211,106,.35);filter:drop-shadow(0 4px 8px rgba(0,0,0,.65));transition:opacity 180ms}
+.tc-felt-dice .tc-cube.sm{--s:26px}
+body:has(.tt-layer) .tc-felt-dice,body:has(.tt-layer) .tc-table-dice{opacity:0}
+.tc-app.shooter-page:not(.rolling-felt) #felt{display:none}
+.tc-app.shooter-page.rolling-felt .tc-shooter{position:absolute;inset:0;opacity:0;pointer-events:none;z-index:-1}

@@ -1,0 +1,147 @@
+/* Run 13: readable 3D dice, Field numbers, HUD avatar. Loaded last. */
+
+/* The live dice sit on the body, outside the felt zoom. Don't let the 16px gap shrink them. */
+.dice-live .cube3d { flex: 0 0 auto; }
+
+/* Dealer Billy's round avatar: the SVG already carries the gold ring and is round-safe. */
+.app.play .homebtn {
+  box-sizing: border-box;
+  width: 40px;
+  height: 40px;
+  flex: 0 0 40px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #0F4A31;
+  line-height: 0;
+  box-shadow: 0 0 0 1.5px #C9A961, 0 1px 3px rgba(0, 0, 0, .45);
+}
+.app.play .homebtn img {
+  display: block;
+  width: 40px;
+  height: 40px;
+  max-width: none;
+  object-fit: contain;
+  object-position: center center;
+  border-radius: 50%;
+}
+@media (max-height: 500px) and (orientation: landscape) {
+  .app.play .homebtn { width: 32px; height: 32px; flex-basis: 32px; }
+  .app.play .homebtn img { width: 32px; height: 32px; }
+}
+@media (max-width: 359px) {
+  .app.play .homebtn { width: 44px; height: 44px; flex-basis: 44px; }
+  .app.play .homebtn img { width: 44px; height: 44px; }
+}
+
+/* Field: every paying number, with 2 and 12 circled for double. */
+.app.play .spot.field {
+  min-height: 56px;
+  padding: 3px 6px 4px;
+  gap: 1px;
+}
+.app.play .fieldnums {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 3px;
+}
+.app.play .fieldnums .fn {
+  flex: 1 1 0;
+  min-width: 0;
+  font-family: var(--serif);
+  font-style: normal;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1;
+  color: #f8f3e8;
+  text-align: center;
+}
+.app.play .fieldnums .fn.dbl {
+  flex: 0 0 22px;
+  width: 22px;
+  height: 22px;
+  display: grid;
+  place-items: center;
+  border: 1.5px solid #C9A961;
+  border-radius: 50%;
+  color: #FFD36A;
+  font-size: 12px;
+  background: rgba(6, 28, 18, .72);
+}
+.app.play .spot.field b {
+  font-size: 12px;
+  letter-spacing: .16em;
+  line-height: 1.05;
+}
+.app.play .spot.field small {
+  font-size: 9px;
+  letter-spacing: .04em;
+  white-space: nowrap;
+  color: #FFD36A;
+}
+
+/* The zoomed column was shorter than the viewport, leaving an empty band. */
+@media (max-width: 359px) {
+  .app.play { height: calc(100dvh * 352px / 100vw); }
+}
+
+/* Short phones: keep a glass tall enough for a 40px die. Secondary chrome yields. */
+@media (max-height: 720px) {
+  .app.play .page:has(.dome-screen) { overflow: auto; }
+  .app.play .dome-screen {
+    flex: 0 0 auto;
+    min-height: auto;
+    height: auto;
+    gap: 4px;
+  }
+  .app.play .dome-screen .machine {
+    flex: 0 0 auto;
+    width: auto;
+    max-width: 100%;
+    height: 280px;
+    min-height: 280px;
+    max-height: none;
+    aspect-ratio: 860 / 1120;
+  }
+  .app.play .dome-screen .heater { display: none; }
+  .app.play .dome-screen .rollstrip { margin: 0; flex: 0 0 auto; }
+  .app.play .dome-cast {
+    transform: scale(.55);
+    transform-origin: left bottom;
+  }
+  .app.play .dome-screen .result-line { margin: 0; font-size: 18px; }
+  .app.play .legal {
+    padding-top: 0;
+    padding-bottom: 0;
+    line-height: 16px;
+  }
+}
+
+/* 320px zoom would shrink a 280px glass below a 40px die. Size it in CSS pixels. */
+@media (max-width: 359px) and (max-height: 720px) {
+  .app.play .dome-screen .machine {
+    height: calc(280px * 352px / 100vw);
+    min-height: calc(280px * 352px / 100vw);
+  }
+}
+
+/* Bonus chip stays inset from the screen edge, centered in the stamp. */
+.winlayer .winrow {
+  width: calc(100% - 32px);
+  max-width: calc(100vw - 32px);
+  margin-inline: auto;
+  box-sizing: border-box;
+}
+.winstamp { min-width: 0; max-width: 100%; }
+.winstamp em {
+  box-sizing: border-box;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Billie cheers on the BIG WIN. She steps aside only while a marquee is actually up. */
+body.bigwin .win-billie { visibility: visible; }
+body.mascot-toast:has(#badge-toast .badgetoast.marquee) .win-billie { visibility: hidden; }

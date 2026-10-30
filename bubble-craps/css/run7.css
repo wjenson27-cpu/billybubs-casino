@@ -1,0 +1,146 @@
+/* Run 7: toast, one mascot, felt scale, gallery bars, ladder labels. Loaded last. */
+
+#badge-toast { pointer-events: none; }
+.badgetoast {
+  position: fixed;
+  left: max(12px, calc(50% - 228px));
+  right: max(12px, calc(50% - 228px));
+  bottom: auto;
+  top: calc(var(--dots-top, var(--dock-top, 72%)) - 8px);
+  transform: translateY(-100%);
+  z-index: 35;
+  pointer-events: auto;
+  max-width: 456px;
+  margin: 0 auto;
+}
+.badgetoast.out { opacity: 0; transition: opacity .2s linear; }
+.badgetoast .tierpill {
+  display: inline-block;
+  font-style: normal;
+  font-size: 10px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: #1a1208;
+  background: #C9A961;
+  border-radius: 999px;
+  padding: 2px 8px;
+}
+.badgetoast.marquee { align-items: flex-start; }
+.badgetoast.legendary {
+  background:
+    radial-gradient(120% 80% at 0% 0%, rgba(122, 46, 168, .55), transparent 55%),
+    radial-gradient(90% 80% at 100% 0%, rgba(201, 169, 97, .35), transparent 50%),
+    #10281c;
+}
+.badgetoast .billieline { margin: 4px 0 0; color: #FFD36A; font-size: 13px; }
+.badgetoast button {
+  min-height: 36px;
+  min-width: 64px;
+  border-radius: 999px;
+  border: 1px solid #C9A961;
+  background: transparent;
+  color: #FFD36A;
+  font-weight: 800;
+}
+body.bigwin .dome-billy,
+body.mascot-toast .dome-billy { visibility: hidden; }
+body.bigwin #badge-toast,
+body:has(.recordcard) #badge-toast { visibility: hidden; pointer-events: none; }
+
+.badgebar {
+  display: block;
+  width: 100%;
+  height: 4px;
+  margin: 4px 0 2px;
+  background: rgba(255, 255, 255, .12);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.badgebar i { display: block; height: 4px; background: #C9A961; }
+.badgetile { position: relative; overflow: hidden; }
+.tierbars { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 8px 0 12px; }
+.tierbar { text-align: center; }
+.tierbar b { display: block; font-size: 12px; }
+.tierbar small { display: block; text-transform: uppercase; letter-spacing: .06em; font-size: 10px; color: #b7a88a; }
+.badgesec { margin: 14px 0 6px; font-size: 13px; letter-spacing: .04em; color: #FFD36A; }
+
+.stropts {
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  height: 36px;
+  gap: 6px;
+  scrollbar-width: none;
+  align-items: center;
+}
+.stropts button { white-space: nowrap; height: 32px; min-height: 32px; }
+
+.app.play .numbox { position: relative; }
+.app.play .numbox .half { position: relative; }
+.app.play .numbox .half.place { min-height: 28px; z-index: 1; }
+.app.play .numbox .half.place::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 44px;
+}
+.app.play .numbox .half.buy { z-index: 2; }
+.app.play .numbox .half.buy::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -8px;
+  bottom: 0;
+}
+
+.press-btn.power .pl1 { white-space: normal; font-size: 11px; line-height: 1.15; }
+.limitchip { white-space: nowrap; }
+.initactions { display: flex; gap: 8px; flex-wrap: wrap; }
+.initactions button { min-height: 44px; border-radius: 999px; }
+.setinits { justify-content: flex-end; }
+.setinits .init {
+  width: 48px;
+  height: 52px;
+  font-family: "VT323", monospace;
+  font-size: 24px;
+  background: #140F08;
+  border: 1px solid #C9A961;
+  color: #FFD36A;
+}
+
+@media (max-height: 500px) and (orientation: landscape) {
+  .app.play { grid-template-columns: 1fr 156px; }
+  .app.play .hud { overflow: hidden; gap: 8px; }
+  .app.play .hud-row1 {
+    flex: 0 0 auto;
+    width: auto;
+    max-width: none;
+    height: 36px;
+    gap: 4px;
+    overflow: visible;
+  }
+  .app.play .lockup { display: none; }
+  .app.play .homebtn,
+  .app.play .homebtn img { width: 32px; height: 32px; }
+  .app.play .modeseg { flex: 0 0 auto; margin-left: 0; }
+  .app.play .modeseg button {
+    min-height: 28px;
+    height: 28px;
+    font-size: 10px;
+    letter-spacing: .04em;
+    padding: 0 7px;
+  }
+  .app.play .hud-row2 { flex: 1 1 auto; min-width: 0; overflow: hidden; height: 36px; }
+  .app.play .hud-bank small { letter-spacing: .06em; }
+  .app.play .hud-bank strong { font-size: 12px; }
+  .app.play .clearchip { display: none; }
+  .app.play .context .key small { display: none; }
+  .app.play .trough { grid-template-columns: repeat(3, 36px); }
+  .app.play .chip-btn { width: 36px; height: 36px; }
+  .app.play .chip-btn img { width: 32px; height: 32px; }
+  .app.play .dots { width: 156px; }
+  .badgetoast { right: 144px; left: 12px; }
+  .app.play .dock { overflow: visible; }
+}

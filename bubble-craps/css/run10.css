@@ -1,0 +1,63 @@
+/* Run 10: coach clicks, one mascot, right-hand dice support, phone strips. Loaded last. */
+
+#overlay:not(:empty) { pointer-events: none; }
+#overlay:not(:empty) > * { pointer-events: auto; }
+
+/* One mascot. Priority: badge marquee > big win > heat cheer > tutor > board cheer > dome. */
+body.has-billy-toast .dome-cast { visibility: hidden; }
+body.has-coach .coach-billie,
+body.has-coach .toast-billie.board-cheer,
+body.has-coach .board-cheer { visibility: hidden; }
+body.has-heat .dome-cast,
+body.has-heat .coach-billie,
+body.has-heat .coach-top img { visibility: hidden; }
+body.bigwin .dome-cast,
+body.bigwin .toast-billy,
+body.bigwin .toast-billie,
+body.bigwin .coach-billie,
+body.bigwin .coach-top img { visibility: hidden; }
+body.mascot-toast .win-billie,
+body.mascot-toast .dome-cast,
+body.mascot-toast .toast-billy,
+body.mascot-toast .toast-billie,
+body.mascot-toast .coach-billie,
+body.mascot-toast .coach-top img { visibility: hidden; }
+body.bigwin.mascot-toast #badge-toast { visibility: visible; pointer-events: auto; }
+
+.dome-screen .machine { max-height: calc(100% - 160px); }
+.dome-screen .rollstrip {
+  flex: 0 0 auto;
+  min-height: 30px;
+}
+@media (max-height: 500px) and (orientation: landscape) {
+  .app.play .dome-screen .machine { max-height: calc(100% - 56px); }
+}
+
+.rollstrip { gap: 1px; }
+.rolltile { flex: 0 0 30px; }
+
+.app.play .numbox { position: relative; }
+.app.play .numbox .face { position: static; }
+.feltpuck {
+  top: -6px;
+  right: -6px;
+  width: 24px;
+  height: 24px;
+}
+
+.hud-row2 .heater.compact {
+  margin-right: 8px;
+  flex: 0 0 auto;
+}
+
+.lastdice .readout { padding-right: 6px; }
+
+.badgetoast.marquee > div { min-width: 0; flex: 1 1 auto; }
+.badgetoast.marquee .view { margin-right: 0; flex: 0 0 auto; }
+
+.endedon { flex-wrap: nowrap; }
+.endedon .readout { flex: 0 0 auto; }
+.endedon .outtag { white-space: nowrap; }
+
+.toast.seven .speech { display: flex; flex-direction: column; gap: 4px; align-items: flex-start; }
+.winstamp .readout { margin-top: 6px; }

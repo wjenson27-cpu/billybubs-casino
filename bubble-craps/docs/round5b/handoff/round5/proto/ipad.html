@@ -1,0 +1,32 @@
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Billy Bubs iPad layout</title>
+<link rel="stylesheet" href="r5.css">
+<style>
+html,body{margin:0;height:100%;background:#04060A;overflow:hidden}
+.ip{display:grid;height:100vh;gap:0}
+.ip iframe{border:0;width:100%;height:100%;display:block;background:#04060A}
+.ip .col{position:relative;min-width:0;min-height:0;border-left:1px solid rgba(228,204,143,.35)}
+.ip .col:first-child{border-left:0}
+.ip.land{grid-template-columns:62fr 38fr}
+.ip.land3{grid-template-columns:24fr 46fr 30fr}
+.ip.port{grid-template-rows:60fr 40fr}.ip.port .col{border-left:0;border-top:1px solid rgba(228,204,143,.35)}.ip.port .col:first-child{border-top:0}
+.edge{position:absolute;left:0;top:50%;transform:translateY(-50%);z-index:5;width:28px;min-height:120px;border-radius:0 12px 12px 0;background:#141A22;border:1px solid rgba(255,211,106,.5);border-left:0;
+  color:#FFD36A;font:900 11px/1 Archivo,system-ui,sans-serif;letter-spacing:.14em;writing-mode:vertical-rl;display:flex;align-items:center;justify-content:center}
+.lbl{position:absolute;right:8px;bottom:8px;z-index:5;padding:4px 8px;border-radius:8px;background:rgba(0,0,0,.7);color:#C8D3E2;font:800 10px/1 Archivo,system-ui,sans-serif;letter-spacing:.1em;pointer-events:none}
+</style>
+<div class="ip" id="ip"></div>
+<script>
+// iPad composition: one app laid out as columns. Each column is the shipping page at that column's size (mock: separate instances).
+const Q=new URLSearchParams(location.search),APP=Q.get("app")||"bc",U=APP==="tc"?"/app/table/index.html":"/app/index.html";
+const W=innerWidth,H=innerHeight,ip=document.getElementById("ip"),land=W>H,three=land&&W>=1366;
+// BC pages are phone-shaped, so BC is always columns (portrait too) and each column scales its page up to fit (never down).
+// TC's felt likes width: TC landscape = columns, TC portrait = Board over Shooter.
+const cols=three?3:2, bcCols=APP==="bc";
+ip.className="ip "+(land?(three?"land3":"land"):(bcCols?"land":"port"));
+if(bcCols)ip.style.gridTemplateColumns=`repeat(${cols},1fr)`;
+const z=1; // OPEN Q9: scale-up belongs in the build (board-fix k), not CSS zoom; zoom broke the fit math in testing
+const col=(pg,lab,chrome)=>`<div class="col"><iframe title="${lab}" src="${U}?pg=${pg}${chrome?"":"&chrome=0"}${z>1?"&zoom="+z:""}"></iframe><span class="lbl">${lab}</span></div>`;
+ip.innerHTML=three?col(0,"SIDE BETS",false)+col(1,"BOARD",true)+col(2,APP==="tc"?"SHOOTER":"DICE",false)
+ :col(1,"BOARD",true)+col(2,APP==="tc"?"SHOOTER":"DICE",false)+(land?"":"");
+if(!three)ip.insertAdjacentHTML("beforeend",'<button class="edge" aria-label="Open side bets">SIDE BETS ›</button>');
+</script>

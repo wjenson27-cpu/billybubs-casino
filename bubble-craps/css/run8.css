@@ -1,0 +1,161 @@
+/* Run 8: top-face dice read, store-shot polish. Loaded last. */
+
+.dome-screen .rollstrip {
+  flex-wrap: nowrap;
+  overflow: hidden;
+  justify-content: center;
+  max-width: 100%;
+}
+.dome-screen .rchip { flex: 0 0 28px; }
+
+.feltpuck {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 36px;
+  height: 36px;
+  z-index: 3;
+  pointer-events: none;
+}
+.app.play .numbox .face { position: relative; }
+
+.press-btn .pl1 { white-space: nowrap; font-size: 11px; }
+.press-btn.power .pl1 { white-space: nowrap; font-size: 10px; }
+.press-btn small { white-space: nowrap; }
+
+.badgetoast.marquee b {
+  display: block;
+  font-family: "Cinzel", Palatino, Georgia, serif;
+  font-size: 18px;
+  white-space: nowrap;
+  line-height: 1.1;
+}
+.badgetoast.marquee .facts { display: block; margin-top: 2px; font-size: 11px; color: #e4cc8f; }
+.badgetoast.marquee { overflow: hidden; }
+.badgetoast.marquee .burst {
+  position: absolute;
+  left: 8px;
+  top: 8px;
+  width: 72px;
+  height: 72px;
+  margin: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(201, 169, 97, .55), transparent 68%);
+  pointer-events: none;
+}
+.badgetoast.legendary {
+  background: linear-gradient(180deg, #2A1446, #12081F);
+  border: 2px solid #C9A961;
+}
+.badgetoast.legendary .burst {
+  background: radial-gradient(circle, rgba(201, 169, 97, .45), rgba(90, 40, 140, .35) 45%, transparent 70%);
+}
+.badgetoast.gold {
+  background: linear-gradient(180deg, #143528, #0c2418);
+  border: 1px solid #C9A961;
+}
+
+.toast.roll {
+  top: calc(var(--hud-bottom, 96px) + 6px);
+}
+.toast.roll button[data-act="toast-go"] {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.toast .netpill {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, .35);
+}
+
+.hud-point { flex: 0 0 auto; min-width: max-content; }
+.hud-point .pointname { white-space: nowrap; }
+@media (max-width: 420px) {
+  .app.play .hud-row2 { gap: 4px; }
+  .app.play .hud-bank strong { font-size: 14px; }
+  .app.play .puckimg { width: 20px; height: 20px; }
+  .app.play .heater .segs i { width: 8px; }
+  .app.play .lastdice { flex: 0 0 auto; }
+}
+
+.boardrow { grid-template-columns: 28px 1fr auto auto; }
+.rollcount {
+  font-family: "VT323", monospace;
+  font-size: 28px;
+  line-height: 1;
+  color: #FFD36A;
+  text-align: right;
+  min-width: 1.4em;
+}
+
+.dice-live { overflow: visible; }
+.dice-live.blazing::before,
+.dice-live.blazing::after {
+  content: "";
+  position: absolute;
+  bottom: 6px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  pointer-events: none;
+  background: #ff7a1a;
+  box-shadow: 14px -6px 0 #ffd36a, -12px -2px 0 #ff4d1a, 4px -14px 0 #ffb347;
+  animation: embers 600ms linear infinite;
+}
+.dice-live.blazing::before { left: 22%; }
+.dice-live.blazing::after { left: 58%; animation-delay: .2s; background: #ffd36a; }
+@keyframes embers {
+  from { transform: translateY(6px); opacity: .85; }
+  to { transform: translateY(-26px); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .dice-live.blazing::before,
+  .dice-live.blazing::after { animation: none; opacity: 0; }
+}
+html.reduce .dice-live.blazing::before,
+html.reduce .dice-live.blazing::after { animation: none; opacity: 0; }
+
+.badgedetail .pills { display: flex; gap: 8px; margin: 8px 0; }
+.badgedetail .modepill,
+.badgedetail .tierpill {
+  display: inline-block;
+  border-radius: 999px;
+  padding: 2px 8px;
+  font-size: 11px;
+  letter-spacing: .08em;
+  text-transform: none;
+  background: #C9A961;
+  color: #1a1208;
+}
+.rulecard {
+  margin: 8px 0;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid #C9A961;
+  background: rgba(0, 0, 0, .25);
+}
+.rulecard h3 { margin: 0 0 4px; font-size: 12px; letter-spacing: .12em; color: #FFD36A; }
+.factrow { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 8px 0; }
+.factrow div { text-align: center; }
+.factrow small { display: block; letter-spacing: .08em; text-transform: uppercase; color: #b7a88a; font-size: 10px; }
+.factrow b { display: block; font-size: 12px; }
+
+.initactions button {
+  min-height: 44px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 1px solid #C9A961;
+  background: transparent;
+  color: #FFD36A;
+  font-weight: 800;
+}
+.initactions button.go {
+  background: linear-gradient(180deg, #ffe7a0, #d8ae52 55%, #a67c2c);
+  color: #2a1c04;
+  border-color: transparent;
+}
+
+#stage, #pager, .page, .felt, .dock { touch-action: pan-y; }
+html, body { overscroll-behavior-x: none; }
