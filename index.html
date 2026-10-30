@@ -406,9 +406,9 @@
     padding: 18px 12px 16px;
   }
   .bj-felt::before {
-    content: ""; position: absolute; left: 50%; top: 10px; width: 64px; height: 64px;
+    content: ""; position: absolute; left: 50%; top: 36%; width: 78px; height: 78px;
     transform: translateX(-50%); background: var(--logo) center/contain no-repeat;
-    filter: grayscale(1) sepia(.55) brightness(.95); opacity: .3; pointer-events: none; z-index: 0;
+    filter: grayscale(1) sepia(.55) brightness(.95); opacity: .26; pointer-events: none; z-index: 0;
   }
   .bj-felt > *, .bacc-felt > *, .ro-felt > *, .felt > * { position: relative; z-index: 1; }
   .bj-felt::after, .bacc-felt::after, .ro-felt::after, .felt::after {
@@ -416,7 +416,37 @@
     border: 1.5px dashed rgba(241,217,160,.42); pointer-events: none; z-index: 3;
   }
   .bj-felt { text-align: center; }
-  .bj-felt .cards, .bj-felt .kicker { justify-content: center; text-align: center; }
+  .bj-felt .cards, .bj-felt .kicker { justify-content: center; text-align: center; width: 100%; }
+  .bj-shoe {
+    position: absolute; top: 10px; right: 10px; z-index: 2; width: 36px; height: 50px;
+    pointer-events: none;
+  }
+  .bj-shoe .card-svg {
+    width: 34px; height: 48px;
+    box-shadow: -4px 3px 0 #071226, -6px 5px 0 rgba(201,164,92,.85);
+  }
+  #panel-blackjack {
+    display: flex; flex-direction: column; gap: 12px;
+    min-height: calc(100dvh - 64px - 96px);
+  }
+  .bj-note {
+    flex: 1 1 auto; display: flex; flex-direction: column; justify-content: center; gap: 6px;
+    margin: 0; padding: 16px 16px; border-radius: 16px;
+    background: linear-gradient(180deg, #0E1A33, #071226);
+    border: 1px solid rgba(201,164,92,.45);
+    box-shadow: inset 0 1px 0 rgba(241,217,160,.16), 0 8px 18px rgba(0,0,0,.28);
+  }
+  .bj-note .meta { margin: 0; color: var(--ivory); font-size: 15px; line-height: 1.35; }
+  table.edges { border-collapse: separate; border-spacing: 0; table-layout: fixed; }
+  table.edges th, table.edges td { padding: 3px 6px; }
+  table.edges thead th {
+    position: sticky; top: calc(64px + env(safe-area-inset-top)); z-index: 4;
+    background: #12203a; box-shadow: inset 0 -1px 0 #2a3344;
+  }
+  table.edges button { min-height: 36px; min-width: 0; width: 100%; white-space: normal; line-height: 1.2; }
+  table.edges th, table.edges td { overflow-wrap: anywhere; }
+  table.edges td.num { white-space: normal; }
+  #edge-table { overflow: visible; }
   .bj-felt .print { letter-spacing: .16em; color: rgba(241,217,160,.62); }
   #bj-shows { margin: 8px auto; }
   .bj-chip { display: flex; justify-content: center; margin-top: 8px; }
@@ -455,6 +485,7 @@
   .bj-felt { padding: 10px 10px 8px; }
   .bj-felt .arc { height: 28px; margin: 2px 24px 4px; }
   .bj-felt .card-svg { width: 64px; height: 90px; }
+  .bj-felt .bj-shoe .card-svg { width: 34px; height: 48px; }
   .bj-felt .print { font-size: 11px; line-height: 1.3; }
   .bj-felt #bj-title { margin: 4px 0; }
   .pcards { flex-wrap: nowrap; justify-content: center; gap: 4px; }
@@ -487,7 +518,7 @@
     .grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) 44px; }
     .num { min-width: 0; padding: 0 2px; }
     .stakes { overflow-x: auto; }
-    #edge-table { overflow-x: auto; }
+    #edge-table { overflow: visible; }
   }
 </style>
 </head>
@@ -506,6 +537,7 @@
     <p class="score" id="bj-score" aria-live="polite"></p>
     <div class="bj-felt">
       <p class="kicker">Dealer</p>
+      <div class="bj-shoe" id="bj-shoe" aria-hidden="true"></div>
       <div class="cards" id="bj-dealer"></div>
       <p class="pill" id="bj-shows"></p>
       <p class="print">Blackjack pays 3 to 2</p>
@@ -524,8 +556,10 @@
       <button type="button" id="bj-P" data-act="bj-play" data-move="P">Split</button>
     </div>
     <button type="button" class="gold" id="bj-next" data-act="bj-next" hidden>Next hand</button>
-    <p class="meta" id="bj-sub"></p>
-    <p class="meta" id="bj-meta"></p>
+    <div class="bj-note">
+      <p class="meta" id="bj-sub"></p>
+      <p class="meta" id="bj-meta"></p>
+    </div>
     <div class="rowbtns">
       <button type="button" id="bj-chart-btn" data-act="bj-chart" aria-pressed="false">Full chart</button>
       <button type="button" id="bj-weak" data-act="bj-weak" aria-pressed="false">Weak spots</button>
@@ -2344,7 +2378,8 @@ function renderBj() {
   const h = state.bj.hand;
   $("bj-shows").textContent = "Shows " + (h.up === "T" ? "10" : h.up);
   $("bj-chip").innerHTML = chipSVG(25);
-  $("bj-dealer").innerHTML = cardHTML(h.dealer) + cardHTML(null);
+  $("bj-dealer").innerHTML = cardHTML(h.dealer);
+  $("bj-shoe").innerHTML = cardBackSVG();
   $("bj-player").innerHTML = h.cards.map(function (c) { return cardHTML(c); }).join("");
   $("bj-title").textContent = handTitle(h);
   $("bj-sub").textContent = chartRowLabel(h) + " vs " + (h.up === "T" ? "10" : h.up);
