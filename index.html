@@ -1,0 +1,2226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src data:;">
+<title>Bones Casino Trainer</title>
+<style>
+  :root {
+    --bg: #100e0c;
+    --felt: #1b1714;
+    --felt-2: #27221c;
+    --line: rgba(224, 193, 122, 0.35);
+    --cream: #f6f1e7;
+    --muted: #cbbda8;
+    --gold: #e0c17a;
+    --ink: #1a140c;
+    --good: #d7ebc8;
+    --good-bg: #243328;
+    --bad: #f3c9c0;
+    --bad-bg: #3c2422;
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  body {
+    margin: 0;
+    color: var(--cream);
+    background:
+      radial-gradient(900px 420px at 50% -80px, #3a3126 0%, transparent 60%),
+      var(--bg);
+    font: 16px/1.45 ui-sans-serif, system-ui, sans-serif;
+  }
+  button, input { font: inherit; color: inherit; }
+  button { cursor: pointer; }
+  button:disabled { opacity: 0.38; cursor: not-allowed; }
+  :focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+  .app { width: min(100%, 440px); margin: 0 auto; padding: 16px 14px 40px; }
+  @media (min-width: 840px) {
+    .app { width: min(100%, 960px); padding: 28px 22px 64px; }
+  }
+  header.top { display: flex; gap: 12px; align-items: center; margin-bottom: 14px; }
+  .brand { margin: 0; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold); font-size: 12px; }
+  h1 { margin: 0; font-family: Georgia, "Iowan Old Style", Palatino, serif; font-size: 28px; font-weight: 600; line-height: 1.05; }
+  .tag, .fine, .meta, .kicker { color: var(--muted); }
+  .tag { margin: 4px 0 0; }
+  .kicker { margin: 0 0 6px; font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; }
+  .tabs { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 8px; margin: 0 -14px 14px; padding-left: 14px; padding-right: 14px; }
+  .tabs button {
+    flex: 0 0 auto;
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--muted);
+    border-radius: 999px;
+    padding: 8px 12px;
+    min-height: 44px;
+  }
+  .tabs button[aria-selected="true"] { color: var(--ink); background: var(--gold); }
+  .panel { display: grid; gap: 12px; }
+  .score, .bankline { font-variant-numeric: tabular-nums; color: var(--gold); }
+  .felt {
+    background: linear-gradient(180deg, #221c17, #161310 70%);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 14px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.04);
+  }
+  .split { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .cards, .pcards { display: flex; gap: 8px; flex-wrap: wrap; }
+  .card {
+    width: 64px; height: 90px; border-radius: 8px; background: #f7f2e8; color: #1a1612;
+    display: flex; flex-direction: column; justify-content: space-between; padding: 6px 8px;
+    box-shadow: 0 8px 16px rgba(0,0,0,.35); font-family: Georgia, serif; font-weight: 700;
+  }
+  .card.red { color: #9d2430; }
+  .card .suit { font-size: 18px; }
+  .card.down {
+    background: repeating-linear-gradient(135deg, #3a3124 0 6px, #241e16 6px 12px);
+    border: 1px solid var(--gold);
+  }
+  h2 { font-family: Georgia, Palatino, serif; font-size: 22px; margin: 0; }
+  .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  @media (min-width: 520px) { .actions { grid-template-columns: repeat(4, 1fr); } }
+  .actions button, .gold, .out, .choices button, .stakes button, .modes button,
+  #vp-deal, [data-act="bc-deal"], [data-act="bc-reset"], [data-act="ro-spin"] {
+    min-height: 48px; border-radius: 12px; border: 1px solid var(--line); background: var(--felt-2);
+    padding: 10px 14px;
+  }
+  .actions button.picked { border-color: var(--gold); }
+  .gold {
+    background: var(--gold); color: var(--ink); border-color: transparent; font-weight: 700; width: 100%;
+  }
+  .banner { display: grid; gap: 4px; border-radius: 12px; padding: 12px; background: var(--felt-2); }
+  .banner.good { background: var(--good-bg); color: var(--good); }
+  .banner.bad { background: var(--bad-bg); color: var(--bad); }
+  .banner strong { font-size: 18px; }
+  .rowbtns, .modes, .stakes, .choices { display: flex; flex-wrap: wrap; gap: 8px; }
+  .rowbtns button, .modes button, .texty {
+    background: transparent; border: 1px solid var(--line); border-radius: 999px; padding: 8px 12px; min-height: 44px;
+  }
+  button[aria-pressed="true"] { background: var(--gold); color: var(--ink); border-color: transparent; }
+  .empty { color: var(--muted); margin: 0; }
+  .chip { display: inline-block; margin: 0 6px 6px 0; padding: 6px 10px; border-radius: 999px; background: var(--felt-2); border: 1px solid var(--line); }
+  .chart-scroll { overflow-x: auto; }
+  table.chart, table.edges { border-collapse: collapse; width: 100%; font-size: 14px; }
+  table.chart th, table.chart td, table.edges th, table.edges td { border: 1px solid #3a3228; padding: 6px; text-align: center; }
+  table.chart th:first-child, table.edges td:nth-child(2), table.edges td:nth-child(4) { text-align: left; }
+  table.chart thead th, table.edges thead th { position: sticky; top: 0; background: #2a241c; }
+  table.chart td.a-H, .legend .a-H { background: #3d4c5c; }
+  table.chart td.a-S, .legend .a-S { background: #2f4a3c; }
+  table.chart td.a-Dh, .legend .a-Dh, table.chart td.a-Ds, .legend .a-Ds { background: #6e5424; }
+  table.chart td.a-P, .legend .a-P { background: #5c3344; }
+  .legend span { display: inline-block; min-width: 1.6em; text-align: center; border-radius: 4px; margin-right: 2px; }
+  table.edges button { background: none; border: 0; color: var(--gold); padding: 0; min-height: 44px; }
+  #edge-table { overflow-x: auto; }
+  table.edges td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .pcard {
+    width: 64px; height: 96px; border-radius: 10px; border: 1px solid transparent; background: #f7f2e8; color: #1a1612;
+    display: flex; flex-direction: column; align-items: flex-start; padding: 6px; position: relative;
+  }
+  .pcard.red { color: #9d2430; }
+  .pcard strong { font-family: Georgia, serif; font-size: 22px; }
+  .pcard em { font-style: normal; font-size: 18px; }
+  .pcard .tag { min-height: 14px; font-size: 10px; letter-spacing: 0.08em; color: var(--gold-dim, #8c7040); }
+  .pcard.held { outline: 3px solid var(--gold); }
+  .pcard.best { box-shadow: inset 0 0 0 2px #2f6b45; }
+  .pcard.miss { outline-color: #a3202c; }
+  .payline { margin: 0; color: var(--muted); font-size: 14px; }
+  .wheel { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin-bottom: 4px; }
+  .wheel .num:only-child { grid-column: 1 / -1; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr 1fr 52px; gap: 4px; }
+  .num { min-height: 42px; border-radius: 8px; border: 1px solid #3a3228; font-weight: 700; }
+  .num.red { background: #7e2430; }
+  .num.black { background: #16130f; }
+  .num.green { background: #1c4a38; }
+  .num.sel { outline: 2px solid var(--gold); }
+  .num.win { box-shadow: inset 0 0 0 3px #f6f1e7; }
+  .num.cov { box-shadow: inset 0 -4px 0 var(--gold); }
+  .num.win.cov { box-shadow: inset 0 0 0 3px #f6f1e7, inset 0 -4px 0 var(--gold); }
+  .sidebets { display: flex; flex-direction: column; gap: 2px; }
+  .sidebets button { flex: 1; border-radius: 8px; border: 1px solid var(--line); background: #2a241c; font-size: 12px; padding: 0; }
+  .outside { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin-top: 8px; }
+  .out.red { color: #f0b4b8; }
+  .out.black { color: var(--cream); }
+  .out.basket { grid-column: 1 / -1; }
+  .betline { display: flex; justify-content: space-between; gap: 8px; align-items: center; padding: 6px 0; border-bottom: 1px solid #3a3228; }
+  .betline button { border: 0; background: transparent; color: var(--gold); min-height: 44px; }
+  .beads { display: grid; grid-auto-flow: column; grid-template-rows: repeat(6, 28px); grid-auto-columns: 28px; gap: 4px; overflow-x: auto; }
+  .bead { display: grid; place-items: center; border-radius: 50%; font-size: 12px; font-weight: 700; }
+  .bead.player { background: #35506e; }
+  .bead.banker { background: #7a3a32; }
+  .bead.tie { background: #8c7040; color: var(--ink); }
+  .outcome { font-size: 18px; margin: 8px 0; }
+  details { color: var(--muted); }
+  details summary { color: var(--cream); min-height: 44px; display: flex; align-items: center; cursor: pointer; }
+  footer { margin-top: 22px; color: var(--muted); font-size: 14px; }
+  @media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+  @media (min-width: 840px) {
+    .grid { grid-template-columns: repeat(3, minmax(0, 1fr)) 64px; }
+    .num { min-height: 48px; font-size: 18px; }
+    .card { width: 72px; height: 100px; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <svg class="mark" viewBox="0 0 48 32" width="48" height="32" aria-hidden="true">
+      <rect x="1.5" y="4" width="20" height="20" rx="4" fill="#241c14" stroke="#e0c17a" stroke-width="1.5"></rect>
+      <rect x="26.5" y="8" width="20" height="20" rx="4" fill="#241c14" stroke="#e0c17a" stroke-width="1.5"></rect>
+      <circle cx="8" cy="11" r="1.7" fill="#e0c17a"></circle>
+      <circle cx="15" cy="18" r="1.7" fill="#e0c17a"></circle>
+      <circle cx="34" cy="15" r="1.7" fill="#e0c17a"></circle>
+      <circle cx="40" cy="15" r="1.7" fill="#e0c17a"></circle>
+      <circle cx="37" cy="21" r="1.7" fill="#e0c17a"></circle>
+    </svg>
+    <div>
+      <p class="brand">Bones</p>
+      <h1>Casino Trainer</h1>
+      <p class="tag">Private practice. No cash, no accounts, no house.</p>
+    </div>
+  </header>
+  <nav class="tabs" role="tablist" aria-label="Trainers">
+    <button type="button" role="tab" id="tab-blackjack" data-act="tab" data-tab="blackjack" aria-selected="true" aria-controls="panel-blackjack">Blackjack</button>
+    <button type="button" role="tab" id="tab-poker" data-act="tab" data-tab="poker" aria-selected="false" aria-controls="panel-poker" tabindex="-1">Video poker</button>
+    <button type="button" role="tab" id="tab-edges" data-act="tab" data-tab="edges" aria-selected="false" aria-controls="panel-edges" tabindex="-1">Edges</button>
+    <button type="button" role="tab" id="tab-baccarat" data-act="tab" data-tab="baccarat" aria-selected="false" aria-controls="panel-baccarat" tabindex="-1">Baccarat</button>
+    <button type="button" role="tab" id="tab-roulette" data-act="tab" data-tab="roulette" aria-selected="false" aria-controls="panel-roulette" tabindex="-1">Roulette</button>
+  </nav>
+
+  <section class="panel" id="panel-blackjack" role="tabpanel" aria-labelledby="tab-blackjack">
+    <p class="score" id="bj-score" aria-live="polite"></p>
+    <div class="felt">
+      <p class="kicker">Dealer</p>
+      <div class="cards" id="bj-dealer"></div>
+      <h2 id="bj-title"></h2>
+      <p class="meta" id="bj-sub"></p>
+      <div class="cards" id="bj-player"></div>
+      <p class="meta" id="bj-meta"></p>
+      <div id="bj-result" class="banner" hidden aria-live="polite"></div>
+      <div class="actions">
+        <button type="button" id="bj-H" data-act="bj-play" data-move="H">Hit</button>
+        <button type="button" id="bj-S" data-act="bj-play" data-move="S">Stand</button>
+        <button type="button" id="bj-D" data-act="bj-play" data-move="D">Double</button>
+        <button type="button" id="bj-P" data-act="bj-play" data-move="P">Split</button>
+      </div>
+      <button type="button" class="gold" id="bj-next" data-act="bj-next" hidden>Next hand</button>
+    </div>
+    <div class="rowbtns">
+      <button type="button" id="bj-chart-btn" data-act="bj-chart" aria-pressed="false">Full chart</button>
+      <button type="button" id="bj-weak" data-act="bj-weak" aria-pressed="false">Weak spots</button>
+      <button type="button" data-act="bj-reset">Reset score</button>
+    </div>
+    <div id="bj-weak-list"></div>
+    <div id="bj-chart" hidden></div>
+    <details>
+      <summary>Rules for this drill</summary>
+      <p>Six decks. Dealer stands on soft 17. Double after split is allowed. No surrender. Resplit to four hands. Aces cannot be resplit, and a split ace takes only one card. Blackjack pays 3 to 2. The dealer peeks, and the chart is the play when the dealer does not have blackjack. Each of the 340 chart cells is equally likely. Keys: H, S, D, P, then N for the next hand.</p>
+    </details>
+  </section>
+
+  <section class="panel" id="panel-poker" role="tabpanel" aria-labelledby="tab-poker" hidden>
+    <p class="payline">9/6 Jacks or Better, per coin. Royal 800 at five coins (4,000 coins total). Straight flush 50. Quads 25. Full house 9. Flush 6. Straight 4. Trips 3. Two pair 2. Jacks or better 1.</p>
+    <div class="felt">
+      <div class="pcards" id="vp-cards"></div>
+      <div id="vp-result" class="banner" hidden aria-live="polite"></div>
+      <button type="button" class="gold" id="vp-score" data-act="vp-score" hidden>Score hold</button>
+      <button type="button" id="vp-deal" data-act="vp-deal">Deal</button>
+    </div>
+    <p class="fine">The trainer checks every hold and every possible draw. It does not guess. A dealt royal held to the end is worth 800 per coin.</p>
+  </section>
+
+  <section class="panel" id="panel-edges" role="tabpanel" aria-labelledby="tab-edges" hidden>
+    <p>Published house edge on the bet itself. A lower number costs less per unit wagered. Odds at 0% are even. Tildes mark figures that are rounded or approximate. Tap a column to sort.</p>
+    <div id="edge-table"></div>
+  </section>
+
+  <section class="panel" id="panel-baccarat" role="tabpanel" aria-labelledby="tab-baccarat" hidden>
+    <div class="modes">
+      <button type="button" id="bc-mode-quiz" data-act="bc-mode" data-mode="quiz" aria-pressed="true">Rules quiz</button>
+      <button type="button" id="bc-mode-play" data-act="bc-mode" data-mode="play" aria-pressed="false">Quick play</button>
+    </div>
+    <p class="score" id="bc-score"></p>
+    <div id="bc-quiz">
+      <div class="felt">
+        <div class="split">
+          <div><p class="kicker" id="bc-ptot">Player</p><div class="cards" id="bc-pcards"></div></div>
+          <div><p class="kicker" id="bc-btot">Banker</p><div class="cards" id="bc-bcards"></div></div>
+        </div>
+        <h2 id="bc-q"></h2>
+        <div id="bc-ans" class="banner" hidden aria-live="polite"></div>
+        <div class="actions" id="bc-yesno">
+          <button type="button" data-act="bc-yes">Yes</button>
+          <button type="button" data-act="bc-no">No</button>
+        </div>
+        <button type="button" class="gold" id="bc-cont" data-act="bc-cont" hidden>Continue</button>
+      </div>
+    </div>
+    <div id="bc-play" hidden>
+      <p class="bankline" id="bc-balance"></p>
+      <div class="modes">
+        <button type="button" id="bc-side-player" data-act="bc-side" data-side="player">Player 1:1 · 1.24%</button>
+        <button type="button" id="bc-side-banker" data-act="bc-side" data-side="banker">Banker 0.95:1 · 1.06%</button>
+        <button type="button" id="bc-side-tie" data-act="bc-side" data-side="tie">Tie 8:1 · 14.36%</button>
+      </div>
+      <div class="stakes">
+        <button type="button" id="bc-stake-1000" data-act="bc-stake" data-stake="1000">10</button>
+        <button type="button" id="bc-stake-2500" data-act="bc-stake" data-stake="2500">25</button>
+        <button type="button" id="bc-stake-10000" data-act="bc-stake" data-stake="10000">100</button>
+      </div>
+      <p id="bc-error" class="banner bad" hidden></p>
+      <div id="bc-last"></div>
+      <button type="button" class="gold" data-act="bc-deal">Deal hand</button>
+    </div>
+    <h2>Bead road</h2>
+    <div id="bc-road"></div>
+    <button type="button" data-act="bc-reset">Reset practice chips and road</button>
+    <details>
+      <summary>Player and Banker drawing rules</summary>
+      <p>Eight decks, punto banco. Face cards and tens count 0, aces 1, other cards their number. The total is the sum modulo 10. A natural 8 or 9 ends the hand: nobody draws. Otherwise Player draws on 0–5 and stands on 6–7. If Player stands, Banker draws on 0–5 and stands on 6–7. If Player draws, Banker follows the table. Banker wins pay 0.95 to 1. Tie pays 8 to 1. A Player or Banker bet pushes on a tie.</p>
+      <div id="bc-table"></div>
+    </details>
+  </section>
+
+  <section class="panel" id="panel-roulette" role="tabpanel" aria-labelledby="tab-roulette" hidden>
+    <div class="modes">
+      <button type="button" id="ro-eu" data-act="ro-variant" data-variant="eu" aria-pressed="true">Single zero</button>
+      <button type="button" id="ro-us" data-act="ro-variant" data-variant="us" aria-pressed="false">Double zero</button>
+    </div>
+    <p class="bankline" id="ro-bank"></p>
+    <div class="stakes" id="ro-stakes"></div>
+    <div class="felt" id="ro-layout"></div>
+    <div id="ro-select"></div>
+    <div id="ro-bets"></div>
+    <p id="ro-error" class="banner bad" hidden></p>
+    <div class="rowbtns">
+      <button type="button" class="gold" data-act="ro-spin" style="width:auto">Spin</button>
+      <button type="button" data-act="ro-clear">Clear bets</button>
+      <button type="button" data-act="ro-reset">Reset stack</button>
+    </div>
+    <div id="ro-result" class="banner" hidden aria-live="polite"></div>
+    <p class="fine" id="ro-history"></p>
+    <div id="ro-quiz"></div>
+    <details>
+      <summary>Payouts and what the zeros do</summary>
+      <p>Straight 35:1, split 17:1, street 11:1, corner 8:1, six line 5:1, dozens and columns 2:1, red, black, odd, even, 1–18, and 19–36 pay 1:1. The American 5-number basket (0, 00, 1, 2, 3) pays 6:1 and is not on a single-zero wheel. Zero and double zero lose every outside bet. Practice chips have no cash value. The spin is a uniform draw over the pockets on the wheel you picked.</p>
+    </details>
+  </section>
+
+  <footer>Decisions and practice chips only. This page never places a bet, never calls a server, and keeps a session score only in this browser tab.</footer>
+</div>
+<script id="bones-engine">
+"use strict";
+
+/**
+ * Bones Casino Trainer engine.
+ * Practice math only. No wagers leave the page. No network.
+ *
+ * Blackjack chart: total-dependent basic strategy for
+ * 6 decks, dealer stands on soft 17, double after split,
+ * no surrender, resplit to 4 hands, no resplit aces, blackjack 3:2.
+ * Cells are probability-weighted from Wizard of Odds Blackjack Appendix 9
+ * (two-card compositions, no dealer blackjack).
+ *
+ * Codes: H hit, S stand, Dh double (else hit), Ds double (else stand), P split.
+ * Columns are dealer upcards: 2 3 4 5 6 7 8 9 T A.
+ */
+const STRATEGY_6D_S17_DAS = {
+  upcards: ["2", "3", "4", "5", "6", "7", "8", "9", "T", "A"],
+  hard: {
+    "5":  "H  H  H  H  H  H  H  H  H  H",
+    "6":  "H  H  H  H  H  H  H  H  H  H",
+    "7":  "H  H  H  H  H  H  H  H  H  H",
+    "8":  "H  H  H  H  H  H  H  H  H  H",
+    "9":  "H  Dh Dh Dh Dh H  H  H  H  H",
+    "10": "Dh Dh Dh Dh Dh Dh Dh Dh H  H",
+    "11": "Dh Dh Dh Dh Dh Dh Dh Dh Dh H",
+    "12": "H  H  S  S  S  H  H  H  H  H",
+    "13": "S  S  S  S  S  H  H  H  H  H",
+    "14": "S  S  S  S  S  H  H  H  H  H",
+    "15": "S  S  S  S  S  H  H  H  H  H",
+    "16": "S  S  S  S  S  H  H  H  H  H",
+    "17": "S  S  S  S  S  S  S  S  S  S",
+    "18": "S  S  S  S  S  S  S  S  S  S",
+    "19": "S  S  S  S  S  S  S  S  S  S",
+    "20": "S  S  S  S  S  S  S  S  S  S",
+  },
+  soft: {
+    "A2": "H  H  H  Dh Dh H  H  H  H  H",
+    "A3": "H  H  H  Dh Dh H  H  H  H  H",
+    "A4": "H  H  Dh Dh Dh H  H  H  H  H",
+    "A5": "H  H  Dh Dh Dh H  H  H  H  H",
+    "A6": "H  Dh Dh Dh Dh H  H  H  H  H",
+    "A7": "S  Ds Ds Ds Ds S  S  H  H  H",
+    "A8": "S  S  S  S  S  S  S  S  S  S",
+    "A9": "S  S  S  S  S  S  S  S  S  S",
+  },
+  pairs: {
+    "22": "P  P  P  P  P  P  H  H  H  H",
+    "33": "P  P  P  P  P  P  H  H  H  H",
+    "44": "H  H  H  P  P  H  H  H  H  H",
+    "55": "Dh Dh Dh Dh Dh Dh Dh Dh H  H",
+    "66": "P  P  P  P  P  H  H  H  H  H",
+    "77": "P  P  P  P  P  P  H  H  H  H",
+    "88": "P  P  P  P  P  P  P  P  P  P",
+    "99": "P  P  P  P  P  S  P  P  S  S",
+    "TT": "S  S  S  S  S  S  S  S  S  S",
+    "AA": "P  P  P  P  P  P  P  P  P  P",
+  },
+};
+
+const ACTION_LABEL = {
+  H: "Hit",
+  S: "Stand",
+  Dh: "Double (else Hit)",
+  Ds: "Double (else Stand)",
+  P: "Split",
+};
+
+function strategyActions(cat, hand) {
+  const row = STRATEGY_6D_S17_DAS[cat] && STRATEGY_6D_S17_DAS[cat][hand];
+  if (!row) throw new Error("Unknown chart row " + cat + " " + hand);
+  return row.trim().split(/\s+/);
+}
+
+function strategyCell(cat, hand, up) {
+  const i = STRATEGY_6D_S17_DAS.upcards.indexOf(up);
+  if (i < 0) throw new Error("Unknown upcard " + up);
+  return strategyActions(cat, hand)[i];
+}
+
+function strategyGrid() {
+  const out = { hard: [], soft: [], pairs: [] };
+  for (const cat of ["hard", "soft", "pairs"]) {
+    for (const hand of Object.keys(STRATEGY_6D_S17_DAS[cat])) {
+      out[cat].push({ hand: hand, actions: strategyActions(cat, hand) });
+    }
+  }
+  return out;
+}
+
+function actionLabel(code) {
+  const label = ACTION_LABEL[code];
+  if (!label) throw new Error("Unknown action " + code);
+  return label;
+}
+
+function resolveAction(code, canDouble) {
+  if (code === "Dh") return canDouble ? "D" : "H";
+  if (code === "Ds") return canDouble ? "D" : "S";
+  if (code === "H" || code === "S" || code === "P") return code;
+  throw new Error("Unknown action " + code);
+}
+
+function upName(up) {
+  return up === "T" ? "10" : up;
+}
+
+function pairSpoken(hand) {
+  if (hand === "AA") return "aces";
+  if (hand === "TT") return "tens";
+  return hand[0] + "s";
+}
+
+function explain(cat, hand, up, code) {
+  const u = upName(up);
+  let line;
+  if (cat === "pair") {
+    if (hand === "AA" && code === "P") {
+      line = "Always split aces. Each ace gets one card, and aces cannot be resplit.";
+    } else if (hand === "88" && code === "P") {
+      line = "Always split 8s, including against a " + u + ". A hard 16 is worse than two hands that start at 8.";
+    } else if (hand === "55" && code === "Dh") {
+      line = "Never split 5s. Double them as a hard 10 against a " + u + ". If you cannot double, hit.";
+    } else if (hand === "55") {
+      line = "Never split 5s. Against a " + u + ", hit the hard 10. Do not double or split.";
+    } else if (hand === "TT") {
+      line = "Never split tens. Twenty wins too often to break into two new hands.";
+    } else if (hand === "99" && code === "S" && up === "7") {
+      line = "Stand on 9s against a 7. Eighteen is already ahead, and splitting gives that edge back.";
+    } else if (hand === "99" && code === "S") {
+      line = "Stand on 9s against a " + u + ". Splitting 18 under a strong upcard loses more than standing.";
+    } else if (hand === "44" && code === "P") {
+      line = "Split 4s against a " + u + " only because you may double after the split. Otherwise hit them as 8.";
+    } else if (code === "P") {
+      line = "Split " + pairSpoken(hand) + " against a " + u + ". With double-after-split, two hands beat playing the pair as one total.";
+    } else if (code === "H") {
+      line = "Hit " + pairSpoken(hand) + " against a " + u + ". Splitting loses more than hitting the hard total.";
+    } else {
+      line = "Stand with " + pairSpoken(hand) + " against a " + u + ".";
+    }
+  } else if (cat === "soft") {
+    const soft = 11 + Number(hand.slice(1));
+    if (code === "Ds") {
+      line = "Double soft 18 against a " + u + ". If you cannot double, stand. Do not hit a made 18.";
+    } else if (code === "Dh") {
+      line = "Double soft " + soft + " against a " + u + ". The ace cannot bust. If you cannot double, hit.";
+    } else if (hand === "A7" && up === "A" && code === "H") {
+      line = "Hit soft 18 against an ace. In six decks, with the dealer standing on soft 17, two-card ace-seven gains by hitting.";
+    } else if (hand === "A7" && code === "H") {
+      line = "Hit soft 18 against a " + u + ". A hit cannot bust, and 18 is behind the dealer's likely total.";
+    } else if (hand === "A7" && up === "2" && code === "S") {
+      line = "Stand on soft 18 against a 2. Doubling is close here, and slightly worse, when the dealer stands on soft 17.";
+    } else if (hand === "A8" && up === "6" && code === "S") {
+      line = "Stand on soft 19 against a 6. Doubling soft 19 is for games where the dealer hits soft 17, not this one.";
+    } else if (code === "S") {
+      line = "Stand on soft " + soft + " against a " + u + ". The total is already too strong to hit.";
+    } else {
+      line = "Hit soft " + soft + " against a " + u + ". The ace means the next card cannot bust you.";
+    }
+  } else if (code === "Dh" && hand === "11") {
+    line = "Double hard 11 against a " + u + ". You cannot bust, so the extra bet is worth taking. If you cannot double, hit.";
+  } else if (code === "Dh" && hand === "10") {
+    line = "Double hard 10 against a " + u + ". Hit a hard 10 only against a 10 or an ace. If you cannot double, hit.";
+  } else if (code === "Dh" && hand === "9") {
+    line = "Double hard 9 against a " + u + ". Against 2, 7, 8, 9, 10, and ace you only hit. If you cannot double, hit.";
+  } else if (code === "Dh") {
+    line = "Double hard " + hand + " against a " + u + ". If you cannot double, hit.";
+  } else if (hand === "11" && up === "A" && code === "H") {
+    line = "Hit hard 11 against an ace. Doubling loses in a six-deck game where the dealer stands on soft 17.";
+  } else if (hand === "12" && (up === "2" || up === "3") && code === "H") {
+    line = "Hit hard 12 against a " + u + ". That upcard does not bust often enough to stand on the weakest stiff total.";
+  } else if (code === "H" && Number(hand) <= 8) {
+    line = "Hit hard " + hand + ". The total is too small to stand or double against any upcard.";
+  } else if (code === "H" && Number(hand) >= 12 && Number(hand) <= 16) {
+    line = "Hit hard " + hand + " against a " + u + ". Standing waits on a bust this upcard rarely provides.";
+  } else if (code === "H") {
+    line = "Hit hard " + hand + " against a " + u + ".";
+  } else if (hand === "12" && code === "S") {
+    line = "Stand on hard 12 against a " + u + ". From 4, 5, or 6 the dealer busts often enough that hitting a stiff 12 is worse.";
+  } else if (code === "S" && Number(hand) >= 13 && Number(hand) <= 16) {
+    line = "Stand on hard " + hand + " against a " + u + ". From 2 through 6 the dealer busts often enough to leave a stiff total alone.";
+  } else if (code === "S" && Number(hand) >= 17) {
+    line = "Stand on hard " + hand + ". Do not hit a hard 17 or better.";
+  } else {
+    line = "Stand on hard " + hand + " against a " + u + ".";
+  }
+  if (line.indexOf("\n") !== -1) throw new Error("multiline reason");
+  return line;
+}
+
+function validateStrategy() {
+  const ups = STRATEGY_6D_S17_DAS.upcards;
+  if (ups.join(",") !== "2,3,4,5,6,7,8,9,T,A") throw new Error("upcards");
+  const expect = { hard: [], soft: [], pairs: ["22", "33", "44", "55", "66", "77", "88", "99", "TT", "AA"] };
+  for (let t = 5; t <= 20; t++) expect.hard.push(String(t));
+  for (let t = 2; t <= 9; t++) expect.soft.push("A" + t);
+  for (const cat of ["hard", "soft", "pairs"]) {
+    const keys = Object.keys(STRATEGY_6D_S17_DAS[cat]);
+    if (keys.join(",") !== expect[cat].join(",")) throw new Error("row keys " + cat);
+    for (const hand of keys) {
+      const actions = strategyActions(cat, hand);
+      if (actions.length !== 10) throw new Error("width " + hand);
+      for (const up of ups) {
+        const code = strategyCell(cat, hand, up);
+        if (!ACTION_LABEL[code]) throw new Error("bad code");
+        const reason = explain(cat, hand, up, code);
+        if (!reason || reason.length < 12) throw new Error("thin reason " + cat + hand + up);
+      }
+    }
+  }
+}
+
+const HOUSE_EDGES = [
+  { game: "Craps", bet: "Pass / Come", edge: 1.41, note: "Line bet, before odds." },
+  { game: "Craps", bet: "Don't Pass / Don't Come", edge: 1.36, note: "Bar on 12." },
+  { game: "Craps", bet: "Odds", edge: 0, note: "Free odds behind a pass or don't-pass bet. The odds themselves are even." },
+  { game: "Craps", bet: "Place 6 or 8", edge: 1.52, note: "Pays 7 to 6." },
+  { game: "Craps", bet: "Place 5 or 9", edge: 4, note: "Pays 7 to 5." },
+  { game: "Craps", bet: "Place 4 or 10", edge: 6.67, note: "Pays 9 to 5." },
+  { game: "Craps", bet: "Field (2 pays 2:1, 12 pays 3:1)", edge: 2.78, note: "Field with 2 to 1 on 2 and 3 to 1 on 12." },
+  { game: "Craps", bet: "Any 7", edge: 16.67, note: "One-roll bet, pays 4 to 1." },
+  { game: "Craps", bet: "Hard 6 or 8", edge: 9.09, note: "Pays 9 to 1." },
+  { game: "Craps", bet: "Hard 4 or 10", edge: 11.11, note: "Pays 7 to 1." },
+  { game: "Blackjack", bet: "Basic strategy, 6 decks, S17, DAS, no surrender, 3:2", edge: 0.5, approx: true, note: "About 0.5%. Wizard of Odds appendix 9 computes 0.40% for these rules with resplit to four hands and no resplit aces." },
+  { game: "Baccarat", bet: "Banker", edge: 1.06, note: "Pays 0.95 to 1 after 5% commission. Pushes when the hand ties. 8-deck punto banco." },
+  { game: "Baccarat", bet: "Player", edge: 1.24, note: "Pays 1 to 1. Pushes when the hand ties." },
+  { game: "Baccarat", bet: "Tie", edge: 14.36, note: "Pays 8 to 1." },
+  { game: "Roulette", bet: "Single-zero (European), standard bets", edge: 2.7, note: "1/37 on every standard bet, straight through even money." },
+  { game: "Roulette", bet: "Double-zero (American), standard bets", edge: 5.26, note: "2/38. The 5-number basket is worse and listed on its own." },
+  { game: "Roulette", bet: "5-number basket (0, 00, 1, 2, 3)", edge: 7.89, note: "American wheel only. Pays 6 to 1." },
+  { game: "Video poker", bet: "9/6 Jacks or Better, optimal play", edge: 0.46, note: "99.54% return with optimal play. A 5-coin royal pays 800 per coin." },
+  { game: "Pai Gow Poker", bet: "Player, 5% commission", edge: 2.7, approx: true, note: "About 2.7% house edge on the player, with the usual 5% commission on winning hands." },
+];
+
+function formatEdge(row) {
+  if (row.approx) return "~" + String(row.edge) + "%";
+  if (row.edge === 0) return "0%";
+  return row.edge.toFixed(2) + "%";
+}
+
+function findEdge(game, includes) {
+  for (let i = 0; i < HOUSE_EDGES.length; i++) {
+    const row = HOUSE_EDGES[i];
+    if (row.game === game && row.bet.indexOf(includes) !== -1) return row;
+  }
+  throw new Error("Missing edge " + game + " " + includes);
+}
+
+/* ---------- Video poker: 9/6 Jacks or Better, 5-coin royal ---------- */
+
+const RANK_CHAR = "23456789TJQKA";
+const SUIT_CHAR = "CDHS";
+const SUIT_SYMBOL = { S: "♠", H: "♥", D: "♦", C: "♣" };
+const RANK_VALUE = { "2": 0, "3": 1, "4": 2, "5": 3, "6": 4, "7": 5, "8": 6, "9": 7, T: 8, J: 9, Q: 10, K: 11, A: 12 };
+
+let PAY = null;
+let C1, C2, C3, C4, C5;
+
+function parseCard(name) {
+  if (!name || name.length !== 2) throw new Error("Bad card " + name);
+  const ri = RANK_VALUE[name[0]];
+  const si = SUIT_CHAR.indexOf(name[1]);
+  if (ri === undefined || si < 0) throw new Error("Bad card " + name);
+  return (ri << 2) | si;
+}
+
+function cardLabel(name) {
+  const rank = name[0] === "T" ? "10" : name[0];
+  return rank + SUIT_SYMBOL[name[1]];
+}
+
+function payRanks(r0, r1, r2, r3, r4, flush) {
+  if (r0 === r3 || r1 === r4) return 25;
+  if ((r0 === r2 && r3 === r4) || (r0 === r1 && r2 === r4)) return 9;
+  const distinct = r0 !== r1 && r1 !== r2 && r2 !== r3 && r3 !== r4;
+  let straight = false;
+  if (distinct) {
+    if (r4 - r0 === 4) straight = true;
+    else if (r0 === 0 && r1 === 1 && r2 === 2 && r3 === 3 && r4 === 12) straight = true;
+  }
+  if (straight && flush) {
+    if (r0 === 8 && r1 === 9 && r2 === 10 && r3 === 11 && r4 === 12) return 800;
+    return 50;
+  }
+  if (flush) return 6;
+  if (straight) return 4;
+  if (r0 === r2 || r1 === r3 || r2 === r4) return 3;
+  let pairs = 0;
+  let job = false;
+  if (r0 === r1) { pairs++; if (r0 >= 9) job = true; }
+  if (r1 === r2) { pairs++; if (r1 >= 9) job = true; }
+  if (r2 === r3) { pairs++; if (r2 >= 9) job = true; }
+  if (r3 === r4) { pairs++; if (r3 >= 9) job = true; }
+  if (pairs >= 2) return 2;
+  if (pairs === 1 && job) return 1;
+  return 0;
+}
+
+function evaluateId(a, b, c, d, e) {
+  let r0 = a >> 2, r1 = b >> 2, r2 = c >> 2, r3 = d >> 2, r4 = e >> 2;
+  const ranks = [r0, r1, r2, r3, r4];
+  for (let i = 1; i < 5; i++) {
+    const v = ranks[i];
+    let j = i - 1;
+    while (j >= 0 && ranks[j] > v) { ranks[j + 1] = ranks[j]; j--; }
+    ranks[j + 1] = v;
+  }
+  const s0 = a & 3, s1 = b & 3, s2 = c & 3, s3 = d & 3, s4 = e & 3;
+  const flush = s0 === s1 && s1 === s2 && s2 === s3 && s3 === s4;
+  return payRanks(ranks[0], ranks[1], ranks[2], ranks[3], ranks[4], flush);
+}
+
+function ensurePoker() {
+  if (PAY) return;
+  const bin = Array.from({ length: 53 }, function () { return [0, 0, 0, 0, 0, 0]; });
+  for (let n = 0; n <= 52; n++) {
+    bin[n][0] = 1;
+    for (let k = 1; k <= 5 && k <= n; k++) bin[n][k] = bin[n - 1][k - 1] + bin[n - 1][k];
+  }
+  function coeff(k) {
+    const arr = new Int32Array(52);
+    for (let n = 0; n < 52; n++) arr[n] = n >= k ? bin[n][k] : 0;
+    return arr;
+  }
+  C1 = coeff(1); C2 = coeff(2); C3 = coeff(3); C4 = coeff(4); C5 = coeff(5);
+  PAY = new Uint16Array(2598960);
+  for (let a = 0; a < 52; a++) {
+    for (let b = a + 1; b < 52; b++) {
+      for (let c = b + 1; c < 52; c++) {
+        for (let d = c + 1; d < 52; d++) {
+          for (let e = d + 1; e < 52; e++) {
+            PAY[C5[e] + C4[d] + C3[c] + C2[b] + C1[a]] = evaluateId(a, b, c, d, e);
+          }
+        }
+      }
+    }
+  }
+}
+
+function pokerReady() { return !!PAY; }
+
+const mergeOut = [0, 0, 0, 0, 0];
+function lookupMerged(held, draw) {
+  let i = 0, j = 0, k = 0;
+  const n = held.length, m = draw.length;
+  while (k < 5) {
+    if (j >= m || (i < n && held[i] < draw[j])) mergeOut[k++] = held[i++];
+    else mergeOut[k++] = draw[j++];
+  }
+  return PAY[C5[mergeOut[4]] + C4[mergeOut[3]] + C3[mergeOut[2]] + C2[mergeOut[1]] + C1[mergeOut[0]]];
+}
+
+function payoff(names) {
+  ensurePoker();
+  if (names.length !== 5) throw new Error("Payoff needs 5 cards");
+  const ids = names.map(parseCard).sort(function (a, b) { return a - b; });
+  return PAY[C5[ids[4]] + C4[ids[3]] + C3[ids[2]] + C2[ids[1]] + C1[ids[0]]];
+}
+
+function holdBetter(a, b) {
+  const cross = a.sum * b.ways - b.sum * a.ways;
+  if (cross > 0) return true;
+  if (cross < 0) return false;
+  if (a.heldIndices.length !== b.heldIndices.length) return a.heldIndices.length > b.heldIndices.length;
+  return a.mask < b.mask;
+}
+
+function scoreVideoPoker(names) {
+  ensurePoker();
+  if (!names || names.length !== 5) throw new Error("Deal 5 cards");
+  const hand = names.map(parseCard);
+  const seen = Object.create(null);
+  for (let i = 0; i < 5; i++) {
+    if (seen[hand[i]]) throw new Error("Duplicate card");
+    seen[hand[i]] = true;
+  }
+  const deck = [];
+  for (let i = 0; i < 52; i++) if (!seen[i]) deck.push(i);
+  if (deck.length !== 47) throw new Error("Deck size");
+  const holds = new Array(32);
+  let best = null;
+  for (let mask = 0; mask < 32; mask++) {
+    const heldIdx = [];
+    const held = [];
+    for (let i = 0; i < 5; i++) if (mask & (1 << i)) { heldIdx.push(i); held.push(hand[i]); }
+    held.sort(function (a, b) { return a - b; });
+    const need = 5 - held.length;
+    let sum = 0;
+    let ways;
+    if (need === 0) {
+      ways = 1;
+      sum = PAY[C5[held[4]] + C4[held[3]] + C3[held[2]] + C2[held[1]] + C1[held[0]]];
+    } else if (need === 1) {
+      ways = 47;
+      for (let i = 0; i < 47; i++) sum += lookupMerged(held, [deck[i]]);
+    } else if (need === 2) {
+      ways = 1081;
+      for (let i = 0; i < 47; i++) for (let j = i + 1; j < 47; j++) sum += lookupMerged(held, [deck[i], deck[j]]);
+    } else if (need === 3) {
+      ways = 16215;
+      for (let i = 0; i < 47; i++) for (let j = i + 1; j < 47; j++) for (let k = j + 1; k < 47; k++) {
+        sum += lookupMerged(held, [deck[i], deck[j], deck[k]]);
+      }
+    } else if (need === 4) {
+      ways = 178365;
+      for (let i = 0; i < 47; i++) for (let j = i + 1; j < 47; j++) for (let k = j + 1; k < 47; k++) for (let l = k + 1; l < 47; l++) {
+        sum += lookupMerged(held, [deck[i], deck[j], deck[k], deck[l]]);
+      }
+    } else {
+      ways = 1533939;
+      for (let i = 0; i < 47; i++) for (let j = i + 1; j < 47; j++) for (let k = j + 1; k < 47; k++) for (let l = k + 1; l < 47; l++) for (let m = l + 1; m < 47; m++) {
+        sum += PAY[C5[deck[m]] + C4[deck[l]] + C3[deck[k]] + C2[deck[j]] + C1[deck[i]]];
+      }
+    }
+    const rec = { mask: mask, sum: sum, ways: ways, ev: sum / ways, heldIndices: heldIdx };
+    holds[mask] = rec;
+    if (!best || holdBetter(rec, best)) best = rec;
+  }
+  return { holds: holds, best: best };
+}
+
+/* ---------- Baccarat: 8-deck punto banco ---------- */
+
+const BANKER_DRAWS_ON = {
+  0: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+  1: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+  2: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+  3: [0, 1, 2, 3, 4, 5, 6, 7, 9],
+  4: [2, 3, 4, 5, 6, 7],
+  5: [4, 5, 6, 7],
+  6: [6, 7],
+  7: [],
+};
+
+function baccaratValueChar(rank) {
+  if (rank === "A") return 1;
+  if (rank === "T" || rank === "J" || rank === "Q" || rank === "K") return 0;
+  const n = Number(rank);
+  if (n >= 2 && n <= 9) return n;
+  throw new Error("Bad baccarat rank " + rank);
+}
+
+function baccaratTotal(cards) {
+  let sum = 0;
+  for (let i = 0; i < cards.length; i++) sum += baccaratValueChar(cards[i][0]);
+  return sum % 10;
+}
+
+function playerDraws(playerTotal, bankerTotal) {
+  if (playerTotal >= 8 || bankerTotal >= 8) return false;
+  return playerTotal <= 5;
+}
+
+function bankerDraws(bankerTotal, playerTotal, playerThird) {
+  if (playerTotal >= 8 || bankerTotal >= 8) return false;
+  if (playerThird === null || playerThird === undefined) return bankerTotal <= 5;
+  const row = BANKER_DRAWS_ON[bankerTotal];
+  if (!row) return false;
+  return row.indexOf(playerThird) !== -1;
+}
+
+function baccaratOutcome(playerTotal, bankerTotal) {
+  if (playerTotal > bankerTotal) return "player";
+  if (bankerTotal > playerTotal) return "banker";
+  return "tie";
+}
+
+function playerRule(playerTotal, bankerTotal) {
+  if (playerTotal >= 8 && bankerTotal >= 8) return "Both hands are naturals. Neither draws.";
+  if (playerTotal >= 8) return "Player has a natural " + playerTotal + ". Neither hand draws.";
+  if (bankerTotal >= 8) return "Banker has a natural " + bankerTotal + ". Neither hand draws.";
+  if (playerTotal <= 5) return "Player " + playerTotal + " draws. With no natural, Player draws on 0 through 5.";
+  return "Player " + playerTotal + " stands. With no natural, Player stands on 6 and 7.";
+}
+
+function bankerRule(bankerTotal, playerTotal, playerThird) {
+  const draws = bankerDraws(bankerTotal, playerTotal, playerThird);
+  if (playerTotal >= 8 || bankerTotal >= 8) return "A natural closes the hand. Banker does not draw.";
+  if (playerThird === null || playerThird === undefined) {
+    return draws
+      ? "Player stood, so Banker " + bankerTotal + " draws. With no third card, Banker draws on 0 through 5."
+      : "Player stood, so Banker " + bankerTotal + " stands. With no third card, Banker stands on 6 and 7.";
+  }
+  const why = {
+    0: "Banker 0 always draws.",
+    1: "Banker 1 always draws.",
+    2: "Banker 2 always draws.",
+    3: "Banker 3 draws unless the Player third card is 8.",
+    4: "Banker 4 draws when the Player third card is 2 through 7.",
+    5: "Banker 5 draws when the Player third card is 4 through 7.",
+    6: "Banker 6 draws only when the Player third card is 6 or 7.",
+    7: "Banker 7 always stands.",
+  }[bankerTotal];
+  return why + (draws ? " Banker draws." : " Banker stands.");
+}
+
+function freshShoe() {
+  const shoe = [];
+  const ranks = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K"];
+  const suits = ["S", "H", "D", "C"];
+  for (let d = 0; d < 8; d++) {
+    for (let r = 0; r < ranks.length; r++) {
+      for (let s = 0; s < suits.length; s++) shoe.push(ranks[r] + suits[s]);
+    }
+  }
+  return shoe;
+}
+
+function uniformIndex(n, nextUint32) {
+  if (n <= 0 || n > 4294967296) throw new Error("uniform range");
+  const limit = 4294967296 - (4294967296 % n);
+  let x;
+  do { x = nextUint32() >>> 0; } while (x >= limit);
+  return x % n;
+}
+
+function shuffleInPlace(arr, nextUint32) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = uniformIndex(i + 1, nextUint32);
+    const tmp = arr[i];
+    arr[i] = arr[j];
+    arr[j] = tmp;
+  }
+  return arr;
+}
+
+function playBaccarat(nextUint32) {
+  const shoe = shuffleInPlace(freshShoe(), nextUint32);
+  let p = 0;
+  const take = function () { return shoe[p++]; };
+  const p1 = take(), b1 = take(), p2 = take(), b2 = take();
+  const player = [p1, p2];
+  const banker = [b1, b2];
+  const playerInitial = baccaratTotal(player);
+  const bankerInitial = baccaratTotal(banker);
+  const natural = playerInitial >= 8 || bankerInitial >= 8;
+  let playerThird = null;
+  if (playerDraws(playerInitial, bankerInitial)) {
+    player.push(take());
+    playerThird = baccaratValueChar(player[2][0]);
+  }
+  const bankerDid = bankerDraws(bankerInitial, playerInitial, playerThird);
+  if (bankerDid) banker.push(take());
+  const playerFinal = baccaratTotal(player);
+  const bankerFinal = baccaratTotal(banker);
+  return {
+    player: player,
+    banker: banker,
+    playerInitial: playerInitial,
+    bankerInitial: bankerInitial,
+    playerFinal: playerFinal,
+    bankerFinal: bankerFinal,
+    playerThird: playerThird,
+    playerDrew: player.length === 3,
+    bankerDrew: banker.length === 3,
+    natural: natural,
+    outcome: baccaratOutcome(playerFinal, bankerFinal),
+  };
+}
+
+function enumerateBaccarat() {
+  const base = [128, 32, 32, 32, 32, 32, 32, 32, 32, 32];
+  let bankerWins = 0n, playerWins = 0n, ties = 0n, total = 0n;
+  const w4 = 412n * 411n;
+  const w5 = 411n;
+  function add(pt, bt, w) {
+    total += w;
+    if (pt > bt) playerWins += w;
+    else if (bt > pt) bankerWins += w;
+    else ties += w;
+  }
+  for (let p1 = 0; p1 < 10; p1++) {
+    for (let b1 = 0; b1 < 10; b1++) {
+      for (let p2 = 0; p2 < 10; p2++) {
+        for (let b2 = 0; b2 < 10; b2++) {
+          const c = base.slice();
+          let ways = 1n;
+          let ok = true;
+          const first = [p1, b1, p2, b2];
+          for (let i = 0; i < 4; i++) {
+            const v = first[i];
+            if (c[v] <= 0) { ok = false; break; }
+            ways *= BigInt(c[v]);
+            c[v]--;
+          }
+          if (!ok) continue;
+          const pt = (p1 + p2) % 10;
+          const bt = (b1 + b2) % 10;
+          if (pt >= 8 || bt >= 8) { add(pt, bt, ways * w4); continue; }
+          if (pt >= 6) {
+            if (bt <= 5) {
+              for (let b3 = 0; b3 < 10; b3++) {
+                if (c[b3] > 0) add(pt, (bt + b3) % 10, ways * BigInt(c[b3]) * w5);
+              }
+            } else add(pt, bt, ways * w4);
+          } else {
+            for (let p3 = 0; p3 < 10; p3++) {
+              if (c[p3] <= 0) continue;
+              const w3 = ways * BigInt(c[p3]);
+              c[p3]--;
+              const pt3 = (pt + p3) % 10;
+              if (!bankerDraws(bt, pt, p3)) add(pt3, bt, w3 * w5);
+              else {
+                for (let b3 = 0; b3 < 10; b3++) {
+                  if (c[b3] > 0) add(pt3, (bt + b3) % 10, w3 * BigInt(c[b3]));
+                }
+              }
+              c[p3]++;
+            }
+          }
+        }
+      }
+    }
+  }
+  const tf = Number(total);
+  return {
+    total: total,
+    banker: Number(bankerWins) / tf,
+    player: Number(playerWins) / tf,
+    tie: Number(ties) / tf,
+  };
+}
+
+function settleBaccarat(side, outcome, stake) {
+  if (!(stake > 0)) throw new Error("Stake");
+  if (side !== "player" && side !== "banker" && side !== "tie") throw new Error("Side");
+  const cents = Math.round(stake * 100);
+  let profit;
+  if (outcome === "tie") {
+    if (side === "tie") profit = cents * 8;
+    else profit = 0;
+  } else if (side !== outcome) {
+    profit = -cents;
+  } else if (side === "player") {
+    profit = cents;
+  } else if (side === "banker") {
+    profit = Math.round(cents * 95 / 100);
+  } else {
+    profit = -cents;
+  }
+  return profit / 100;
+}
+
+/* ---------- Roulette ---------- */
+
+const RED_NUMBERS = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36];
+const RED_SET = Object.create(null);
+for (let i = 0; i < RED_NUMBERS.length; i++) RED_SET[RED_NUMBERS[i]] = true;
+
+const EURO_WHEEL = [0, 32, 15, 19, 4, 21, 2, 25, 17, 34, 6, 27, 13, 36, 11, 30, 8, 23, 10, 5, 24, 16, 33, 1, 20, 14, 31, 9, 22, 18, 29, 7, 28, 12, 35, 3, 26];
+const AMERICAN_WHEEL = [0, 28, 9, 26, 30, 11, 7, 20, 32, 17, 5, 22, 34, 15, 3, 24, 36, 13, 1, "00", 27, 10, 25, 29, 12, 8, 19, 31, 18, 6, 21, 33, 16, 4, 23, 35, 14, 2];
+
+const ROULETTE_ODDS = {
+  straight: 35,
+  split: 17,
+  street: 11,
+  corner: 8,
+  six: 5,
+  dozen: 2,
+  column: 2,
+  red: 1,
+  black: 1,
+  odd: 1,
+  even: 1,
+  low: 1,
+  high: 1,
+  basket: 6,
+};
+
+function pocketColor(pocket) {
+  if (pocket === 0 || pocket === "00") return "green";
+  return RED_SET[pocket] ? "red" : "black";
+}
+
+function pocketName(pocket) {
+  return pocket === "00" ? "00" : String(pocket);
+}
+
+function wheelFor(variant) {
+  if (variant === "eu") return EURO_WHEEL;
+  if (variant === "us") return AMERICAN_WHEEL;
+  throw new Error("Wheel");
+}
+
+function spinWheel(variant, nextUint32) {
+  const wheel = wheelFor(variant);
+  return wheel[uniformIndex(wheel.length, nextUint32)];
+}
+
+function rouletteEdge(variant, type) {
+  if (type === "basket") {
+    if (variant !== "us") throw new Error("Basket is American only");
+    return findEdge("Roulette", "5-number").edge;
+  }
+  if (variant === "us") return findEdge("Roulette", "Double-zero").edge;
+  return findEdge("Roulette", "Single-zero").edge;
+}
+
+function rangeNumbers(a, b) {
+  const out = [];
+  for (let n = a; n <= b; n++) out.push(n);
+  return out;
+}
+
+function sameSet(a, b) {
+  if (a.length !== b.length) return false;
+  const m = Object.create(null);
+  for (let i = 0; i < a.length; i++) m[String(a[i])] = (m[String(a[i])] || 0) + 1;
+  for (let i = 0; i < b.length; i++) {
+    const k = String(b[i]);
+    if (!m[k]) return false;
+    m[k]--;
+  }
+  return true;
+}
+
+function legalRouletteBets(variant) {
+  const bets = [];
+  function add(type, numbers, label) {
+    bets.push({ type: type, numbers: numbers.slice(), label: label, odds: ROULETTE_ODDS[type] });
+  }
+  const pockets = variant === "us" ? [0, "00"] : [0];
+  for (let i = 1; i <= 36; i++) pockets.push(i);
+  for (let i = 0; i < pockets.length; i++) add("straight", [pockets[i]], "Straight " + pocketName(pockets[i]));
+  for (let n = 1; n <= 36; n++) {
+    const col = (n - 1) % 3;
+    const row = Math.floor((n - 1) / 3);
+    if (col < 2) add("split", [n, n + 1], "Split " + n + "/" + (n + 1));
+    if (row < 11) add("split", [n, n + 3], "Split " + n + "/" + (n + 3));
+  }
+  add("split", [0, 1], "Split 0/1");
+  add("split", [0, 2], "Split 0/2");
+  if (variant === "eu") add("split", [0, 3], "Split 0/3");
+  if (variant === "us") {
+    add("split", [0, "00"], "Split 0/00");
+    add("split", ["00", 2], "Split 00/2");
+    add("split", ["00", 3], "Split 00/3");
+  }
+  for (let row = 0; row < 12; row++) {
+    const a = row * 3 + 1;
+    add("street", [a, a + 1, a + 2], "Street " + a + "–" + (a + 2));
+  }
+  add("street", [0, 1, 2], "Trio 0-1-2");
+  if (variant === "eu") add("street", [0, 2, 3], "Trio 0-2-3");
+  if (variant === "us") add("street", ["00", 2, 3], "Trio 00-2-3");
+  for (let row = 0; row < 11; row++) {
+    for (let col = 0; col < 2; col++) {
+      const n = row * 3 + 1 + col;
+      add("corner", [n, n + 1, n + 3, n + 4], "Corner " + n);
+    }
+  }
+  if (variant === "eu") add("corner", [0, 1, 2, 3], "First four 0-1-2-3");
+  for (let row = 0; row < 11; row++) {
+    const a = row * 3 + 1;
+    const b = a + 3;
+    add("six", [a, a + 1, a + 2, b, b + 1, b + 2], "Six line " + a + "–" + (b + 2));
+  }
+  add("dozen", rangeNumbers(1, 12), "1st dozen");
+  add("dozen", rangeNumbers(13, 24), "2nd dozen");
+  add("dozen", rangeNumbers(25, 36), "3rd dozen");
+  const cols = [[], [], []];
+  for (let n = 1; n <= 36; n++) cols[(n - 1) % 3].push(n);
+  add("column", cols[0], "Column 1");
+  add("column", cols[1], "Column 2");
+  add("column", cols[2], "Column 3");
+  const reds = [], blacks = [], odds = [], evens = [], lows = [], highs = [];
+  for (let n = 1; n <= 36; n++) {
+    if (RED_SET[n]) reds.push(n); else blacks.push(n);
+    if (n % 2) odds.push(n); else evens.push(n);
+    if (n <= 18) lows.push(n); else highs.push(n);
+  }
+  add("red", reds, "Red");
+  add("black", blacks, "Black");
+  add("odd", odds, "Odd");
+  add("even", evens, "Even");
+  add("low", lows, "1–18");
+  add("high", highs, "19–36");
+  if (variant === "us") add("basket", [0, "00", 1, 2, 3], "5-number basket");
+  return bets;
+}
+
+function classifySelection(numbers, variant) {
+  const bets = legalRouletteBets(variant);
+  for (let i = 0; i < bets.length; i++) {
+    const bet = bets[i];
+    if (bet.type === "dozen" || bet.type === "column" || bet.type === "red" || bet.type === "black" || bet.type === "odd" || bet.type === "even" || bet.type === "low" || bet.type === "high") continue;
+    if (sameSet(bet.numbers, numbers)) return bet;
+  }
+  return null;
+}
+
+function rouletteProfit(bet, pocket) {
+  if (!(bet.stake > 0)) throw new Error("Stake");
+  const odds = ROULETTE_ODDS[bet.type];
+  if (odds === undefined) throw new Error("Odds");
+  const win = bet.numbers.indexOf(pocket) !== -1;
+  if (!win) return -bet.stake;
+  return odds * bet.stake;
+}
+
+function quizProfit(type, stake) {
+  const odds = ROULETTE_ODDS[type];
+  if (odds === undefined) throw new Error("Quiz type");
+  return odds * stake;
+}
+
+validateStrategy();
+
+const BONES = {
+  STRATEGY_6D_S17_DAS: STRATEGY_6D_S17_DAS,
+  strategyCell: strategyCell,
+  strategyActions: strategyActions,
+  strategyGrid: strategyGrid,
+  actionLabel: actionLabel,
+  resolveAction: resolveAction,
+  explain: explain,
+  HOUSE_EDGES: HOUSE_EDGES,
+  formatEdge: formatEdge,
+  findEdge: findEdge,
+  parseCard: parseCard,
+  cardLabel: cardLabel,
+  payoff: payoff,
+  scoreVideoPoker: scoreVideoPoker,
+  ensurePoker: ensurePoker,
+  pokerReady: pokerReady,
+  SUIT_SYMBOL: SUIT_SYMBOL,
+  playerDraws: playerDraws,
+  bankerDraws: bankerDraws,
+  playerRule: playerRule,
+  bankerRule: bankerRule,
+  baccaratTotal: baccaratTotal,
+  baccaratValueChar: baccaratValueChar,
+  baccaratOutcome: baccaratOutcome,
+  playBaccarat: playBaccarat,
+  enumerateBaccarat: enumerateBaccarat,
+  settleBaccarat: settleBaccarat,
+  BANKER_DRAWS_ON: BANKER_DRAWS_ON,
+  RED_NUMBERS: RED_NUMBERS,
+  EURO_WHEEL: EURO_WHEEL,
+  AMERICAN_WHEEL: AMERICAN_WHEEL,
+  ROULETTE_ODDS: ROULETTE_ODDS,
+  pocketColor: pocketColor,
+  pocketName: pocketName,
+  wheelFor: wheelFor,
+  spinWheel: spinWheel,
+  uniformIndex: uniformIndex,
+  shuffleInPlace: shuffleInPlace,
+  rouletteEdge: rouletteEdge,
+  legalRouletteBets: legalRouletteBets,
+  classifySelection: classifySelection,
+  rouletteProfit: rouletteProfit,
+  quizProfit: quizProfit,
+};
+
+globalThis.BONES = BONES;
+
+</script>
+<script id="bones-ui">
+"use strict";
+
+const B = globalThis.BONES;
+const $ = function (id) { return document.getElementById(id); };
+const SUIT = B.SUIT_SYMBOL;
+
+const state = {
+  tab: "blackjack",
+  bj: {
+    hand: null,
+    locked: false,
+    picked: null,
+    showChart: false,
+    replay: false,
+    score: { correct: 0, total: 0, streak: 0, best: 0 },
+    weak: {},
+  },
+  vp: { cards: null, held: [false, false, false, false, false], phase: "idle", result: null, error: null },
+  edge: { key: null, dir: 1 },
+  bc: {
+    mode: "quiz",
+    phase: "askP",
+    hand: null,
+    q1: null,
+    q2: null,
+    score: { correct: 0, total: 0 },
+    side: "player",
+    stake: 2500,
+    chips: 100000,
+    beads: [],
+    last: null,
+    error: null,
+  },
+  ro: {
+    variant: "eu",
+    stake: 5,
+    chips: 100000,
+    selected: [],
+    bets: [],
+    winning: null,
+    phase: "ready",
+    lastDelta: null,
+    history: [],
+    error: null,
+    quiz: null,
+    qscore: { correct: 0, total: 0 },
+  },
+};
+
+function nextUint32() {
+  if (globalThis.crypto && crypto.getRandomValues) {
+    const buf = new Uint32Array(1);
+    crypto.getRandomValues(buf);
+    return buf[0];
+  }
+  return Math.floor(Math.random() * 4294967296);
+}
+
+function save() {
+  try {
+    sessionStorage.setItem("bones-trainer", JSON.stringify({
+      bj: { score: state.bj.score, weak: state.bj.weak },
+      bc: { chips: state.bc.chips, beads: state.bc.beads, score: state.bc.score, stake: state.bc.stake, side: state.bc.side },
+      ro: { chips: state.ro.chips, qscore: state.ro.qscore, variant: state.ro.variant, stake: state.ro.stake },
+    }));
+  } catch (err) { /* private mode */ }
+}
+
+function load() {
+  try {
+    const raw = sessionStorage.getItem("bones-trainer");
+    if (!raw) return;
+    const data = JSON.parse(raw);
+    if (data.bj) {
+      state.bj.score = data.bj.score || state.bj.score;
+      state.bj.weak = data.bj.weak || {};
+    }
+    if (data.bc) {
+      if (typeof data.bc.chips === "number") state.bc.chips = data.bc.chips;
+      if (Array.isArray(data.bc.beads)) state.bc.beads = data.bc.beads;
+      if (data.bc.score) state.bc.score = data.bc.score;
+      if (data.bc.stake) state.bc.stake = data.bc.stake;
+      if (data.bc.side) state.bc.side = data.bc.side;
+    }
+    if (data.ro) {
+      if (typeof data.ro.chips === "number") state.ro.chips = data.ro.chips;
+      if (data.ro.qscore) state.ro.qscore = data.ro.qscore;
+      if (data.ro.variant) state.ro.variant = data.ro.variant;
+      if (data.ro.stake) state.ro.stake = data.ro.stake;
+    }
+  } catch (err) { /* ignore broken storage */ }
+}
+
+function chipsText(cents) {
+  const n = Math.round(cents) / 100;
+  return Number.isInteger(n) ? String(n) : n.toFixed(2);
+}
+
+function esc(s) {
+  return String(s).replace(/[&<>"']/g, function (c) {
+    return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+  });
+}
+
+function rankLabel(rank) { return rank === "T" ? "10" : rank; }
+
+function cardHTML(card, extra) {
+  if (!card) {
+    return '<div class="card down" aria-hidden="true"></div>';
+  }
+  const red = card.suit === "H" || card.suit === "D";
+  return '<div class="card' + (red ? " red" : "") + (extra ? " " + extra : "") + '"><span>' +
+    esc(rankLabel(card.rank)) + '</span><span class="suit">' + SUIT[card.suit] + "</span></div>";
+}
+
+function nameCard(name, extra) {
+  return cardHTML({ rank: name[0], suit: name[1] }, extra);
+}
+
+/* ---------- tabs ---------- */
+
+function showTab(name) {
+  state.tab = name;
+  ["blackjack", "poker", "edges", "baccarat", "roulette"].forEach(function (id) {
+    const panel = $("panel-" + id);
+    const tab = $("tab-" + id);
+    const on = id === name;
+    panel.hidden = !on;
+    tab.setAttribute("aria-selected", on ? "true" : "false");
+    tab.tabIndex = on ? 0 : -1;
+  });
+  if (name === "poker" && state.vp.phase === "idle") renderVp();
+  if (name === "edges") renderEdges();
+  if (name === "baccarat") renderBaccarat();
+  if (name === "roulette") renderRoulette();
+}
+
+/* ---------- blackjack ---------- */
+
+let bjCells = null;
+function allCells() {
+  if (bjCells) return bjCells;
+  const grid = B.strategyGrid();
+  const ups = B.STRATEGY_6D_S17_DAS.upcards;
+  bjCells = [];
+  ["hard", "soft", "pairs"].forEach(function (cat) {
+    grid[cat].forEach(function (row) {
+      for (let i = 0; i < 10; i++) {
+        bjCells.push({ cat: cat, hand: row.hand, up: ups[i], code: row.actions[i] });
+      }
+    });
+  });
+  return bjCells;
+}
+
+function cellKey(cell) { return cell.cat + ":" + cell.hand + ":" + cell.up; }
+
+function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+function faceTen() { return pick(["T", "J", "Q", "K"]); }
+
+function rankFromValue(v) { return v < 10 ? String(v) : faceTen(); }
+
+function paint(ranks) {
+  const used = {};
+  return ranks.map(function (rank) {
+    const opts = ["S", "H", "D", "C"].filter(function (s) { return !used[rank + s]; });
+    const suit = opts[Math.floor(Math.random() * opts.length)];
+    used[rank + suit] = true;
+    return { rank: rank, suit: suit };
+  });
+}
+
+function hardRanks(total, multi) {
+  if (multi && total >= 6) {
+    for (let n = 0; n < 40; n++) {
+      const a = 2 + Math.floor(Math.random() * 9);
+      const b = 2 + Math.floor(Math.random() * 9);
+      const c = total - a - b;
+      if (c >= 2 && c <= 10) return [rankFromValue(a), rankFromValue(b), rankFromValue(c)];
+    }
+  }
+  const opts = [];
+  for (let a = 2; a <= 10; a++) {
+    const b = total - a;
+    if (b < a || b > 10) continue;
+    if (a === 10 && b === 10) {
+      const tens = ["T", "J", "Q", "K"];
+      for (let i = 0; i < tens.length; i++) {
+        for (let j = i + 1; j < tens.length; j++) opts.push([tens[i], tens[j]]);
+      }
+    } else if (a !== b) {
+      opts.push([rankFromValue(a), rankFromValue(b)]);
+    }
+  }
+  return pick(opts);
+}
+
+function softRanks(hand, multi) {
+  const k = Number(hand.slice(1));
+  if (multi && k >= 4) {
+    const a = 2 + Math.floor(Math.random() * (k - 3));
+    const b = k - a;
+    if (b >= 2) return ["A", rankFromValue(a), rankFromValue(b)];
+  }
+  return ["A", String(k)];
+}
+
+function pairRanks(hand) {
+  if (hand === "AA") return ["A", "A"];
+  if (hand === "TT") { const r = faceTen(); return [r, r]; }
+  return [hand[0], hand[0]];
+}
+
+function handTitle(cell) {
+  if (cell.cat === "hard") return "Hard " + cell.hand;
+  if (cell.cat === "soft") return "Soft " + (11 + Number(cell.hand.slice(1)));
+  if (cell.hand === "AA") return "Pair of aces";
+  if (cell.hand === "TT") return "Pair of tens";
+  return "Pair of " + cell.hand[0] + "s";
+}
+
+function chartRowLabel(cell) {
+  if (cell.cat === "soft") return "Chart row " + cell.hand[0] + "," + cell.hand.slice(1);
+  if (cell.cat === "pairs") return "Chart row " + (cell.hand === "TT" ? "T,T" : cell.hand === "AA" ? "A,A" : cell.hand[0] + "," + cell.hand[1]);
+  return "Chart row hard " + cell.hand;
+}
+
+function dealBj() {
+  const cells = allCells();
+  let cell = null;
+  const weakKeys = Object.keys(state.bj.weak).filter(function (k) { return state.bj.weak[k] > 0; });
+  if (state.bj.replay && weakKeys.length) {
+    const bag = [];
+    weakKeys.forEach(function (k) { for (let i = 0; i < state.bj.weak[k]; i++) bag.push(k); });
+    const key = bag[Math.floor(Math.random() * bag.length)];
+    cell = cells.filter(function (c) { return cellKey(c) === key; })[0];
+  }
+  if (!cell) cell = cells[Math.floor(Math.random() * cells.length)];
+  const multiOk = (cell.code === "Dh" || cell.code === "Ds") && cell.cat !== "pair" &&
+    (cell.cat === "hard" ? Number(cell.hand) >= 6 : Number(cell.hand.slice(1)) >= 4);
+  const multi = multiOk && Math.random() < 0.45;
+  let ranks;
+  if (cell.cat === "hard") ranks = hardRanks(Number(cell.hand), multi);
+  else if (cell.cat === "soft") ranks = softRanks(cell.hand, multi);
+  else ranks = pairRanks(cell.hand);
+  const cards = paint(ranks);
+  const upRank = cell.up === "T" ? faceTen() : cell.up;
+  state.bj.hand = {
+    cat: cell.cat,
+    hand: cell.hand,
+    up: cell.up,
+    code: cell.code,
+    cards: cards,
+    dealer: { rank: upRank, suit: pick(["S", "H", "D", "C"]) },
+    canDouble: cards.length === 2,
+    canSplit: cell.cat === "pair",
+    replayEmpty: state.bj.replay && weakKeys.length === 0,
+  };
+  state.bj.locked = false;
+  state.bj.picked = null;
+  renderBj();
+}
+
+function renderBj() {
+  const s = state.bj.score;
+  const pct = s.total ? Math.round(100 * s.correct / s.total) : 0;
+  $("bj-score").textContent = s.correct + "/" + s.total + "  ·  " + pct + "%  ·  streak " + s.streak + "  ·  best " + s.best;
+  const h = state.bj.hand;
+  $("bj-dealer").innerHTML = cardHTML(h.dealer) + cardHTML(null);
+  $("bj-player").innerHTML = h.cards.map(function (c) { return cardHTML(c); }).join("");
+  $("bj-title").textContent = handTitle(h);
+  $("bj-sub").textContent = chartRowLabel(h) + " vs " + (h.up === "T" ? "10" : h.up);
+  const bits = [];
+  bits.push(h.cards.length + (h.cards.length === 2 ? " cards" : " cards"));
+  bits.push(h.canDouble ? "Double allowed" : "Double not allowed");
+  if (h.canSplit) bits.push("Split allowed");
+  if (state.bj.replay) bits.push(h.replayEmpty ? "Weak-spot list is empty, so this hand is from the full chart" : "Weak-spot replay");
+  $("bj-meta").textContent = bits.join(" · ");
+  ["H", "S", "D", "P"].forEach(function (move) {
+    const btn = $("bj-" + move);
+    btn.disabled = state.bj.locked || (move === "D" && !h.canDouble) || (move === "P" && !h.canSplit);
+    btn.classList.toggle("picked", state.bj.picked === move);
+  });
+  const result = $("bj-result");
+  const next = $("bj-next");
+  if (!state.bj.locked) {
+    result.hidden = true;
+    next.hidden = true;
+  } else {
+    const expected = B.resolveAction(h.code, h.canDouble);
+    const ok = state.bj.picked === expected;
+    let reason = B.explain(h.cat, h.hand, h.up, h.code);
+    if (!h.canDouble && (h.code === "Dh" || h.code === "Ds")) {
+      const fb = h.code === "Dh" ? "Hit" : "Stand";
+      reason = "Double is closed with " + h.cards.length + " cards, so " + fb + ". " + reason;
+    }
+    result.hidden = false;
+    result.className = "banner " + (ok ? "good" : "bad");
+    result.innerHTML = "<strong>" + (ok ? "Correct" : "Wrong") + "</strong>" +
+      "<span>Right play: " + esc(B.actionLabel(h.code)) + "</span>" +
+      "<span>" + esc(reason) + "</span>";
+    next.hidden = false;
+  }
+  const weakBtn = $("bj-weak");
+  const nWeak = Object.keys(state.bj.weak).length;
+  weakBtn.textContent = "Weak spots" + (nWeak ? " (" + nWeak + ")" : "");
+  weakBtn.setAttribute("aria-pressed", state.bj.replay ? "true" : "false");
+  renderWeak();
+}
+
+function renderWeak() {
+  const box = $("bj-weak-list");
+  const keys = Object.keys(state.bj.weak).sort(function (a, b) { return state.bj.weak[b] - state.bj.weak[a]; });
+  if (!keys.length) {
+    box.innerHTML = '<p class="empty">No misses yet. Missed chart cells queue here for replay.</p>';
+    return;
+  }
+  box.innerHTML = keys.map(function (k) {
+    const parts = k.split(":");
+    const label = (parts[0] === "hard" ? "Hard " + parts[1] : parts[0] === "soft" ? "Soft " + parts[1] : "Pair " + parts[1]) + " vs " + (parts[2] === "T" ? "10" : parts[2]);
+    return '<span class="chip">' + esc(label) + " · " + state.bj.weak[k] + "</span>";
+  }).join("") + '<button type="button" class="texty" data-act="bj-clear-weak">Clear weak spots</button>';
+}
+
+function answerBj(move) {
+  if (state.bj.locked) return;
+  const h = state.bj.hand;
+  if (move === "D" && !h.canDouble) return;
+  if (move === "P" && !h.canSplit) return;
+  const expected = B.resolveAction(h.code, h.canDouble);
+  const ok = move === expected;
+  state.bj.locked = true;
+  state.bj.picked = move;
+  state.bj.score.total += 1;
+  const key = cellKey(h);
+  if (ok) {
+    state.bj.score.correct += 1;
+    state.bj.score.streak += 1;
+    if (state.bj.score.streak > state.bj.score.best) state.bj.score.best = state.bj.score.streak;
+    if (state.bj.weak[key]) {
+      state.bj.weak[key] -= 1;
+      if (state.bj.weak[key] <= 0) delete state.bj.weak[key];
+    }
+  } else {
+    state.bj.score.streak = 0;
+    state.bj.weak[key] = (state.bj.weak[key] || 0) + 1;
+  }
+  save();
+  renderBj();
+}
+
+function renderChart() {
+  const box = $("bj-chart");
+  if (!state.bj.showChart) { box.hidden = true; return; }
+  box.hidden = false;
+  if (box.dataset.ready === "1") return;
+  const ups = B.STRATEGY_6D_S17_DAS.upcards;
+  const grid = B.strategyGrid();
+  function section(title, rows, labeler) {
+    let html = "<h3>" + title + "</h3><div class=\"chart-scroll\"><table class=\"chart\"><thead><tr><th>Hand</th>";
+    ups.forEach(function (u) { html += "<th>" + (u === "T" ? "10" : u) + "</th>"; });
+    html += "</tr></thead><tbody>";
+    rows.forEach(function (row) {
+      html += "<tr><th>" + esc(labeler(row.hand)) + "</th>";
+      row.actions.forEach(function (code) {
+        html += '<td class="a-' + code + '" title="' + esc(B.actionLabel(code)) + '">' + code + "</td>";
+      });
+      html += "</tr>";
+    });
+    return html + "</tbody></table></div>";
+  }
+  box.innerHTML = '<p class="legend"><span class="a-H">H</span> Hit <span class="a-S">S</span> Stand <span class="a-Dh">Dh</span> Double (else Hit) <span class="a-Ds">Ds</span> Double (else Stand) <span class="a-P">P</span> Split</p>' +
+    section("Hard totals", grid.hard, function (h) { return h; }) +
+    section("Soft totals", grid.soft, function (h) { return h[0] + "," + h.slice(1); }) +
+    section("Pairs", grid.pairs, function (h) { return h === "TT" ? "T,T" : h === "AA" ? "A,A" : h[0] + "," + h[1]; }) +
+    '<p class="fine">6 decks, dealer stands on soft 17, double after split, no surrender, resplit to 4, no resplit aces, 3:2. Total-dependent basic strategy. Dh and Ds fall back when the hand has 3 or more cards.</p>';
+  box.dataset.ready = "1";
+}
+
+/* ---------- video poker ---------- */
+
+function renderVp() {
+  const root = $("vp-cards");
+  const vp = state.vp;
+  if (!vp.cards) {
+    root.innerHTML = '<p class="empty">Deal five cards. Tap the ones you want to hold, then score the hold against the exact best hold.</p>';
+  } else {
+    root.innerHTML = vp.cards.map(function (name, i) {
+      const held = vp.held[i];
+      const best = vp.result && vp.result.best.heldIndices.indexOf(i) !== -1;
+      const classes = ["pcard"];
+      if (held) classes.push("held");
+      if (vp.result && best) classes.push("best");
+      if (vp.result && held && !best && !vp.result.optimal) classes.push("miss");
+      const red = name[1] === "H" || name[1] === "D";
+      return '<button type="button" class="' + classes.join(" ") + (red ? " red" : "") + '" data-act="vp-hold" data-i="' + i + '" aria-pressed="' + (held ? "true" : "false") + '">' +
+        '<span class="tag">' + (held ? "HOLD" : best && vp.result ? "BEST" : "") + "</span>" +
+        "<strong>" + esc(rankLabel(name[0])) + "</strong><em>" + SUIT[name[1]] + "</em></button>";
+    }).join("");
+  }
+  $("vp-deal").hidden = vp.phase === "scoring";
+  $("vp-deal").textContent = vp.cards ? "Deal next" : "Deal";
+  $("vp-score").hidden = vp.phase !== "dealt";
+  $("vp-score").disabled = vp.phase !== "dealt";
+  const box = $("vp-result");
+  if (vp.phase === "scoring") {
+    box.hidden = false;
+    box.className = "banner";
+    box.innerHTML = "<strong>Scoring holds…</strong><span>Checking all 32 holds against every draw from the remaining 47 cards.</span>";
+    return;
+  }
+  if (vp.error) {
+    box.hidden = false;
+    box.className = "banner bad";
+    box.innerHTML = "<strong>Could not score this hand</strong><span>" + esc(vp.error) + "</span>";
+    return;
+  }
+  if (!vp.result) { box.hidden = true; return; }
+  const r = vp.result;
+  box.hidden = false;
+  box.className = "banner " + (r.optimal ? "good" : "bad");
+  const lost = r.optimal ? 0 : r.lost;
+  box.innerHTML = "<strong>" + (r.optimal ? "Optimal hold" : "EV left on the table") + "</strong>" +
+    "<span>Your hold " + r.user.ev.toFixed(4) + " · Best hold " + r.best.ev.toFixed(4) + " · EV lost " + lost.toFixed(4) + "</span>" +
+    "<span>Best cards: " + esc(r.best.heldIndices.map(function (i) { return B.cardLabel(vp.cards[i]); }).join(" ") || "none") +
+    ". Per coin, 5-coin royal pays 800. Scored in " + Math.round(r.ms) + " ms.</span>";
+}
+
+function dealVp() {
+  const deck = [];
+  "23456789TJQKA".split("").forEach(function (r) {
+    "CDHS".split("").forEach(function (s) { deck.push(r + s); });
+  });
+  for (let i = 0; i < 5; i++) {
+    const j = i + B.uniformIndex(52 - i, nextUint32);
+    const tmp = deck[i];
+    deck[i] = deck[j];
+    deck[j] = tmp;
+  }
+  state.vp.cards = deck.slice(0, 5);
+  state.vp.held = [false, false, false, false, false];
+  state.vp.phase = "dealt";
+  state.vp.result = null;
+  state.vp.error = null;
+  renderVp();
+}
+
+function scoreVp() {
+  if (state.vp.phase !== "dealt") return;
+  state.vp.phase = "scoring";
+  state.vp.error = null;
+  renderVp();
+  setTimeout(function () {
+    try {
+      const t0 = performance.now();
+      B.ensurePoker();
+      const scored = B.scoreVideoPoker(state.vp.cards);
+      const ms = performance.now() - t0;
+      let mask = 0;
+      state.vp.held.forEach(function (held, i) { if (held) mask |= (1 << i); });
+      const user = scored.holds[mask];
+      const best = scored.best;
+      const optimal = best.sum * user.ways === user.sum * best.ways;
+      state.vp.result = { user: user, best: best, optimal: optimal, ms: ms, lost: best.ev - user.ev };
+      state.vp.phase = "scored";
+    } catch (err) {
+      state.vp.error = (err && err.message) || "Scoring failed.";
+      state.vp.phase = "dealt";
+    }
+    renderVp();
+  }, 40);
+}
+
+/* ---------- house edge ---------- */
+
+function renderEdges() {
+  const rows = B.HOUSE_EDGES.slice();
+  const key = state.edge.key;
+  if (key) {
+    rows.sort(function (a, b) {
+      const av = key === "edge" ? a.edge : String(a[key]);
+      const bv = key === "edge" ? b.edge : String(b[key]);
+      const c = av < bv ? -1 : av > bv ? 1 : 0;
+      return c * state.edge.dir;
+    });
+  }
+  const arrow = function (k) {
+    if (state.edge.key !== k) return "";
+    return state.edge.dir > 0 ? " ↑" : " ↓";
+  };
+  let html = "<table class=\"edges\"><thead><tr>";
+  [["game", "Game"], ["bet", "Bet"], ["edge", "House edge"], ["note", "Note"]].forEach(function (col) {
+    html += '<th><button type="button" data-act="edge-sort" data-key="' + col[0] + '">' + col[1] + arrow(col[0]) + "</button></th>";
+  });
+  html += "</tr></thead><tbody>";
+  rows.forEach(function (row) {
+    html += "<tr><td>" + esc(row.game) + "</td><td>" + esc(row.bet) + "</td><td class=\"num\">" +
+      esc(B.formatEdge(row)) + "</td><td>" + esc(row.note) + "</td></tr>";
+  });
+  html += "</tbody></table>";
+  $("edge-table").innerHTML = html;
+}
+
+/* ---------- baccarat ---------- */
+
+function beadHTML() {
+  if (!state.bc.beads.length) return '<p class="empty">No hands yet. The bead road fills as you play.</p>';
+  return '<div class="beads" aria-label="Bead road">' + state.bc.beads.map(function (o) {
+    const letter = o === "player" ? "P" : o === "banker" ? "B" : "T";
+    return '<span class="bead ' + o + '">' + letter + "</span>";
+  }).join("") + "</div>";
+}
+
+function renderBaccarat() {
+  $("bc-quiz").hidden = state.bc.mode !== "quiz";
+  $("bc-play").hidden = state.bc.mode !== "play";
+  $("bc-mode-quiz").setAttribute("aria-pressed", state.bc.mode === "quiz" ? "true" : "false");
+  $("bc-mode-play").setAttribute("aria-pressed", state.bc.mode === "play" ? "true" : "false");
+  $("bc-road").innerHTML = beadHTML();
+  const sc = state.bc.score;
+  $("bc-score").textContent = "Rules " + sc.correct + "/" + sc.total + (sc.total ? " · " + Math.round(100 * sc.correct / sc.total) + "%" : "");
+  if (state.bc.mode === "quiz") renderBcQuiz();
+  else renderBcPlay();
+}
+
+function bcCards(cards, reveal) {
+  return cards.map(function (c, i) {
+    if (!reveal && i > 1) return "";
+    return cardHTML({ rank: c[0], suit: c[1] });
+  }).join("");
+}
+
+function renderBcQuiz() {
+  const h = state.bc.hand;
+  const phase = state.bc.phase;
+  const showP3 = phase === "askB" || phase === "reviewB" || phase === "done";
+  const showB3 = phase === "done";
+  $("bc-pcards").innerHTML = h.player.map(function (c, i) {
+    if (i === 2 && !showP3) return "";
+    return cardHTML({ rank: c[0], suit: c[1] });
+  }).join("");
+  $("bc-bcards").innerHTML = h.banker.map(function (c, i) {
+    if (i === 2 && !showB3) return "";
+    return cardHTML({ rank: c[0], suit: c[1] });
+  }).join("");
+  const pTot = (phase === "done" || (showP3 && h.playerDrew)) ? h.playerFinal : h.playerInitial;
+  const bTot = phase === "done" ? h.bankerFinal : h.bankerInitial;
+  $("bc-ptot").textContent = "Player " + pTot + (h.playerInitial >= 8 ? " natural" : "");
+  $("bc-btot").textContent = "Banker " + bTot + (h.bankerInitial >= 8 ? " natural" : "");
+  const q = $("bc-q");
+  const ans = $("bc-ans");
+  const yesno = $("bc-yesno");
+  const cont = $("bc-cont");
+  if (phase === "askP" || phase === "reviewP") {
+    q.textContent = "Does Player draw?";
+  } else if (phase === "askB" || phase === "reviewB") {
+    q.textContent = h.playerThird === null ? "Player stood. Does Banker draw?" : "Player's third card is " + h.playerThird + ". Does Banker draw?";
+  } else {
+    const who = h.outcome === "tie" ? "Tie" : (h.outcome === "player" ? "Player wins" : "Banker wins");
+    q.textContent = who + ". Player " + h.playerFinal + ", Banker " + h.bankerFinal + ".";
+  }
+  if (phase === "reviewP" || phase === "reviewB" || phase === "done") {
+    ans.hidden = false;
+    const review = phase === "reviewP" ? state.bc.q1 : phase === "reviewB" ? state.bc.q2 : null;
+    if (phase === "done") {
+      ans.className = "banner";
+      ans.innerHTML = "<strong>Hand over</strong><span>" + esc(B.playerRule(h.playerInitial, h.bankerInitial)) + " " + esc(B.bankerRule(h.bankerInitial, h.playerInitial, h.playerThird)) + "</span>";
+    } else {
+      ans.className = "banner " + (review.ok ? "good" : "bad");
+      ans.innerHTML = "<strong>" + (review.ok ? "Correct" : "Wrong") + "</strong><span>" + esc(review.rule) + "</span>";
+    }
+  } else ans.hidden = true;
+  yesno.hidden = phase !== "askP" && phase !== "askB";
+  cont.hidden = phase === "askP" || phase === "askB";
+  cont.textContent = phase === "done" ? "Next hand" : "Continue";
+}
+
+function newBcHand() {
+  state.bc.hand = B.playBaccarat(nextUint32);
+  state.bc.phase = "askP";
+  state.bc.q1 = null;
+  state.bc.q2 = null;
+  state.bc.error = null;
+  renderBaccarat();
+}
+
+function answerBc(yes) {
+  const h = state.bc.hand;
+  if (state.bc.phase === "askP") {
+    const correct = h.playerDrew;
+    const ok = yes === correct;
+    state.bc.score.total += 1;
+    if (ok) state.bc.score.correct += 1;
+    state.bc.q1 = { ok: ok, rule: B.playerRule(h.playerInitial, h.bankerInitial) };
+    state.bc.phase = "reviewP";
+  } else if (state.bc.phase === "askB") {
+    const correct = h.bankerDrew;
+    const ok = yes === correct;
+    state.bc.score.total += 1;
+    if (ok) state.bc.score.correct += 1;
+    state.bc.q2 = { ok: ok, rule: B.bankerRule(h.bankerInitial, h.playerInitial, h.playerThird) };
+    state.bc.phase = "reviewB";
+  } else return;
+  save();
+  renderBaccarat();
+}
+
+function continueBc() {
+  if (state.bc.phase === "reviewP") state.bc.phase = "askB";
+  else if (state.bc.phase === "reviewB") {
+    state.bc.phase = "done";
+    state.bc.beads.push(state.bc.hand.outcome);
+    save();
+  } else if (state.bc.phase === "done") {
+    newBcHand();
+    return;
+  }
+  renderBaccarat();
+}
+
+function renderBcPlay() {
+  $("bc-balance").textContent = chipsText(state.bc.chips) + " practice chips";
+  ["player", "banker", "tie"].forEach(function (side) {
+    const btn = $("bc-side-" + side);
+    btn.setAttribute("aria-pressed", state.bc.side === side ? "true" : "false");
+  });
+  [1000, 2500, 10000].forEach(function (stake) {
+    const btn = $("bc-stake-" + stake);
+    btn.setAttribute("aria-pressed", state.bc.stake === stake ? "true" : "false");
+  });
+  const err = $("bc-error");
+  if (state.bc.error) { err.hidden = false; err.textContent = state.bc.error; }
+  else err.hidden = true;
+  const box = $("bc-last");
+  const last = state.bc.last;
+  if (!last) {
+    box.innerHTML = '<p class="empty">Pick a side and deal. Banker pays 0.95 to 1, Tie pays 8 to 1, and Player or Banker pushes on a tie.</p>';
+    return;
+  }
+  const h = last.hand;
+  const profit = last.profit;
+  const word = profit > 0 ? "+" + chipsText(Math.round(profit * 100)) : profit < 0 ? "−" + chipsText(Math.round(-profit * 100)) : "push";
+  box.innerHTML = '<div class="split"><div><p class="kicker">Player ' + h.playerFinal + "</p><div class=\"cards\">" +
+    h.player.map(function (c) { return cardHTML({ rank: c[0], suit: c[1] }); }).join("") +
+    '</div></div><div><p class="kicker">Banker ' + h.bankerFinal + "</p><div class=\"cards\">" +
+    h.banker.map(function (c) { return cardHTML({ rank: c[0], suit: c[1] }); }).join("") +
+    "</div></div></div><p class=\"outcome\">" + esc(h.outcome === "tie" ? "Tie" : h.outcome[0].toUpperCase() + h.outcome.slice(1) + " wins") +
+    " · " + esc(word) + "</p><p class=\"fine\">" + esc(B.playerRule(h.playerInitial, h.bankerInitial)) + " " +
+    esc(B.bankerRule(h.bankerInitial, h.playerInitial, h.playerThird)) + "</p>";
+}
+
+function dealBcPlay() {
+  if (state.bc.chips < state.bc.stake) {
+    state.bc.error = "Not enough practice chips for that stake.";
+    renderBaccarat();
+    return;
+  }
+  const hand = B.playBaccarat(nextUint32);
+  const profit = B.settleBaccarat(state.bc.side, hand.outcome, state.bc.stake / 100);
+  state.bc.chips += Math.round(profit * 100);
+  state.bc.last = { hand: hand, profit: profit };
+  state.bc.beads.push(hand.outcome);
+  state.bc.error = null;
+  save();
+  renderBaccarat();
+}
+
+function renderDrawTable() {
+  let html = "<table class=\"chart\"><thead><tr><th>Banker</th><th>Draws if Player's third card is</th></tr></thead><tbody>";
+  for (let t = 0; t <= 7; t++) {
+    const row = B.BANKER_DRAWS_ON[t];
+    html += "<tr><th>" + t + "</th><td>" + (row.length ? row.join(", ") : "never") + "</td></tr>";
+  }
+  html += "</tbody></table>";
+  $("bc-table").innerHTML = html;
+}
+
+/* ---------- roulette ---------- */
+
+function pocketKey(p) { return p === "00" ? "00" : String(p); }
+
+function selectedHas(p) {
+  return state.ro.selected.some(function (x) { return x === p; });
+}
+
+function covered(p) {
+  return state.ro.bets.some(function (b) { return b.numbers.indexOf(p) !== -1; });
+}
+
+function numButton(p) {
+  const color = B.pocketColor(p);
+  const classes = ["num", color];
+  if (selectedHas(p)) classes.push("sel");
+  if (state.ro.winning === p) classes.push("win");
+  if (covered(p)) classes.push("cov");
+  return '<button type="button" class="' + classes.join(" ") + '" data-act="ro-num" data-pocket="' + pocketKey(p) + '">' + B.pocketName(p) + "</button>";
+}
+
+function renderRoulette() {
+  const ro = state.ro;
+  $("ro-eu").setAttribute("aria-pressed", ro.variant === "eu" ? "true" : "false");
+  $("ro-us").setAttribute("aria-pressed", ro.variant === "us" ? "true" : "false");
+  const edge = ro.variant === "eu" ? B.formatEdge(B.findEdge("Roulette", "Single-zero")) : B.formatEdge(B.findEdge("Roulette", "Double-zero"));
+  const basketEdge = B.formatEdge(B.findEdge("Roulette", "5-number"));
+  $("ro-bank").textContent = chipsText(ro.chips) + " practice chips · standard bets " + edge + (ro.variant === "us" ? " · basket " + basketEdge : "");
+  $("ro-stakes").innerHTML = [1, 5, 25, 100].map(function (n) {
+    return '<button type="button" data-act="ro-stake" data-stake="' + n + '" aria-pressed="' + (ro.stake === n ? "true" : "false") + '">' + n + "</button>";
+  }).join("");
+  let layout = '<div class="wheel">';
+  if (ro.variant === "eu") layout += numButton(0);
+  else layout += numButton(0) + numButton("00");
+  layout += "</div><div class=\"grid\">";
+  for (let row = 0; row < 12; row++) {
+    const a = row * 3 + 1;
+    for (let col = 0; col < 3; col++) layout += numButton(a + col);
+    layout += '<span class="sidebets"><button type="button" data-act="ro-quick" data-kind="street" data-row="' + row + '" aria-label="Street ' + a + " to " + (a + 2) + '">St</button>';
+    if (row < 11) layout += '<button type="button" data-act="ro-quick" data-kind="six" data-row="' + row + '" aria-label="Six line ' + a + " to " + (a + 5) + '">6</button>';
+    layout += "</span>";
+  }
+  layout += "</div>";
+  const outside = [
+    ["dozen", "1st 12", 1], ["dozen", "2nd 12", 2], ["dozen", "3rd 12", 3],
+    ["low", "1–18"], ["even", "Even"], ["red", "Red"], ["black", "Black"], ["odd", "Odd"], ["high", "19–36"],
+    ["column", "2:1 col 1", 1], ["column", "2:1 col 2", 2], ["column", "2:1 col 3", 3],
+  ];
+  layout += '<div class="outside">';
+  outside.forEach(function (item) {
+    layout += '<button type="button" class="out ' + item[0] + '" data-act="ro-out" data-kind="' + item[0] + '" data-which="' + (item[2] || "") + '">' + item[1] + "</button>";
+  });
+  if (ro.variant === "us") {
+    layout += '<button type="button" class="out basket" data-act="ro-out" data-kind="basket">Basket 0·00·1·2·3 · 6:1 · ' + basketEdge + "</button>";
+  }
+  layout += "</div>";
+  $("ro-layout").innerHTML = layout;
+  const found = ro.selected.length ? B.classifySelection(ro.selected, ro.variant) : null;
+  const sel = $("ro-select");
+  if (!ro.selected.length) {
+    sel.innerHTML = '<p class="fine">Tap numbers to build a straight, split, street, corner, or six line. St and 6 place that row immediately. Zeros lose even-money, dozens, and columns.</p>';
+  } else if (!found) {
+    sel.innerHTML = '<p class="fine">Those numbers are not one standard bet.</p><button type="button" data-act="ro-clear-sel">Clear selection</button>';
+  } else {
+    const edgeText = B.formatEdge({ edge: B.rouletteEdge(ro.variant, found.type), approx: false });
+    sel.innerHTML = "<p><strong>" + esc(found.label) + "</strong> pays " + found.odds + ":1 · house edge " + edgeText + "</p>" +
+      '<button type="button" class="gold" data-act="ro-place">Place ' + ro.stake + "</button> " +
+      '<button type="button" data-act="ro-clear-sel">Clear selection</button>';
+  }
+  const bets = $("ro-bets");
+  if (!ro.bets.length) bets.innerHTML = '<p class="empty">No chips on the layout.</p>';
+  else {
+    bets.innerHTML = ro.bets.map(function (b, i) {
+      const mark = b.last === undefined || b.last === null ? "" : (b.last >= 0 ? " +" + b.last : " " + b.last);
+      return '<div class="betline"><span>' + esc(b.label) + " · " + b.stake + mark + '</span><button type="button" data-act="ro-remove" data-i="' + i + '">Remove</button></div>';
+    }).join("");
+  }
+  const err = $("ro-error");
+  if (ro.error) { err.hidden = false; err.textContent = ro.error; } else err.hidden = true;
+  const res = $("ro-result");
+  if (ro.phase === "spinning") {
+    res.hidden = false;
+    res.className = "banner";
+    res.innerHTML = "<strong>Spinning…</strong><span>Fair draw across " + (ro.variant === "eu" ? "37" : "38") + " pockets.</span>";
+  } else if (ro.winning === null || ro.winning === undefined || ro.lastDelta === null) {
+    res.hidden = true;
+  } else {
+    res.hidden = false;
+    res.className = "banner " + (ro.lastDelta > 0 ? "good" : ro.lastDelta < 0 ? "bad" : "");
+    const word = ro.lastDelta > 0 ? "+" + ro.lastDelta : String(ro.lastDelta);
+    res.innerHTML = "<strong>" + esc(B.pocketName(ro.winning)) + " " + B.pocketColor(ro.winning) + "</strong><span>Practice chips " + esc(word) + " this spin.</span>";
+  }
+  $("ro-history").textContent = ro.history.length ? "Recent: " + ro.history.map(B.pocketName).join(" ") : "No spins yet.";
+  renderQuiz();
+}
+
+function outsideBet(kind, which) {
+  const bets = B.legalRouletteBets(state.ro.variant);
+  return bets.filter(function (b) {
+    if (b.type !== kind) return false;
+    if (kind === "dozen") return b.label.indexOf(which === 1 ? "1st" : which === 2 ? "2nd" : "3rd") === 0;
+    if (kind === "column") return b.label.indexOf("Column " + which) === 0;
+    return true;
+  })[0];
+}
+
+function placeBet(template) {
+  const stake = state.ro.stake;
+  const used = state.ro.bets.reduce(function (s, b) { return s + b.stake; }, 0);
+  if ((used + stake) * 100 > state.ro.chips + 0.001) {
+    state.ro.error = "Not enough practice chips to cover the chips already on the layout.";
+    renderRoulette();
+    return;
+  }
+  const existing = state.ro.bets.filter(function (b) {
+    return b.type === template.type && b.numbers.join(",") === template.numbers.join(",");
+  })[0];
+  if (existing) existing.stake += stake;
+  else state.ro.bets.push({ type: template.type, numbers: template.numbers.slice(), label: template.label, stake: stake, last: null });
+  state.ro.selected = [];
+  state.ro.error = null;
+  state.ro.lastDelta = null;
+  renderRoulette();
+}
+
+function spinRoulette() {
+  if (state.ro.phase === "spinning") return;
+  if (!state.ro.bets.length) {
+    state.ro.error = "Place at least one practice bet before spinning.";
+    renderRoulette();
+    return;
+  }
+  const used = state.ro.bets.reduce(function (s, b) { return s + b.stake; }, 0);
+  if (used * 100 > state.ro.chips + 0.001) {
+    state.ro.error = "Your practice stack cannot cover the bets left on the layout.";
+    renderRoulette();
+    return;
+  }
+  state.ro.phase = "spinning";
+  state.ro.error = null;
+  renderRoulette();
+  const wait = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 450;
+  setTimeout(function () {
+    const pocket = B.spinWheel(state.ro.variant, nextUint32);
+    let delta = 0;
+    state.ro.bets.forEach(function (bet) {
+      const profit = B.rouletteProfit(bet, pocket);
+      bet.last = profit;
+      delta += profit;
+    });
+    state.ro.chips += Math.round(delta * 100);
+    state.ro.winning = pocket;
+    state.ro.lastDelta = delta;
+    state.ro.history.unshift(pocket);
+    if (state.ro.history.length > 12) state.ro.history.pop();
+    state.ro.phase = "ready";
+    save();
+    renderRoulette();
+  }, wait);
+}
+
+function newQuiz() {
+  const types = [
+    ["straight", "straight"], ["split", "split"], ["street", "street"], ["corner", "corner"],
+    ["six", "six line"], ["dozen", "dozen"], ["column", "column"], ["red", "red"],
+    ["odd", "odd"], ["even", "even"], ["low", "low (1–18)"], ["high", "high (19–36)"],
+    ["basket", "5-number basket"],
+  ];
+  const pair = types[Math.floor(Math.random() * types.length)];
+  const stakes = [5, 10, 25];
+  const stake = stakes[Math.floor(Math.random() * stakes.length)];
+  const answer = B.quizProfit(pair[0], stake);
+  const odds = B.ROULETTE_ODDS[pair[0]];
+  const pool = [answer + stake, (odds + 1) * stake, Math.max(1, odds * stake - stake), answer * 2, odds * (stake === 5 ? 10 : 5)];
+  const opts = [answer];
+  pool.forEach(function (n) {
+    if (opts.length < 4 && opts.indexOf(n) === -1 && n > 0) opts.push(n);
+  });
+  let extra = 1;
+  while (opts.length < 4 && extra < 12) {
+    const n = answer + extra * stake;
+    extra += 1;
+    if (opts.indexOf(n) === -1) opts.push(n);
+  }
+  for (let i = opts.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    const tmp = opts[i]; opts[i] = opts[j]; opts[j] = tmp;
+  }
+  state.ro.quiz = { type: pair[0], label: pair[1], stake: stake, answer: answer, options: opts, picked: null };
+}
+
+function renderQuiz() {
+  if (!state.ro.quiz) newQuiz();
+  const q = state.ro.quiz;
+  const sc = state.ro.qscore;
+  let html = '<h3>Payout quiz</h3><p class="fine">Score ' + sc.correct + "/" + sc.total + ". Profit only. The stake comes back as well.</p>";
+  html += "<p>Winning " + esc(q.label) + ", $" + q.stake + " stake. What profit is paid?</p>";
+  html += '<div class="choices">';
+  q.options.forEach(function (n) {
+    html += '<button type="button" data-act="ro-quiz" data-n="' + n + '"' + (q.picked === null ? "" : " disabled") + ">$" + n + "</button>";
+  });
+  html += "</div>";
+  if (q.picked !== null) {
+    const ok = q.picked === q.answer;
+    html += '<div class="banner ' + (ok ? "good" : "bad") + '"><strong>' + (ok ? "Correct" : "Wrong") + "</strong><span>A " +
+      esc(q.label) + " pays " + B.ROULETTE_ODDS[q.type] + " to 1. Profit on $" + q.stake + " is $" + q.answer + ".</span></div>";
+    html += '<button type="button" class="gold" data-act="ro-quiz-next">Next question</button>';
+  }
+  $("ro-quiz").innerHTML = html;
+}
+
+function answerQuiz(n) {
+  const q = state.ro.quiz;
+  if (!q || q.picked !== null) return;
+  q.picked = n;
+  state.ro.qscore.total += 1;
+  if (n === q.answer) state.ro.qscore.correct += 1;
+  save();
+  renderQuiz();
+}
+
+/* ---------- events ---------- */
+
+function onClick(event) {
+  const el = event.target.closest("[data-act]");
+  if (!el) return;
+  const act = el.dataset.act;
+  if (act === "tab") { showTab(el.dataset.tab); return; }
+  if (act === "bj-play") { answerBj(el.dataset.move); return; }
+  if (act === "bj-next") { dealBj(); return; }
+  if (act === "bj-chart") {
+    state.bj.showChart = !state.bj.showChart;
+    $("bj-chart-btn").setAttribute("aria-pressed", state.bj.showChart ? "true" : "false");
+    renderChart();
+    return;
+  }
+  if (act === "bj-weak") {
+    state.bj.replay = !state.bj.replay;
+    renderBj();
+    return;
+  }
+  if (act === "bj-clear-weak") { state.bj.weak = {}; state.bj.replay = false; save(); renderBj(); return; }
+  if (act === "bj-reset") {
+    state.bj.score = { correct: 0, total: 0, streak: 0, best: 0 };
+    save();
+    renderBj();
+    return;
+  }
+  if (act === "vp-deal") { dealVp(); return; }
+  if (act === "vp-score") { scoreVp(); return; }
+  if (act === "vp-hold") {
+    if (state.vp.phase !== "dealt") return;
+    const i = Number(el.dataset.i);
+    state.vp.held[i] = !state.vp.held[i];
+    renderVp();
+    return;
+  }
+  if (act === "edge-sort") {
+    const key = el.dataset.key;
+    if (state.edge.key === key) state.edge.dir *= -1;
+    else { state.edge.key = key; state.edge.dir = key === "edge" ? 1 : 1; }
+    renderEdges();
+    return;
+  }
+  if (act === "bc-mode") { state.bc.mode = el.dataset.mode; renderBaccarat(); return; }
+  if (act === "bc-yes") { answerBc(true); return; }
+  if (act === "bc-no") { answerBc(false); return; }
+  if (act === "bc-cont") { continueBc(); return; }
+  if (act === "bc-side") { state.bc.side = el.dataset.side; renderBaccarat(); return; }
+  if (act === "bc-stake") { state.bc.stake = Number(el.dataset.stake); save(); renderBaccarat(); return; }
+  if (act === "bc-deal") { dealBcPlay(); return; }
+  if (act === "bc-reset") {
+    state.bc.chips = 100000;
+    state.bc.beads = [];
+    state.bc.last = null;
+    state.bc.score = { correct: 0, total: 0 };
+    save();
+    renderBaccarat();
+    return;
+  }
+  if (act === "ro-variant") {
+    state.ro.variant = el.dataset.variant;
+    state.ro.selected = [];
+    state.ro.bets = [];
+    state.ro.winning = null;
+    state.ro.lastDelta = null;
+    state.ro.error = null;
+    save();
+    renderRoulette();
+    return;
+  }
+  if (act === "ro-stake") { state.ro.stake = Number(el.dataset.stake); save(); renderRoulette(); return; }
+  if (act === "ro-num") {
+    const key = el.dataset.pocket;
+    const pocket = key === "00" ? "00" : Number(key);
+    if (selectedHas(pocket)) state.ro.selected = state.ro.selected.filter(function (p) { return p !== pocket; });
+    else if (state.ro.selected.length < 6) state.ro.selected.push(pocket);
+    state.ro.error = null;
+    renderRoulette();
+    return;
+  }
+  if (act === "ro-clear-sel") { state.ro.selected = []; renderRoulette(); return; }
+  if (act === "ro-place") {
+    const found = B.classifySelection(state.ro.selected, state.ro.variant);
+    if (found) placeBet(found);
+    return;
+  }
+  if (act === "ro-quick") {
+    const row = Number(el.dataset.row);
+    const a = row * 3 + 1;
+    const nums = el.dataset.kind === "street" ? [a, a + 1, a + 2] : [a, a + 1, a + 2, a + 3, a + 4, a + 5];
+    const found = B.classifySelection(nums, state.ro.variant);
+    if (found) placeBet(found);
+    return;
+  }
+  if (act === "ro-out") {
+    const which = el.dataset.which ? Number(el.dataset.which) : null;
+    const found = outsideBet(el.dataset.kind, which);
+    if (found) placeBet(found);
+    return;
+  }
+  if (act === "ro-remove") {
+    state.ro.bets.splice(Number(el.dataset.i), 1);
+    renderRoulette();
+    return;
+  }
+  if (act === "ro-clear") {
+    state.ro.bets = [];
+    state.ro.selected = [];
+    state.ro.lastDelta = null;
+    renderRoulette();
+    return;
+  }
+  if (act === "ro-spin") { spinRoulette(); return; }
+  if (act === "ro-reset") {
+    state.ro.chips = 100000;
+    state.ro.bets = [];
+    state.ro.selected = [];
+    state.ro.history = [];
+    state.ro.winning = null;
+    state.ro.lastDelta = null;
+    state.ro.qscore = { correct: 0, total: 0 };
+    save();
+    renderRoulette();
+    return;
+  }
+  if (act === "ro-quiz") { answerQuiz(Number(el.dataset.n)); return; }
+  if (act === "ro-quiz-next") { newQuiz(); renderQuiz(); return; }
+}
+
+function onKey(event) {
+  if (state.tab !== "blackjack") return;
+  if (event.target && (event.target.tagName === "INPUT" || event.target.tagName === "TEXTAREA")) return;
+  const k = event.key.toLowerCase();
+  if (!state.bj.locked && (k === "h" || k === "s" || k === "d" || k === "p")) {
+    answerBj(k.toUpperCase());
+  } else if (state.bj.locked && (k === "n" || k === "enter")) {
+    dealBj();
+  }
+}
+
+function init() {
+  load();
+  document.body.addEventListener("click", onClick);
+  document.addEventListener("keydown", onKey);
+  renderDrawTable();
+  newQuiz();
+  dealBj();
+  newBcHand();
+  renderEdges();
+  renderRoulette();
+  showTab("blackjack");
+}
+
+init();
+
+</script>
+</body>
+</html>
