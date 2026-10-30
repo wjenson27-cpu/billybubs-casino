@@ -112,6 +112,10 @@ The layout takes straights, splits, streets (including the zero trios), corners 
 | Red, black, odd, even, 1–18, 19–36 | 1 to 1 |
 | 5-number basket | 6 to 1 |
 
+## Look
+
+The page is one file and stays offline. The header uses the Billy Bubs medallion. Card backs and chips are the v2 drawings. The tables sit on a downscaled felt tile inside a leather rail. Cinzel and Inter are embedded as Latin WOFF2, so the type does not depend on a network. The single-zero wheel is the v3 drawing: the rotor and the ball turn in opposite directions, and the ball drops onto the pocket that was drawn. The double-zero wheel uses the same motion with all 38 pockets.
+
 ## Tests
 
 `tests/trainer.test.js` loads the engine out of `index.html` and checks:
