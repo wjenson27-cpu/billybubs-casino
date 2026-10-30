@@ -322,7 +322,7 @@ function mount() {
     <div class="dock" id="dock"></div>
     <main class="panel hidden" id="panel"></main>
     <nav class="tabs" id="tabs" aria-label="Sections"></nav>
-    <p class="legal">18+ · Practice only · No real money</p>
+    <p class="legal"><a href="../index.html">Lobby</a> · 18+ · Practice only · No real money</p>
     ${rotateGateHTML()}
     <div id="overlay"></div>
   `;
@@ -3183,7 +3183,7 @@ function homeHTML() {
     "<button class='pill" + (settings.tutorOn ? " on" : "") + "' data-act='tips' aria-pressed='" + settings.tutorOn + "'>BILLY TIPS " + (settings.tutorOn ? "ON" : "OFF") + "</button></div>" +
     "<img class='logo' src='assets/logos/billybubs-bubble-craps-color-dark.svg' alt='Billy Bubs Bubble Craps'>" +
     "<div class='home-hero'><img class='hood' src='assets/dome/dome-hood-cold-warm@2x.webp' alt=''>" +
-    dieImg(5, "home-d1") + dieImg(2, "home-d2") +
+    dieImg(5, "home-d1") + dieImg(5, "home-d2") +
     "<img class='hello billy' src='assets/mascots/dealer-billy/billy-A-hello.svg' alt='Dealer Billy'>" +
     "<img class='hello billie' src='assets/mascots/billie/billie-C-hello.svg' alt='Bubbles Billie'>" +
     "<p class='speech'>Bets down! Air's coming on.</p></div>" +

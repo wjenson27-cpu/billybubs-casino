@@ -552,7 +552,7 @@ function render() {
     "<footer class='tc-dock'>" + offerHTML + railHTML() + shoot + "</footer>" +
     "<nav class='tc-keys'><button data-act='screen' data-screen='play'" + (screen === "play" && !menu ? " class='on'" : "") + ">BETS</button><button data-act='screen' data-screen='picker'>STRATEGIES</button><button data-act='tutor'>TUTOR</button><button data-act='menu'>STATS</button></nav>" +
     R5.markup({ dice: false }) +
-    "<div class='tc-notice'><span>18+</span> PRACTICE ONLY · NO REAL MONEY</div>" +
+    "<div class='tc-notice'><a href='../../index.html'>Lobby</a><span>18+</span> PRACTICE ONLY · NO REAL MONEY</div>" +
     rotateGateHTML();
   LC.markSpots(app);
   fitTable();

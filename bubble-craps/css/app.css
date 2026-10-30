@@ -76,6 +76,7 @@ img { max-width: 100%; display: block; }
   padding: 4px 8px calc(4px + var(--safe-b));
   background: #06140e;
 }
+.legal a { color: var(--gold); font-weight: 700; text-decoration: none; }
 
 /* HUD */
 .hud {

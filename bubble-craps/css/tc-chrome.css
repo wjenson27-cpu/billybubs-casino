@@ -72,6 +72,7 @@ html,body{margin:0;height:100%;overflow:hidden;background:#04060A}
   color:#F6EDD8;font:800 10.5px/1 var(--sans);letter-spacing:.1em}
 .tc-keys button.on{background:linear-gradient(#FFE7A0,#E2BC62);color:#2A1A00}
 .tc-notice{grid-area:notice;height:22px;display:flex;align-items:center;justify-content:center;gap:6px;font:700 9.5px/1 var(--sans);letter-spacing:.14em;color:#C8D3E2}
+.tc-notice a{color:#E7C56A;text-decoration:none;letter-spacing:.08em}
 .tc-notice span{border:1px solid #C8D3E2;border-radius:4px;padding:1px 3px}
 /* ---------- short portrait (≤700 tall): tighter chrome so the felt keeps 44px spots ---------- */
 .tc-app.short .tc-hud{height:46px;padding-top:3px;padding-bottom:3px}
