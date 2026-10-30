@@ -146,7 +146,7 @@
     font-variant-numeric: tabular-nums; white-space: nowrap;
   }
   tr.bc-edge-hit td { outline: 2px solid var(--gold-hi); outline-offset: -2px; }
-  .rowbtns button, .modes button, .texty, .sides button {
+  .rowbtns button, .modes button, .texty, .sides button, .bc-rail button, .bc-setting button {
     background: var(--surface); border: 1px solid var(--gold-dim); border-radius: 999px; padding: 8px 12px; min-height: 44px;
   }
   button[aria-pressed="true"] { background: var(--metal); color: #1a140c; border-color: transparent; }
@@ -2640,6 +2640,7 @@ function renderEdges() {
   $("edge-table").innerHTML = html;
   const marked = document.querySelector("#edge-table tr.bc-edge-hit");
   if (marked) marked.scrollIntoView({ block: "center" });
+  state.edge.focus = null;
 }
 
 /* ---------- baccarat ---------- */
@@ -2805,7 +2806,7 @@ function renderBcPlay() {
   }).join("");
   const allBtn = $("bc-all-sides");
   allBtn.setAttribute("aria-pressed", state.bc.allSides ? "true" : "false");
-  allBtn.textContent = state.bc.allSides ? "Showing all 7" : "All 7 side bets";
+  allBtn.textContent = state.bc.allSides ? (state.bc.ez ? "Showing all 8" : "Showing all 7") : "All 7 side bets";
   $("bc-sides-note").textContent = state.bc.allSides
     ? (state.bc.ez
       ? "All seven side bets, plus Panda 8 while EZ Baccarat is on."
