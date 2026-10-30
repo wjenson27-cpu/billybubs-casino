@@ -206,6 +206,15 @@ check("house edges match the published list", function () {
     ["Roulette", "5-number basket (0, 00, 1, 2, 3)", 7.89, false],
     ["Video poker", "9/6 Jacks or Better, optimal play", 0.46, false],
     ["Pai Gow Poker", "Player, 5% commission", 2.7, true],
+    ["Baccarat", "Player Pair", 10.36, false],
+    ["Baccarat", "Banker Pair", 10.36, false],
+    ["Baccarat", "Dragon Bonus (Player)", 2.65, false],
+    ["Baccarat", "Dragon Bonus (Banker)", 9.37, false],
+    ["Baccarat", "EZ Banker", 1.02, false],
+    ["Baccarat", "Dragon 7", 7.61, false],
+    ["Baccarat", "Panda 8", 10.19, false],
+    ["Baccarat", "Perfect Pair", 13.03, false],
+    ["Baccarat", "Either Pair", 13.71, false],
   ];
   assert.strictEqual(B.HOUSE_EDGES.length, expect.length);
   expect.forEach(function (row, i) {
@@ -304,6 +313,74 @@ function colorOf(wheel, i) {
   const p = wheel[i];
   return B.pocketColor(p);
 }
+
+check("baccarat side-bet payouts and exact edges", function () {
+  function odds(name, player, banker) {
+    return B.sideBetOdds(name, { player: player, banker: banker });
+  }
+  assert.strictEqual(odds("playerPair", ["AS", "AH"], ["2C", "3D"]), 11);
+  assert.strictEqual(odds("bankerPair", ["2C", "3D"], ["KH", "KD"]), 11);
+  assert.strictEqual(odds("playerPair", ["AS", "2H"], ["KH", "KD"]), -1);
+  assert.strictEqual(odds("eitherPair", ["AS", "AH"], ["2C", "3D"]), 5);
+  assert.strictEqual(odds("eitherPair", ["AS", "2H"], ["3C", "4D"]), -1);
+  assert.strictEqual(odds("perfectPair", ["AS", "AS"], ["2C", "3D"]), 25);
+  assert.strictEqual(odds("perfectPair", ["AS", "AH"], ["2C", "3D"]), -1);
+  assert.strictEqual(odds("perfectPair", ["AS", "2H"], ["KD", "KD"]), 25);
+  assert.strictEqual(odds("dragonPlayer", ["AS", "8S"], ["2C", "5D"]), 1);
+  assert.strictEqual(odds("dragonPlayer", ["2C", "3D", "4H"], ["TS", "KC"]), 30);
+  assert.strictEqual(odds("dragonPlayer", ["AS", "8S"], ["KH", "9D"]), 0);
+  assert.strictEqual(odds("dragonBanker", ["2C", "3D"], ["KH", "9D"]), 1);
+  assert.strictEqual(odds("dragon7", ["AS", "2D"], ["2C", "3D", "2H"]), 40);
+  assert.strictEqual(odds("dragon7", ["9S", "9D"], ["2C", "3D", "2H"]), -1);
+  assert.strictEqual(odds("panda8", ["2C", "2D", "4H"], ["AS", "2H"]), 25);
+  assert.strictEqual(odds("ezBanker", ["AS", "2D"], ["2C", "3D", "2H"]), 0);
+  assert.strictEqual(odds("ezBanker", ["2C", "3D"], ["KH", "9D"]), 1);
+  assert.strictEqual(odds("ezBanker", ["AS", "8S"], ["2C", "5D"]), -1);
+  const edges = B.enumerateSideEdges();
+  const expect = {
+    playerPair: 10.36,
+    bankerPair: 10.36,
+    dragonPlayer: 2.65,
+    dragonBanker: 9.37,
+    ezBanker: 1.02,
+    dragon7: 7.61,
+    panda8: 10.19,
+    perfectPair: 13.03,
+    eitherPair: 13.71,
+  };
+  Object.keys(expect).forEach(function (key) {
+    assert.ok(Math.abs(edges[key] - expect[key]) < 0.02, key + " " + edges[key]);
+    const row = B.HOUSE_EDGES.filter(function (r) {
+      return r.game === "Baccarat" && Math.abs(r.edge - expect[key]) < 0.02 &&
+        ((key === "playerPair" && r.bet === "Player Pair") ||
+         (key === "bankerPair" && r.bet === "Banker Pair") ||
+         (key === "dragonPlayer" && r.bet.indexOf("Dragon Bonus (Player)") === 0) ||
+         (key === "dragonBanker" && r.bet.indexOf("Dragon Bonus (Banker)") === 0) ||
+         (key === "ezBanker" && r.bet === "EZ Banker") ||
+         (key === "dragon7" && r.bet === "Dragon 7") ||
+         (key === "panda8" && r.bet === "Panda 8") ||
+         (key === "perfectPair" && r.bet === "Perfect Pair") ||
+         (key === "eitherPair" && r.bet === "Either Pair"));
+    })[0];
+    assert.ok(row, "sheet row " + key);
+    assert.ok(Math.abs(row.edge - edges[key]) < 0.02, key + " sheet");
+  });
+});
+
+check("visual wheel pocket order matches the standard wheels", function () {
+  const euro = [0, 32, 15, 19, 4, 21, 2, 25, 17, 34, 6, 27, 13, 36, 11, 30, 8, 23, 10, 5, 24, 16, 33, 1, 20, 14, 31, 9, 22, 18, 29, 7, 28, 12, 35, 3, 26];
+  const american = [0, 28, 9, 26, 30, 11, 7, 20, 32, 17, 5, 22, 34, 15, 3, 24, 36, 13, 1, "00", 27, 10, 25, 29, 12, 8, 19, 31, 18, 6, 21, 33, 16, 4, 23, 35, 14, 2];
+  same(B.EURO_WHEEL, euro);
+  same(B.AMERICAN_WHEEL, american);
+  same(B.wheelFor("eu"), euro);
+  same(B.wheelFor("us"), american);
+  assert.ok(uiMatch[1].indexOf("function wheelSvg") !== -1);
+  assert.ok(uiMatch[1].indexOf("B.wheelFor(variant)") !== -1);
+  const fn = uiMatch[1].slice(uiMatch[1].indexOf("function wheelSvg"), uiMatch[1].indexOf("function renderRoulette"));
+  assert.ok(fn.indexOf("for (let i = 0; i < n; i++)") !== -1);
+  assert.ok(fn.indexOf("pockets[i]") !== -1);
+  assert.ok(fn.indexOf("data-pocket") !== -1);
+});
 
 check("roulette wheels cover every pocket once", function () {
   assert.strictEqual(B.EURO_WHEEL.length, 37);

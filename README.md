@@ -75,7 +75,23 @@ Eight-deck punto banco. Tens and faces count 0, aces 1, everything else its numb
 - If Player stands, Banker draws on 0–5 and stands on 6–7.
 - If Player takes a third card, Banker draws by the standard table: 0–2 always, 3 unless the third card is 8, 4 on 2–7, 5 on 4–7, 6 on 6 or 7, 7 never.
 
-The rules quiz asks both drawing questions, then shows the rule and the result. Quick play uses practice chips. Banker pays 0.95 to 1 (house edge 1.06%). Player pays 1 to 1 (1.24%) and pushes on a tie, as does Banker. Tie pays 8 to 1 (14.36%). A bead road records the session.
+The rules quiz asks both drawing questions, then shows the rule and the result. Quick play uses practice chips. Banker pays 0.95 to 1 (house edge 1.06%). Player pays 1 to 1 (1.24%) and pushes on a tie, as does Banker. Tie pays 8 to 1 (14.36%). A bead road records the session. Cards are dealt face down. Drag a corner to peel a card; Reveal all opens the hand. The result is fixed when the cards are dealt. Reduced motion uses a simple flip instead of the peel.
+
+Side bets, settled with practice chips and enumerated exactly on an 8-deck shoe:
+
+| Bet | Pays | Exact house edge |
+| --- | --- | --- |
+| Player Pair | 11 to 1 | 10.361% |
+| Banker Pair | 11 to 1 | 10.361% |
+| Dragon Bonus, Player | natural win 1 to 1, natural tie pushes, non-natural win by 9/8/7/6/5/4 pays 30/10/6/4/2/1 | 2.652% |
+| Dragon Bonus, Banker | same table | 9.373% |
+| EZ Banker | 1 to 1, three-card 7 win pushes, no commission | 1.018% |
+| Dragon 7 | 40 to 1 | 7.611% |
+| Panda 8 | 25 to 1 | 10.188% |
+| Perfect Pair | 25 to 1 | 13.029% |
+| Either Pair | 5 to 1 | 13.710% |
+
+Perfect Pair pays once, at 25 to 1, if the Player's first two cards, the Banker's, or both, are the same rank and the same suit. Either Pair pays once, at 5 to 1, if either hand's first two cards share a rank of any suits. A pair on both hands does not pay twice. EZ Baccarat is a toggle: the main Banker bet drops the 5% commission and pushes when Banker wins with a three-card 7.
 
 Exact enumeration of the 8-deck shoe (dealing order Player, Banker, Player, Banker, then third cards) gives Banker 45.8597%, Player 44.6247%, Tie 9.5156%, which round to the usual 45.86% / 44.62% / 9.52%. Those probabilities reproduce the three house edges above.
 
