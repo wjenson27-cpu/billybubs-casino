@@ -188,10 +188,31 @@
   details { color: var(--muted); }
   details summary { color: var(--ivory); min-height: 44px; display: flex; align-items: center; cursor: pointer; }
   footer { margin-top: 18px; color: var(--muted); font-size: 14px; }
-  .sq { position: relative; width: 64px; height: 90px; touch-action: none; animation: deal 260ms ease-out both; }
-  .sq-face, .sq-back { position: absolute; inset: 0; }
-  .sq-back { z-index: 2; filter: drop-shadow(0 6px 8px rgba(0,0,0,.45)); }
-  .sq.open .sq-back, .sq.flipped .sq-back { visibility: hidden; }
+  .sq-wrap { position: relative; width: 96px; min-height: 132px; animation: deal 260ms ease-out both; }
+  .sq-turn {
+    position: relative; z-index: 5; min-width: 64px; min-height: 44px; margin: 0 auto 4px;
+    border-radius: 999px; border: 1px solid var(--gold-dim); background: var(--surface);
+    color: var(--gold-hi); font-size: 13px; letter-spacing: 0.04em;
+  }
+  .sq {
+    position: relative; width: 64px; height: 90px; margin: 0 auto; touch-action: none;
+    transform: rotate(var(--turn, 0deg)); transform-origin: 50% 55%;
+    transition: transform 240ms cubic-bezier(.12,.6,.1,1);
+  }
+  .sq.live { transition: none; }
+  .sq-scene { position: absolute; inset: 0; perspective: 680px; transform-style: preserve-3d; }
+  .sq-face, .sq-back, .sq-flap, .sq-shade { position: absolute; inset: 0; }
+  .sq-back { z-index: 3; filter: drop-shadow(0 8px 8px rgba(0,0,0,.4)); }
+  .sq-shade {
+    z-index: 2; pointer-events: none; opacity: 0;
+    background: linear-gradient(135deg, rgba(0,0,0,.62), rgba(0,0,0,0) 58%);
+  }
+  .sq-flap {
+    z-index: 4; pointer-events: none; opacity: 0; transform-style: preserve-3d;
+    filter: drop-shadow(10px 14px 8px rgba(0,0,0,.5));
+  }
+  .sq.open .sq-back, .sq.open .sq-flap, .sq.open .sq-shade,
+  .sq.flipped .sq-back, .sq.flipped .sq-flap, .sq.flipped .sq-shade { visibility: hidden; }
   .sq.flipped { transform: rotateY(180deg); }
   .chip-svg { width: 36px; height: 36px; display: block; }
   .stakes button, .modes button { display: inline-flex; align-items: center; gap: 6px; }
@@ -1448,6 +1469,7 @@ const state = {
     ez: false,
     sides: [],
     peeled: {},
+    turn: {},
     beads: [],
     last: null,
     error: null,
@@ -1639,9 +1661,13 @@ function tone(freq, dur) {
 
 function squeezeHTML(card, id) {
   const open = state.bc.peeled && state.bc.peeled[id];
+  const turn = (state.bc.turn && state.bc.turn[id]) || 0;
   const face = cardFaceSVG({ rank: card[0], suit: card[1] });
-  return '<div class="sq' + (open ? " open" : "") + '" data-sq="' + id + '">' +
-    '<div class="sq-face">' + face + '</div><div class="sq-back">' + cardBackSVG() + "</div></div>";
+  const back = cardBackSVG();
+  return '<div class="sq-wrap"><button type="button" class="sq-turn" data-act="bc-turn" data-sq="' + id + '" aria-label="Turn card 90 degrees">Turn</button>' +
+    '<div class="sq' + (open ? " open" : "") + '" data-sq="' + id + '" style="--turn:' + turn + 'deg">' +
+    '<div class="sq-scene"><div class="sq-face">' + face + '</div><div class="sq-shade"></div>' +
+    '<div class="sq-back">' + back + '</div><div class="sq-flap">' + back + "</div></div></div></div>";
 }
 
 function nameCard(name, extra) {
@@ -2123,6 +2149,7 @@ function newBcHand() {
   state.bc.q1 = null;
   state.bc.q2 = null;
   state.bc.peeled = {};
+  state.bc.turn = {};
   state.bc.error = null;
   tone(440, 0.05);
   renderBaccarat();
@@ -2232,6 +2259,7 @@ function dealBcPlay() {
   names.forEach(function (name) { profit += B.sideBetOdds(name, hand) * stake; });
   state.bc.chips += Math.round(profit * 100);
   state.bc.peeled = {};
+  state.bc.turn = {};
   state.bc.last = { hand: hand, profit: profit, revealed: false };
   state.bc.beads.push(hand.outcome);
   state.bc.error = null;
@@ -2591,6 +2619,19 @@ function onClick(event) {
     return;
   }
   if (act === "bc-reveal") { revealAll(); return; }
+  if (act === "bc-turn") {
+    const id = el.dataset.sq;
+    const next = ((state.bc.turn[id] || 0) + 90) % 360;
+    state.bc.turn[id] = next;
+    const sq = document.querySelector('.sq[data-sq="' + id + '"]');
+    if (sq && !reduceMotion()) {
+      sq.classList.remove("live");
+      sq.style.setProperty("--turn", next + "deg");
+    } else if (sq) {
+      sq.style.setProperty("--turn", next + "deg");
+    }
+    return;
+  }
   if (act === "bc-deal") { dealBcPlay(); return; }
   if (act === "sound") {
     soundOn = !soundOn;
@@ -2691,12 +2732,52 @@ function onKey(event) {
 }
 
 let peelDrag = null;
+const peelPointers = new Map();
 function peelClip(corner, p) {
   const pct = Math.max(0, Math.min(100, p * 100)).toFixed(1);
   if (corner === "br") return "inset(0 " + pct + "% " + pct + "% 0)";
   if (corner === "bl") return "inset(0 0 " + pct + "% " + pct + "%)";
   if (corner === "tr") return "inset(" + pct + "% " + pct + "% 0 0)";
   return "inset(" + pct + "% 0 0 " + pct + "%)";
+}
+function flapClip(corner, p) {
+  const rest = Math.max(0, 100 - p * 100).toFixed(1);
+  if (corner === "br") return "inset(" + rest + "% 0 0 " + rest + "%)";
+  if (corner === "bl") return "inset(" + rest + "% " + rest + "% 0 0)";
+  if (corner === "tr") return "inset(0 " + rest + "% " + rest + "% 0)";
+  return "inset(0 0 " + rest + "% " + rest + "%)";
+}
+function setTurn(el, deg) {
+  state.bc.turn[el.dataset.sq] = deg;
+  el.style.setProperty("--turn", deg + "deg");
+}
+function applyPeelVisual(el, corner, p) {
+  const back = el.querySelector(".sq-back");
+  const flap = el.querySelector(".sq-flap");
+  const shade = el.querySelector(".sq-shade");
+  if (back) back.style.clipPath = peelClip(corner, p);
+  const lift = (p * 62).toFixed(1);
+  const rx = (corner[0] === "b" ? -1 : 1) * lift;
+  const ry = (corner[1] === "r" ? 1 : -1) * lift * 0.85;
+  const origin = { br: "0% 0%", bl: "100% 0%", tr: "0% 100%", tl: "100% 100%" }[corner];
+  if (flap) {
+    flap.style.clipPath = flapClip(corner, Math.max(p, 0.02));
+    flap.style.transformOrigin = origin;
+    flap.style.transform = "perspective(480px) rotateX(" + rx + "deg) rotateY(" + ry + "deg)";
+    flap.style.opacity = String(Math.min(1, p * 1.6));
+  }
+  if (shade) {
+    shade.style.opacity = String(Math.min(0.72, p * 0.85));
+    shade.style.clipPath = peelClip(corner, Math.max(0, p - 0.05));
+  }
+}
+function pointersOn(id) {
+  const list = [];
+  peelPointers.forEach(function (pt) { if (pt.id === id) list.push(pt); });
+  return list;
+}
+function angleOf(a, b) {
+  return Math.atan2(b.y - a.y, b.x - a.x) * 180 / Math.PI;
 }
 function markPeeled(id) {
   if (!id) return;
@@ -2721,36 +2802,68 @@ function revealAll() {
   renderBaccarat();
 }
 function onPointerDown(event) {
+  if (event.target.closest && event.target.closest(".sq-turn")) return;
   const back = event.target.closest ? event.target.closest(".sq-back") : null;
-  const sq = back ? back.parentElement : (event.target.closest ? event.target.closest(".sq") : null);
+  const sq = back ? back.parentElement.parentElement : (event.target.closest ? event.target.closest(".sq") : null);
   if (!sq || sq.classList.contains("open")) return;
   if (reduceMotion()) {
     sq.classList.add("flipped", "open");
     markPeeled(sq.dataset.sq);
     return;
   }
-  if (!back) return;
-  const rect = sq.getBoundingClientRect();
-  const x = event.clientX - rect.left;
-  const y = event.clientY - rect.top;
-  const corner = (y < rect.height / 2 ? "t" : "b") + (x < rect.width / 2 ? "l" : "r");
-  peelDrag = { el: sq, corner: corner, x: event.clientX, y: event.clientY };
-  if (back.setPointerCapture) back.setPointerCapture(event.pointerId);
+  peelPointers.set(event.pointerId, { x: event.clientX, y: event.clientY, id: sq.dataset.sq });
+  const group = pointersOn(sq.dataset.sq);
+  sq.classList.add("live");
+  if (group.length >= 2) {
+    peelDrag = { mode: "rotate", el: sq, a0: angleOf(group[0], group[1]), base: state.bc.turn[sq.dataset.sq] || 0 };
+  } else if (back) {
+    const rect = sq.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+    const corner = (y < rect.height / 2 ? "t" : "b") + (x < rect.width / 2 ? "l" : "r");
+    peelDrag = { mode: "peel", el: sq, corner: corner, x: event.clientX, y: event.clientY, base: state.bc.turn[sq.dataset.sq] || 0, startAngle: null };
+  }
+  if (back && back.setPointerCapture) back.setPointerCapture(event.pointerId);
 }
 function onPointerMove(event) {
-  if (!peelDrag) return;
-  const dist = Math.hypot(event.clientX - peelDrag.x, event.clientY - peelDrag.y);
-  const p = Math.min(1, dist / 130);
-  const back = peelDrag.el.querySelector(".sq-back");
-  if (back) back.style.clipPath = peelClip(peelDrag.corner, p);
+  const tracked = peelPointers.get(event.pointerId);
+  if (tracked) { tracked.x = event.clientX; tracked.y = event.clientY; }
+  if (!peelDrag || !peelDrag.el) return;
+  if (peelDrag.mode === "rotate") {
+    const group = pointersOn(peelDrag.el.dataset.sq);
+    if (group.length < 2) return;
+    setTurn(peelDrag.el, peelDrag.base + (angleOf(group[0], group[1]) - peelDrag.a0));
+    return;
+  }
+  if (tracked && tracked.id !== peelDrag.el.dataset.sq) return;
+  const dx = event.clientX - peelDrag.x;
+  const dy = event.clientY - peelDrag.y;
+  const dist = Math.hypot(dx, dy);
+  const p = Math.min(1, dist / 140);
+  const dragAng = Math.atan2(dy, dx) * 180 / Math.PI;
+  if (peelDrag.startAngle == null && dist > 8) peelDrag.startAngle = dragAng;
+  const twist = peelDrag.startAngle == null ? 0 : dragAng - peelDrag.startAngle;
+  const lean = Math.max(-75, Math.min(75, dx * 0.55));
+  setTurn(peelDrag.el, peelDrag.base + twist * 0.9 + lean);
+  applyPeelVisual(peelDrag.el, peelDrag.corner, p);
   if (p >= 1) {
     peelDrag.el.classList.add("open");
+    peelDrag.el.classList.remove("live");
     const id = peelDrag.el.dataset.sq;
     peelDrag = null;
     markPeeled(id);
   }
 }
-function onPointerUp() { peelDrag = null; }
+function onPointerUp(event) {
+  if (event && event.pointerId != null) peelPointers.delete(event.pointerId);
+  if (peelDrag && peelDrag.el) peelDrag.el.classList.remove("live");
+  if (peelDrag && peelDrag.mode === "rotate") {
+    const group = pointersOn(peelDrag.el.dataset.sq);
+    if (group.length < 2) peelDrag = null;
+  } else if (!peelPointers.size) {
+    peelDrag = null;
+  }
+}
 
 function init() {
   load();
