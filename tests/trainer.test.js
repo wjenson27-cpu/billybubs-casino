@@ -480,6 +480,88 @@ check("every roulette payout", function () {
   assert.strictEqual(B.classifySelection([0, "00", 1, 2, 3], "eu"), null);
 });
 
+check("EZ rail settles Tie 8:1, Dragon 7 40:1, and Panda 8 25:1", function () {
+  function hand(player, banker) { return { player: player, banker: banker }; }
+  function odds(name, player, banker) { return B.sideBetOdds(name, hand(player, banker)); }
+  const tieCards = [["AS", "8S"], ["KH", "9D"]];
+  const dragonCards = [["AS", "2D"], ["2C", "3D", "2H"]];
+  const pandaCards = [["2C", "2D", "4H"], ["AS", "2H"]];
+  const naturalBanker = [["2C", "3D"], ["KH", "9D"]];
+  const twoCardSeven = [["AS", "2D"], ["2C", "5D"]];
+  const twoCardEight = [["3C", "5D"], ["AS", "2H"]];
+  const pandaLoses = [["2C", "2D", "4H"], ["4C", "5D"]];
+
+  assert.strictEqual(odds("tie", tieCards[0], tieCards[1]), 8);
+  assert.strictEqual(odds("tie", dragonCards[0], dragonCards[1]), -1);
+  assert.strictEqual(odds("tie", pandaCards[0], pandaCards[1]), -1);
+  assert.strictEqual(B.settleBaccarat("tie", "tie", 25), 200);
+  assert.strictEqual(B.settleBaccarat("tie", "banker", 25), -25);
+  assert.strictEqual(B.settleBaccarat("tie", "player", 25), -25);
+  assert.strictEqual(odds("tie", tieCards[0], tieCards[1]) * 25, 200);
+
+  assert.strictEqual(odds("dragon7", dragonCards[0], dragonCards[1]), 40);
+  assert.strictEqual(odds("dragon7", twoCardSeven[0], twoCardSeven[1]), -1);
+  assert.strictEqual(odds("dragon7", pandaCards[0], pandaCards[1]), -1);
+  assert.strictEqual(odds("dragon7", tieCards[0], tieCards[1]), -1);
+  assert.strictEqual(odds("dragon7", dragonCards[0], dragonCards[1]) * 10, 400);
+
+  assert.strictEqual(odds("panda8", pandaCards[0], pandaCards[1]), 25);
+  assert.strictEqual(odds("panda8", twoCardEight[0], twoCardEight[1]), -1);
+  assert.strictEqual(odds("panda8", dragonCards[0], dragonCards[1]), -1);
+  assert.strictEqual(odds("panda8", pandaLoses[0], pandaLoses[1]), -1);
+  assert.strictEqual(odds("panda8", pandaCards[0], pandaCards[1]) * 10, 250);
+
+  assert.strictEqual(odds("ezBanker", dragonCards[0], dragonCards[1]), 0);
+  assert.strictEqual(odds("ezBanker", naturalBanker[0], naturalBanker[1]), 1);
+  assert.strictEqual(odds("ezBanker", twoCardSeven[0], twoCardSeven[1]), 1);
+  assert.strictEqual(odds("ezBanker", pandaCards[0], pandaCards[1]), -1);
+  assert.strictEqual(odds("ezBanker", tieCards[0], tieCards[1]), 0);
+
+  const stake = 10;
+  let dragonProfit = B.sideBetOdds("ezBanker", hand(dragonCards[0], dragonCards[1])) * stake;
+  ["tie", "dragon7", "panda8"].forEach(function (name) {
+    dragonProfit += B.sideBetOdds(name, hand(dragonCards[0], dragonCards[1])) * stake;
+  });
+  assert.strictEqual(dragonProfit, 380);
+
+  let pandaProfit = B.settleBaccarat("player", "player", stake);
+  ["tie", "dragon7", "panda8"].forEach(function (name) {
+    pandaProfit += B.sideBetOdds(name, hand(pandaCards[0], pandaCards[1])) * stake;
+  });
+  assert.strictEqual(pandaProfit, 240);
+
+  let tieProfit = B.settleBaccarat("player", "tie", stake);
+  ["tie", "dragon7", "panda8"].forEach(function (name) {
+    tieProfit += B.sideBetOdds(name, hand(tieCards[0], tieCards[1])) * stake;
+  });
+  assert.strictEqual(tieProfit, 60);
+
+  const counted = B.enumerateBaccarat();
+  const tieEdge = -((9 * counted.tie - 1) * 100);
+  const sideEdges = B.enumerateSideEdges();
+  console.log("exact 8-deck Tie house edge " + tieEdge.toFixed(6) + "%");
+  console.log("exact 8-deck Dragon 7 house edge " + sideEdges.dragon7.toFixed(6) + "%");
+  console.log("exact 8-deck Panda 8 house edge " + sideEdges.panda8.toFixed(6) + "%");
+  assert.ok(Math.abs(tieEdge - 14.36) < 0.02, String(tieEdge));
+  assert.ok(Math.abs(sideEdges.dragon7 - 7.61) < 0.02, String(sideEdges.dragon7));
+  assert.ok(Math.abs(sideEdges.panda8 - 10.19) < 0.02, String(sideEdges.panda8));
+  ["Tie", "Dragon 7", "Panda 8"].forEach(function (bet) {
+    const row = B.HOUSE_EDGES.filter(function (r) { return r.game === "Baccarat" && r.bet === bet; })[0];
+    assert.ok(row, bet);
+  });
+  assert.strictEqual(B.HOUSE_EDGES.filter(function (r) { return r.game === "Baccarat" && r.bet === "Tie"; })[0].edge, 14.36);
+  assert.strictEqual(B.HOUSE_EDGES.filter(function (r) { return r.game === "Baccarat" && r.bet === "Dragon 7"; })[0].edge, 7.61);
+  assert.strictEqual(B.HOUSE_EDGES.filter(function (r) { return r.game === "Baccarat" && r.bet === "Panda 8"; })[0].edge, 10.19);
+  assert.ok(html.indexOf("EZ Baccarat (no commission)") !== -1);
+  assert.ok(html.indexOf("Tie 8:1") !== -1);
+  assert.ok(html.indexOf("Dragon 7 40:1") !== -1);
+  assert.ok(html.indexOf("Panda 8 25:1") !== -1);
+  assert.ok(html.indexOf("bc-all-sides") === -1);
+  assert.ok(html.indexOf('id="bc-side-tie"') === -1);
+  assert.ok(html.indexOf("bb-trainer") !== -1);
+  assert.ok(html.indexOf('data-trainer') !== -1);
+});
+
 console.log("\nSTRATEGY_6D_S17_DAS");
 console.log("upcards " + B.STRATEGY_6D_S17_DAS.upcards.join(" "));
 ["hard", "soft", "pairs"].forEach(function (cat) {
