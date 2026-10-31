@@ -122,10 +122,10 @@
   .bj-hand { flex: 1 1 120px; min-width: 0; border: 1px solid transparent; border-radius: 12px; padding: 4px; }
   .bj-hand.on { border-color: rgba(241,217,160,.7); }
   .bj-hand .cards { gap: 4px; }
-  #bj-table .bj-felt { padding: 8px 8px 6px; }
-  #bj-table .card-svg { width: 48px; height: 66px; }
+  #bj-table .bj-felt { padding: 8px 8px 2px; }
+  #bj-table .card-svg { width: 42px; height: 56px; }
   #bj-table .arc { height: 22px; margin: 4px 18px 6px; }
-  #bj-table .print { line-height: 1.2; }
+  #bj-table .print { line-height: 1.45; }
   #bj-play-actions button, #bj-play-deal, #bj-play-reset { min-height: 44px; }
   html[data-trainer="on"] #bj-table { display: none !important; }
   html:not([data-trainer="on"]) #bj-drill { display: none !important; }
@@ -522,7 +522,17 @@
   .bj-felt .arc { height: 28px; margin: 2px 24px 4px; }
   .bj-felt .card-svg { width: 64px; height: 90px; }
   .bj-felt .bj-shoe .card-svg { width: 34px; height: 48px; }
-  .bj-felt .print { font-size: 11px; line-height: 1.3; }
+  .bj-felt .print { font-size: 11px; line-height: 1.45; margin: 8px 6px 0; }
+  #bj-table .bj-felt .print { margin: 8px 8px 14px; line-height: 1.35; }
+  .bj-felt .arc { margin-bottom: 18px; }
+  .bj-felt::before {
+    top: 10px;
+    left: 10px;
+    width: 34px;
+    height: 34px;
+    transform: none;
+    opacity: .2;
+  }
   .bj-felt #bj-title { margin: 4px 0; }
   .pcards { flex-wrap: nowrap; justify-content: center; gap: 4px; }
   .pcards .pcard { width: 58px; height: 84px; }
