@@ -622,6 +622,29 @@ check("dealer plays to 17 and blackjack settles", function () {
   assert.strictEqual(B.blackjackProfit(["AS", "9H"], ["KH", "7D", "5C"], 2, false), 2);
 });
 
+check("baccarat play deals every card face down until it is peeled", function () {
+  const ui = uiMatch[1];
+  const play = ui.slice(ui.indexOf("function renderBcPlay"), ui.indexOf("function commitBcHand"));
+  const deal = ui.slice(ui.indexOf("function dealBcPlay"), ui.indexOf("function renderDrawTable"));
+  assert.ok(play.indexOf('squeezeHTML(c, "lp"') !== -1, "player squeeze");
+  assert.ok(play.indexOf('squeezeHTML(c, "lb"') !== -1, "banker squeeze");
+  assert.ok(play.indexOf("revealed ?") !== -1);
+  assert.ok(play.indexOf("Every card is face down") !== -1);
+  assert.ok(deal.indexOf("revealed: false") !== -1);
+  assert.ok(deal.indexOf("paid: false") !== -1);
+  assert.ok(deal.indexOf("state.bc.chips +=") === -1, "deal must not settle chips");
+  assert.ok(deal.indexOf("state.bc.beads.push") === -1, "deal must not publish the outcome");
+  assert.ok(ui.indexOf("function commitBcHand") !== -1);
+  const commit = ui.slice(ui.indexOf("function commitBcHand"), ui.indexOf("function dealBcPlay"));
+  assert.ok(commit.indexOf("state.bc.chips +=") !== -1);
+  assert.ok(commit.indexOf("last.revealed = true") !== -1);
+  assert.ok(html.indexOf(".bacc-felt .sq-back, #bc-last .sq-back { opacity: 1; background: #0A1A33;") !== -1);
+  assert.ok(/\.sq, \.sq-back, #bc-last \.sq, #bc-quiz \.sq \{ touch-action: none; \}/.test(html));
+  assert.ok(ui.indexOf("function peelClip") !== -1);
+  assert.ok(ui.indexOf("function markPeeled") !== -1);
+  assert.ok(ui.indexOf('data-act="bc-reveal"') !== -1 || html.indexOf('data-act="bc-reveal"') !== -1);
+});
+
 console.log("\nSTRATEGY_6D_S17_DAS");
 console.log("upcards " + B.STRATEGY_6D_S17_DAS.upcards.join(" "));
 ["hard", "soft", "pairs"].forEach(function (cat) {

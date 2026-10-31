@@ -502,9 +502,10 @@
   .bacc-felt .cards .card-svg, .bacc-felt .sq svg.card-svg {
     margin-left: 0; animation: none; opacity: 1; transform: none;
   }
-  .bacc-felt .sq-back { opacity: 1; background: #0A1A33; border-radius: 6px; }
-  .bacc-felt .sq-face { opacity: 1; background: #FBF7EE; border-radius: 6px; }
-  .bacc-felt .sq-flap { opacity: 0; animation: none; }
+  .bacc-felt .sq-back, #bc-last .sq-back { opacity: 1; background: #0A1A33; border-radius: 6px; }
+  .bacc-felt .sq-face, #bc-last .sq-face { opacity: 1; background: #FBF7EE; border-radius: 6px; }
+  .bacc-felt .sq-flap, #bc-last .sq-flap { opacity: 0; animation: none; }
+  .sq, .sq-back, #bc-last .sq, #bc-quiz .sq { touch-action: none; }
   .ro-stage { margin: 0 auto 4px; }
   .wheel-svg { width: min(100%, 320px); height: auto; display: block; margin: 0 auto; overflow: visible; }
   #ct3-rotor, #ct3-balltrack { transform-box: view-box; transform-origin: 512px 512px; }
@@ -555,9 +556,11 @@
     }
     .zones { gap: 6px; }
     .zone { padding: 6px; }
-    .bacc-felt .cards { width: 100%; gap: 6px; }
-    .bacc-felt .sq-wrap { flex: 1 1 0; width: auto; max-width: 72px; min-width: 0; }
-    .bacc-felt .sq { width: 100%; height: auto; aspect-ratio: 5 / 7; }
+    .bacc-felt .cards, #bc-last .cards { width: 100%; gap: 6px; flex-wrap: nowrap; justify-content: center; }
+    .bacc-felt .sq-wrap, #bc-last .sq-wrap { flex: 1 1 0; width: auto; max-width: 72px; min-width: 0; }
+    .bacc-felt .sq, #bc-last .sq { width: 100%; height: auto; aspect-ratio: 5 / 7; touch-action: none; }
+    #bc-last .cards .card-svg { margin-left: 0; }
+    #bc-last .sq-turn { width: 100%; min-width: 0; }
     #bc-yesno, .actions { padding-left: 0; padding-right: 0; }
     .pcards { width: 100%; }
     .pcards .pcard { flex: 1 1 0; width: auto; max-width: 58px; height: auto; aspect-ratio: 58 / 84; }
@@ -2046,7 +2049,7 @@ const CARD_BACK = `<svg class="card-svg" xmlns="http://www.w3.org/2000/svg" xmln
 <filter id="ct2-emboss"><feDropShadow dx="0" dy="1.5" stdDeviation="1" flood-color="#000" flood-opacity=".6"/></filter>
 <radialGradient id="ct2-med" cx=".5" cy=".4" r=".6"><stop offset="0" stop-color="#1B2F5C"/><stop offset="1" stop-color="#00102A"/></radialGradient>
 </defs>
-<rect id="ct2-back-plate" rx="32" fill="url(#ct2-plate)"/>
+<rect id="ct2-back-plate" x="0" y="0" width="500" height="700" rx="32" fill="url(#ct2-plate)"/>
 <rect x="10" y="10" rx="25" fill="none" stroke="url(#ct2-metal)" stroke-width="8" filter="url(#ct2-emboss)"/>
 <rect x="10" y="10" rx="25" fill="none" stroke="#F1D9A0" stroke-opacity=".5" stroke-width="1" transform="translate(0,-1.5)"/>
 <rect x="30" y="30" rx="18" fill="none" stroke="url(#ct2-metal-d)" stroke-width="3" filter="url(#ct2-emboss)"/>
@@ -3233,10 +3236,21 @@ function renderBcPlay() {
     '</div></div></div><button type="button" data-act="bc-reveal">Reveal all</button>' +
     (revealed ? '<p class="outcome">' + esc(h.outcome === "tie" ? "Tie" : h.outcome[0].toUpperCase() + h.outcome.slice(1) + " wins") + " · " + esc(word) + "</p>" +
       (state.trainer ? "<p class=\"fine\">" + esc(B.playerRule(h.playerInitial, h.bankerInitial)) + " " + esc(B.bankerRule(h.bankerInitial, h.playerInitial, h.playerThird)) + "</p>" : "")
-      : '<p class="fine">Peel the cards. Chips were settled when the hand was dealt.</p>');
+      : '<p class="fine">Every card is face down. Peel a corner, or tap Reveal all.</p>');
+}
+
+function commitBcHand() {
+  const last = state.bc.last;
+  if (!last || last.paid) return;
+  last.paid = true;
+  last.revealed = true;
+  state.bc.chips += Math.round(last.profit * 100);
+  state.bc.beads.push(last.hand.outcome);
+  save();
 }
 
 function dealBcPlay() {
+  if (state.bc.last && !state.bc.last.paid) commitBcHand();
   const names = state.bc.sides.slice();
   const cost = state.bc.stake * (1 + names.length);
   if (state.bc.chips < cost) {
@@ -3250,11 +3264,9 @@ function dealBcPlay() {
     ? B.sideBetOdds("ezBanker", hand) * stake
     : B.settleBaccarat(state.bc.side, hand.outcome, stake);
   names.forEach(function (name) { profit += B.sideBetOdds(name, hand) * stake; });
-  state.bc.chips += Math.round(profit * 100);
   state.bc.peeled = {};
   state.bc.turn = {};
-  state.bc.last = { hand: hand, profit: profit, revealed: false };
-  state.bc.beads.push(hand.outcome);
+  state.bc.last = { hand: hand, profit: profit, revealed: false, paid: false };
   state.bc.error = null;
   tone(360, 0.06);
   save();
@@ -4076,7 +4088,7 @@ function markPeeled(id) {
   let open = 0;
   cards.forEach(function (n) { if (n.classList.contains("open")) open += 1; });
   if (cards.length && open === cards.length) {
-    state.bc.last.revealed = true;
+    commitBcHand();
     tone(620, 0.08);
     renderBaccarat();
   }
@@ -4086,7 +4098,7 @@ function revealAll() {
     el.classList.add("open");
     if (el.dataset.sq) state.bc.peeled[el.dataset.sq] = true;
   });
-  if (state.bc.last) state.bc.last.revealed = true;
+  commitBcHand();
   tone(500, 0.05);
   renderBaccarat();
 }
@@ -4095,6 +4107,7 @@ function onPointerDown(event) {
   const back = event.target.closest ? event.target.closest(".sq-back") : null;
   const sq = back ? back.parentElement.parentElement : (event.target.closest ? event.target.closest(".sq") : null);
   if (!sq || sq.classList.contains("open")) return;
+  if (event.cancelable) event.preventDefault();
   if (reduceMotion()) {
     sq.classList.add("flipped", "open");
     markPeeled(sq.dataset.sq);
@@ -4115,6 +4128,7 @@ function onPointerDown(event) {
   if (back && back.setPointerCapture) back.setPointerCapture(event.pointerId);
 }
 function onPointerMove(event) {
+  if (peelDrag && event.cancelable) event.preventDefault();
   const tracked = peelPointers.get(event.pointerId);
   if (tracked) { tracked.x = event.clientX; tracked.y = event.clientY; }
   if (!peelDrag || !peelDrag.el) return;
