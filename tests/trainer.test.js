@@ -562,6 +562,66 @@ check("EZ rail settles Tie 8:1, Dragon 7 40:1, and Panda 8 25:1", function () {
   assert.ok(html.indexOf('data-trainer') !== -1);
 });
 
+check("pair explanations match the graded play", function () {
+  const line = B.explain("pairs", "66", "4", "P");
+  assert.ok(line.indexOf("Split") === 0, line);
+  assert.ok(line.indexOf("Stand on hard") === -1, line);
+  ["hard", "soft", "pairs"].forEach(function (cat) {
+    Object.keys(B.STRATEGY_6D_S17_DAS[cat]).forEach(function (hand) {
+      B.STRATEGY_6D_S17_DAS.upcards.forEach(function (up) {
+        const code = B.strategyCell(cat, hand, up);
+        const reason = B.explain(cat, hand, up, code);
+        if (code === "P") assert.ok(/^(Always s|S)plit/.test(reason), cat + " " + hand + " " + up + " " + reason);
+        if (code === "S") assert.ok(/^Stand/.test(reason), reason);
+        if (code === "H") assert.ok(/Hit|hit/.test(reason) && !/^Stand/.test(reason) && !/^Split/.test(reason), reason);
+        if (code === "Dh") assert.ok(/Double/.test(reason) && /Hit|hit/.test(reason), reason);
+        if (code === "Ds") assert.ok(/Double/.test(reason) && /Stand|stand/.test(reason), reason);
+      });
+    });
+  });
+});
+
+check("dealer plays to 17 and blackjack settles", function () {
+  assert.strictEqual(B.bjTotal(["AS", "6D"]).total, 17);
+  assert.strictEqual(B.bjTotal(["AS", "6D"]).soft, true);
+  assert.strictEqual(B.bjTotal(["KH", "7D"]).total, 17);
+  assert.strictEqual(B.bjTotal(["KH", "7D"]).soft, false);
+  assert.strictEqual(B.bjTotal(["AH", "5D", "AH"]).total, 17);
+  assert.strictEqual(B.bjTotal(["AH", "5D", "AH"]).soft, true);
+  assert.strictEqual(B.bjTotal(["AS", "6D", "TC"]).total, 17);
+  assert.strictEqual(B.bjTotal(["AS", "6D", "TC"]).soft, false);
+  assert.strictEqual(B.dealerDraws(["AS", "6D"], false), false);
+  assert.strictEqual(B.dealerDraws(["AS", "6D"], true), true);
+  assert.strictEqual(B.dealerDraws(["KH", "7D"], true), false);
+  assert.strictEqual(B.dealerDraws(["KH", "7D"], false), false);
+  assert.strictEqual(B.dealerDraws(["KH", "6D"], false), true);
+  assert.strictEqual(B.dealerDraws(["AS", "7D"], true), false);
+  function boom() { throw new Error("drew"); }
+  same(B.playDealer(["AS", "6D"], boom, false), ["AS", "6D"]);
+  same(B.playDealer(["KH", "7D"], boom, true), ["KH", "7D"]);
+  const softHit = B.playDealer(["AS", "6D"], function () { return "TC"; }, true);
+  same(softHit, ["AS", "6D", "TC"]);
+  assert.strictEqual(B.dealerDraws(softHit, true), false);
+  const queue = ["5C", "3D", "KH"];
+  const played = B.playDealer(["2C", "3D"], function () { return queue.shift(); }, false);
+  same(played, ["2C", "3D", "5C", "3D", "KH"]);
+  assert.strictEqual(B.bjTotal(played).total, 23);
+  assert.strictEqual(queue.length, 0);
+  const stiff = B.playDealer(["KH", "6D"], function () { return "5C"; }, false);
+  same(stiff, ["KH", "6D", "5C"]);
+  assert.strictEqual(B.blackjackProfit(["AS", "KH"], ["9C", "7D"], 10, false), 15);
+  assert.strictEqual(B.blackjackProfit(["AS", "KH"], ["AD", "QH"], 10, false), 0);
+  assert.strictEqual(B.blackjackProfit(["KH", "QD"], ["JC", "TD"], 10, false), 0);
+  assert.strictEqual(B.blackjackProfit(["KH", "QD"], ["JC", "9D"], 10, false), 10);
+  assert.strictEqual(B.blackjackProfit(["KH", "9D"], ["JC", "TD"], 10, false), -10);
+  assert.strictEqual(B.blackjackProfit(["KH", "6D", "9C"], ["2C", "3D"], 10, false), -10);
+  assert.strictEqual(B.blackjackProfit(["KH", "8D"], ["9C", "8D", "5S"], 10, false), 10);
+  assert.strictEqual(B.blackjackProfit(["AS", "KH"], ["9C", "7D"], 10, true), 10);
+  assert.strictEqual(B.blackjackProfit(["AS", "KH"], ["AD", "QH"], 10, true), -10);
+  assert.strictEqual(B.blackjackProfit(["AS", "KH"], ["9C", "8D"], 2, false), 3);
+  assert.strictEqual(B.blackjackProfit(["AS", "9H"], ["KH", "7D", "5C"], 2, false), 2);
+});
+
 console.log("\nSTRATEGY_6D_S17_DAS");
 console.log("upcards " + B.STRATEGY_6D_S17_DAS.upcards.join(" "));
 ["hard", "soft", "pairs"].forEach(function (cat) {

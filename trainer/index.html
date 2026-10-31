@@ -118,6 +118,17 @@
   .card-svg { width: 64px; height: 90px; display: block; filter: drop-shadow(0 8px 10px rgba(0,0,0,.45)); }
   .pcard .card-svg, .sq .card-svg { width: 100%; height: 100%; }
   h2 { font-size: 20px; margin: 0; }
+  .bj-hands { display: flex; flex-wrap: wrap; gap: 8px; min-width: 0; }
+  .bj-hand { flex: 1 1 120px; min-width: 0; border: 1px solid transparent; border-radius: 12px; padding: 4px; }
+  .bj-hand.on { border-color: rgba(241,217,160,.7); }
+  .bj-hand .cards { gap: 4px; }
+  #bj-table .bj-felt { padding: 8px 8px 6px; }
+  #bj-table .card-svg { width: 48px; height: 66px; }
+  #bj-table .arc { height: 22px; margin: 4px 18px 6px; }
+  #bj-table .print { line-height: 1.2; }
+  #bj-play-actions button, #bj-play-deal, #bj-play-reset { min-height: 44px; }
+  html[data-trainer="on"] #bj-table { display: none !important; }
+  html:not([data-trainer="on"]) #bj-drill { display: none !important; }
   .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
   @media (min-width: 520px) { .actions { grid-template-columns: repeat(4, 1fr); } }
   .actions button, .gold, .out, .choices button, .stakes button, .modes button,
@@ -552,12 +563,14 @@
       padding-top: 6px;
       padding-bottom: 6px;
     }
+    header.top { gap: 8px; padding-left: 10px; padding-right: 10px; }
+    a.lobby-back { padding: 0 8px; letter-spacing: 0; font-size: 11px; }
     header.top h1 {
-      font-size: 13px;
-      letter-spacing: .04em;
+      font-size: 11px;
+      letter-spacing: .02em;
       line-height: 1.15;
-      white-space: normal;
-      overflow: visible;
+      white-space: nowrap;
+      overflow: hidden;
       text-overflow: clip;
     }
     header.top .tag {
@@ -613,6 +626,7 @@
 
   <section class="panel" id="panel-blackjack" role="tabpanel" aria-labelledby="tab-blackjack">
     <p class="score coach-only" id="bj-score" aria-live="polite"></p>
+    <div id="bj-drill">
     <div class="bj-felt">
       <p class="kicker">Dealer</p>
       <div class="bj-shoe" id="bj-shoe" aria-hidden="true"></div>
@@ -645,6 +659,29 @@
     </div>
     <div id="bj-weak-list" class="coach-only"></div>
     <div id="bj-chart" class="coach-only" hidden></div>
+    </div>
+    <div id="bj-table">
+      <p class="bankline" id="bj-bank"></p>
+      <div class="bj-felt">
+        <p class="kicker">Dealer</p>
+        <div class="cards" id="bj-play-dealer"></div>
+        <p class="pill" id="bj-play-dtot"></p>
+        <p class="print">Blackjack pays 3 to 2. Dealer stands on all 17s.</p>
+        <p class="kicker">Player</p>
+        <div class="bj-hands" id="bj-play-hands"></div>
+        <div id="bj-play-result" class="banner" hidden aria-live="polite"></div>
+      </div>
+      <div class="actions" id="bj-play-actions">
+        <button type="button" id="bj-play-H" data-act="bj-move" data-move="H">Hit</button>
+        <button type="button" id="bj-play-S" data-act="bj-move" data-move="S">Stand</button>
+        <button type="button" id="bj-play-D" data-act="bj-move" data-move="D">Double</button>
+        <button type="button" id="bj-play-P" data-act="bj-move" data-move="P">Split</button>
+      </div>
+      <div class="stakes" id="bj-play-stakes"></div>
+      <p id="bj-play-error" class="banner bad" hidden></p>
+      <button type="button" class="gold" id="bj-play-deal" data-act="bj-deal">Deal</button>
+      <button type="button" id="bj-play-reset" data-act="bj-play-reset">Reset practice chips</button>
+    </div>
     <details class="coach-only">
       <summary>Rules for this drill</summary>
       <p>Six decks. Dealer stands on soft 17. Double after split is allowed. No surrender. Resplit to four hands. Aces cannot be resplit, and a split ace takes only one card. Blackjack pays 3 to 2. The dealer peeks, and the chart is the play when the dealer does not have blackjack. Each of the 340 chart cells is equally likely. Keys: H, S, D, P, then N for the next hand.</p>
@@ -866,7 +903,7 @@ function pairSpoken(hand) {
 function explain(cat, hand, up, code) {
   const u = upName(up);
   let line;
-  if (cat === "pair") {
+  if (cat === "pair" || cat === "pairs") {
     if (hand === "AA" && code === "P") {
       line = "Always split aces. Each ace gets one card, and aces cannot be resplit.";
     } else if (hand === "88" && code === "P") {
@@ -876,7 +913,7 @@ function explain(cat, hand, up, code) {
     } else if (hand === "55") {
       line = "Never split 5s. Against a " + u + ", hit the hard 10. Do not double or split.";
     } else if (hand === "TT") {
-      line = "Never split tens. Twenty wins too often to break into two new hands.";
+      line = "Stand on tens against a " + u + ". Twenty wins too often to break into two new hands.";
     } else if (hand === "99" && code === "S" && up === "7") {
       line = "Stand on 9s against a 7. Eighteen is already ahead, and splitting gives that edge back.";
     } else if (hand === "99" && code === "S") {
@@ -938,6 +975,64 @@ function explain(cat, hand, up, code) {
   }
   if (line.indexOf("\n") !== -1) throw new Error("multiline reason");
   return line;
+}
+
+function bjTotal(cards) {
+  let total = 0;
+  let aces = 0;
+  for (let i = 0; i < cards.length; i++) {
+    const rank = cards[i][0];
+    if (rank === "A") { aces += 1; total += 1; }
+    else if ("TJQK".indexOf(rank) !== -1) total += 10;
+    else {
+      const n = Number(rank);
+      if (!(n >= 2 && n <= 9)) throw new Error("card");
+      total += n;
+    }
+  }
+  let soft = false;
+  if (aces > 0 && total + 10 <= 21) {
+    total += 10;
+    soft = true;
+  }
+  return { total: total, soft: soft };
+}
+
+function dealerDraws(cards, hitSoft17) {
+  const hand = bjTotal(cards);
+  if (hand.total < 17) return true;
+  if (hand.total === 17 && hand.soft && hitSoft17) return true;
+  return false;
+}
+
+function playDealer(cards, draw, hitSoft17) {
+  if (typeof draw !== "function") throw new Error("draw");
+  const out = cards.slice();
+  let n = 0;
+  while (dealerDraws(out, !!hitSoft17)) {
+    const card = draw();
+    if (!card) throw new Error("shoe");
+    out.push(card);
+    n += 1;
+    if (n > 12) throw new Error("dealer loop");
+  }
+  return out;
+}
+
+function blackjackProfit(playerCards, dealerCards, stake, fromSplit) {
+  if (!(stake > 0)) throw new Error("Stake");
+  const player = bjTotal(playerCards);
+  if (player.total > 21) return -stake;
+  const dealerBj = dealerCards.length === 2 && bjTotal(dealerCards).total === 21;
+  const playerBj = !fromSplit && playerCards.length === 2 && player.total === 21;
+  if (playerBj && dealerBj) return 0;
+  if (playerBj) return stake * 3 / 2;
+  if (dealerBj) return -stake;
+  const dealer = bjTotal(dealerCards);
+  if (dealer.total > 21) return stake;
+  if (player.total > dealer.total) return stake;
+  if (player.total < dealer.total) return -stake;
+  return 0;
 }
 
 function validateStrategy() {
@@ -1749,6 +1844,10 @@ const BONES = {
   actionLabel: actionLabel,
   resolveAction: resolveAction,
   explain: explain,
+  bjTotal: bjTotal,
+  dealerDraws: dealerDraws,
+  playDealer: playDealer,
+  blackjackProfit: blackjackProfit,
   HOUSE_EDGES: HOUSE_EDGES,
   formatEdge: formatEdge,
   findEdge: findEdge,
@@ -1811,6 +1910,18 @@ const state = {
     replay: false,
     score: { correct: 0, total: 0, streak: 0, best: 0 },
     weak: {},
+    play: {
+      chips: 100000,
+      stake: 500,
+      shoe: [],
+      phase: "bet",
+      hands: [],
+      dealer: [],
+      reveal: false,
+      hitSoft17: false,
+      active: 0,
+      error: null,
+    },
   },
   vp: { cards: null, held: [false, false, false, false, false], phase: "idle", result: null, error: null },
   edge: { key: null, dir: 1 },
@@ -1867,7 +1978,7 @@ function nextUint32() {
 function save() {
   try {
     sessionStorage.setItem("bones-trainer", JSON.stringify({
-      bj: { score: state.bj.score, weak: state.bj.weak },
+      bj: { score: state.bj.score, weak: state.bj.weak, chips: state.bj.play.chips, stake: state.bj.play.stake },
       bc: { chips: state.bc.chips, beads: state.bc.beads, score: state.bc.score, stake: state.bc.stake, side: state.bc.side, allSides: state.bc.allSides },
       ro: { chips: state.ro.chips, qscore: state.ro.qscore, variant: state.ro.variant, stake: state.ro.stake },
     }));
@@ -1882,6 +1993,8 @@ function load() {
     if (data.bj) {
       state.bj.score = data.bj.score || state.bj.score;
       state.bj.weak = data.bj.weak || {};
+      if (typeof data.bj.chips === "number") state.bj.play.chips = data.bj.chips;
+      if (typeof data.bj.stake === "number") state.bj.play.stake = data.bj.stake;
     }
     if (data.bc) {
       if (typeof data.bc.chips === "number") state.bc.chips = data.bc.chips;
@@ -2479,6 +2592,8 @@ function renderBj() {
   const next = $("bj-next");
   if (!state.bj.locked) {
     result.hidden = true;
+    result.className = "banner coach-only";
+    if (!state.trainer) result.innerHTML = "";
     next.hidden = true;
   } else {
     const expected = B.resolveAction(h.code, h.canDouble);
@@ -2488,12 +2603,17 @@ function renderBj() {
       const fb = h.code === "Dh" ? "Hit" : "Stand";
       reason = "Double is closed with " + h.cards.length + " cards, so " + fb + ". " + reason;
     }
-    result.hidden = false;
-    result.className = "banner " + (ok ? "good" : "bad");
-    result.innerHTML = "<strong>" + (ok ? "Correct" : "Wrong") + "</strong>" +
-      "<span>Right play: " + esc(B.actionLabel(h.code)) + "</span>" +
-      "<span>" + esc(reason) + "</span>";
-    next.hidden = false;
+    result.hidden = !state.trainer;
+    result.className = "banner coach-only " + (ok ? "good" : "bad");
+    if (!state.trainer) {
+      result.innerHTML = "";
+      next.hidden = true;
+    } else {
+      result.innerHTML = "<strong>" + (ok ? "Correct" : "Wrong") + "</strong>" +
+        "<span>Right play: " + esc(B.actionLabel(h.code)) + "</span>" +
+        "<span>" + esc(reason) + "</span>";
+      next.hidden = false;
+    }
   }
   const weakBtn = $("bj-weak");
   const nWeak = Object.keys(state.bj.weak).length;
@@ -2541,6 +2661,224 @@ function answerBj(move) {
   }
   save();
   renderBj();
+}
+
+function bjCard(name) { return { rank: name[0], suit: name[1] }; }
+
+function bjPair(a, b) {
+  const tens = "TJQK";
+  if (tens.indexOf(a[0]) !== -1 && tens.indexOf(b[0]) !== -1) return true;
+  return a[0] === b[0];
+}
+
+function ensureBjShoe() {
+  const play = state.bj.play;
+  if (play.shoe.length >= 20) return;
+  const shoe = [];
+  const ranks = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K"];
+  const suits = ["S", "H", "D", "C"];
+  for (let d = 0; d < 6; d++) {
+    for (let r = 0; r < ranks.length; r++) {
+      for (let s = 0; s < suits.length; s++) shoe.push(ranks[r] + suits[s]);
+    }
+  }
+  play.shoe = B.shuffleInPlace(shoe, nextUint32);
+}
+
+function drawBj() {
+  ensureBjShoe();
+  return state.bj.play.shoe.pop();
+}
+
+function bjHandOpen(hand) {
+  return !hand.stood && B.bjTotal(hand.cards).total <= 21;
+}
+
+function finishBjRound() {
+  const play = state.bj.play;
+  const dealerBj = play.dealer.length === 2 && B.bjTotal(play.dealer).total === 21;
+  const unresolved = play.hands.some(function (hand) {
+    const total = B.bjTotal(hand.cards).total;
+    if (total > 21) return false;
+    return hand.fromSplit || hand.cards.length !== 2 || total !== 21;
+  });
+  if (unresolved && !dealerBj) play.dealer = B.playDealer(play.dealer, drawBj, play.hitSoft17);
+  play.reveal = true;
+  play.hands.forEach(function (hand) {
+    const profit = B.blackjackProfit(hand.cards, play.dealer, hand.bet, hand.fromSplit);
+    hand.profit = profit;
+    play.chips += hand.bet + profit;
+  });
+  play.phase = "done";
+  play.active = -1;
+  save();
+}
+
+function advanceBj() {
+  const play = state.bj.play;
+  for (let i = 0; i < play.hands.length; i++) {
+    if (bjHandOpen(play.hands[i])) {
+      play.active = i;
+      return;
+    }
+  }
+  finishBjRound();
+}
+
+function dealBjRound() {
+  const play = state.bj.play;
+  if (play.phase === "player") return;
+  play.error = null;
+  if (!(play.stake > 0) || play.chips < play.stake) {
+    play.error = "Not enough practice chips for that bet.";
+    renderBjPlay();
+    return;
+  }
+  ensureBjShoe();
+  play.chips -= play.stake;
+  const player = [drawBj(), drawBj()];
+  play.dealer = [drawBj(), drawBj()];
+  play.hands = [{ cards: player, bet: play.stake, base: play.stake, stood: false, fromSplit: false, aceSplit: false, profit: 0 }];
+  play.reveal = false;
+  play.active = 0;
+  play.phase = "player";
+  const dealerBj = B.bjTotal(play.dealer).total === 21;
+  const playerBj = B.bjTotal(player).total === 21;
+  if (dealerBj || playerBj) finishBjRound();
+  renderBjPlay();
+}
+
+function playBjMove(move) {
+  const play = state.bj.play;
+  if (play.phase !== "player") return;
+  const hand = play.hands[play.active];
+  if (!hand || !bjHandOpen(hand)) return;
+  play.error = null;
+  if (move === "H") {
+    if (hand.aceSplit) return;
+    hand.cards.push(drawBj());
+    if (B.bjTotal(hand.cards).total >= 21) hand.stood = true;
+  } else if (move === "S") {
+    hand.stood = true;
+  } else if (move === "D") {
+    if (hand.cards.length !== 2 || hand.aceSplit) return;
+    if (play.chips < hand.base) {
+      play.error = "Not enough practice chips to double.";
+      renderBjPlay();
+      return;
+    }
+    play.chips -= hand.base;
+    hand.bet += hand.base;
+    hand.cards.push(drawBj());
+    hand.stood = true;
+  } else if (move === "P") {
+    if (hand.cards.length !== 2 || hand.aceSplit || play.hands.length >= 4 || !bjPair(hand.cards[0], hand.cards[1])) return;
+    if (play.chips < hand.base) {
+      play.error = "Not enough practice chips to split.";
+      renderBjPlay();
+      return;
+    }
+    play.chips -= hand.base;
+    const moved = hand.cards.pop();
+    const aces = hand.cards[0][0] === "A";
+    hand.fromSplit = true;
+    hand.aceSplit = aces;
+    hand.cards.push(drawBj());
+    const next = { cards: [moved, drawBj()], bet: hand.base, base: hand.base, stood: false, fromSplit: true, aceSplit: aces, profit: 0 };
+    play.hands.splice(play.active + 1, 0, next);
+    if (aces) {
+      hand.stood = true;
+      next.stood = true;
+    } else if (B.bjTotal(hand.cards).total >= 21) hand.stood = true;
+  } else return;
+  advanceBj();
+  renderBjPlay();
+}
+
+function bjTotalLabel(cards) {
+  const hand = B.bjTotal(cards);
+  if (hand.total > 21) return "Bust " + hand.total;
+  if (hand.soft && hand.total <= 21) return "Soft " + hand.total;
+  return String(hand.total);
+}
+
+function renderBjPlay() {
+  const play = state.bj.play;
+  const bank = $("bj-bank");
+  if (!bank) return;
+  bank.textContent = chipsText(play.chips) + " practice chips";
+  const dealerBox = $("bj-play-dealer");
+  if (!play.dealer.length) {
+    dealerBox.innerHTML = '<p class="empty">Set a bet, then deal.</p>';
+    $("bj-play-dtot").textContent = "";
+  } else {
+    dealerBox.innerHTML = play.dealer.map(function (name, i) {
+      if (i > 0 && !play.reveal) return cardBackSVG();
+      return cardFaceSVG(bjCard(name));
+    }).join("");
+    $("bj-play-dtot").textContent = play.reveal ? bjTotalLabel(play.dealer) : "Hole card down";
+  }
+  const hands = $("bj-play-hands");
+  if (!play.hands.length) hands.innerHTML = "";
+  else {
+    hands.innerHTML = play.hands.map(function (hand, i) {
+      const on = play.phase === "player" && i === play.active;
+      return '<div class="bj-hand' + (on ? " on" : "") + '"><div class="cards">' +
+        hand.cards.map(function (name) { return cardFaceSVG(bjCard(name)); }).join("") +
+        '</div><p class="pill">' + bjTotalLabel(hand.cards) + "</p></div>";
+    }).join("");
+  }
+  const acting = play.phase === "player" ? play.hands[play.active] : null;
+  const canDouble = !!(acting && acting.cards.length === 2 && !acting.aceSplit && play.chips >= acting.base);
+  const canSplit = !!(acting && acting.cards.length === 2 && !acting.aceSplit && play.hands.length < 4 && bjPair(acting.cards[0], acting.cards[1]) && play.chips >= acting.base);
+  $("bj-play-actions").hidden = play.phase !== "player";
+  ["H", "S", "D", "P"].forEach(function (move) {
+    const btn = $("bj-play-" + move);
+    const blocked = !acting || (move === "H" && acting.aceSplit) || (move === "D" && !canDouble) || (move === "P" && !canSplit);
+    btn.disabled = !!blocked;
+  });
+  $("bj-play-stakes").innerHTML = [1, 5, 25, 100, 500, 1000].map(function (n) {
+    const cents = n * 100;
+    const on = play.stake === cents;
+    return '<button type="button" data-act="bj-stake" data-stake="' + cents + '" aria-label="' + n + ' practice chips" aria-pressed="' + (on ? "true" : "false") + '"' + (play.phase === "player" ? " disabled" : "") + ">" + chipSVG(n) + "</button>";
+  }).join("");
+  const deal = $("bj-play-deal");
+  deal.hidden = play.phase === "player";
+  deal.textContent = play.phase === "done" ? "Deal again" : "Deal";
+  $("bj-play-reset").hidden = play.phase === "player" || play.chips >= play.stake;
+  const err = $("bj-play-error");
+  if (play.error) { err.hidden = false; err.textContent = play.error; }
+  else err.hidden = true;
+  const box = $("bj-play-result");
+  if (play.phase !== "done") { box.hidden = true; box.innerHTML = ""; return; }
+  const parts = play.hands.map(function (hand, i) {
+    const shown = hand.profit > 0 ? "+" + chipsText(hand.profit) : hand.profit < 0 ? "−" + chipsText(-hand.profit) : "push";
+    let name = "Push";
+    if (hand.profit > 0 && !hand.fromSplit && hand.cards.length === 2 && B.bjTotal(hand.cards).total === 21) name = "Blackjack";
+    else if (B.bjTotal(hand.cards).total > 21) name = "Bust";
+    else if (hand.profit > 0) name = "You win";
+    else if (hand.profit < 0) name = "Dealer wins";
+    const prefix = play.hands.length > 1 ? "Hand " + (i + 1) + " " : "";
+    return prefix + name + (shown === "push" ? "" : " · " + shown);
+  });
+  const net = play.hands.reduce(function (sum, hand) { return sum + hand.profit; }, 0);
+  box.hidden = false;
+  box.className = "banner" + (net > 0 ? " good" : net < 0 ? " bad" : "");
+  box.innerHTML = "<strong>" + esc(parts.join(" · ")) + "</strong><span>Practice chips only.</span>";
+}
+
+function resetBjPlay() {
+  const play = state.bj.play;
+  play.chips = 100000;
+  play.stake = 500;
+  play.phase = "bet";
+  play.hands = [];
+  play.dealer = [];
+  play.reveal = false;
+  play.active = 0;
+  play.error = null;
+  save();
+  renderBjPlay();
 }
 
 function renderChart() {
@@ -3469,7 +3807,22 @@ function onClick(event) {
   if (!el) return;
   const act = el.dataset.act;
   if (act === "tab") { showTab(el.dataset.tab); return; }
-  if (act === "bj-play") { answerBj(el.dataset.move); return; }
+  if (act === "bj-play") {
+    if (!state.trainer) return;
+    answerBj(el.dataset.move);
+    return;
+  }
+  if (act === "bj-move") { playBjMove(el.dataset.move); return; }
+  if (act === "bj-deal") { dealBjRound(); return; }
+  if (act === "bj-stake") {
+    if (state.bj.play.phase === "player") return;
+    state.bj.play.stake = Number(el.dataset.stake);
+    state.bj.play.error = null;
+    save();
+    renderBjPlay();
+    return;
+  }
+  if (act === "bj-play-reset") { resetBjPlay(); return; }
   if (act === "bj-next") { dealBj(); return; }
   if (act === "bj-chart") {
     state.bj.showChart = !state.bj.showChart;
@@ -3514,6 +3867,7 @@ function onClick(event) {
   if (act === "trainer") {
     applyTrainer(!state.trainer);
     renderBj();
+    renderBjPlay();
     renderVp();
     renderBaccarat();
     if (state.trainer) renderQuiz();
@@ -3644,6 +3998,11 @@ function onKey(event) {
   if (state.tab !== "blackjack") return;
   if (event.target && (event.target.tagName === "INPUT" || event.target.tagName === "TEXTAREA")) return;
   const k = event.key.toLowerCase();
+  if (!state.trainer) {
+    if (state.bj.play.phase === "player" && (k === "h" || k === "s" || k === "d" || k === "p")) playBjMove(k.toUpperCase());
+    else if (state.bj.play.phase !== "player" && (k === "n" || k === "enter")) dealBjRound();
+    return;
+  }
   if (!state.bj.locked && (k === "h" || k === "s" || k === "d" || k === "p")) {
     answerBj(k.toUpperCase());
   } else if (state.bj.locked && (k === "n" || k === "enter")) {
@@ -3811,6 +4170,7 @@ function init() {
   renderDrawTable();
   newQuiz();
   dealBj();
+  renderBjPlay();
   newBcHand();
   renderEdges();
   renderRoulette();
