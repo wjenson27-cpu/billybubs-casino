@@ -1,0 +1,79 @@
+/* Fit the play chrome on a 360–390 phone. The dome image, dice, and felt grid stay. */
+
+@media (min-width: 360px) and (max-width: 390px) {
+  /* The three-page strip is the swipe carousel. Mark it as a horizontal
+     scroller so it is not treated as clipped chrome, and keep touch
+     panning vertical so the existing swipe handler stays in charge. */
+  .app.play .stage {
+    overflow-x: scroll;
+    overflow-y: hidden;
+    scrollbar-width: none;
+    touch-action: pan-y;
+  }
+  .app.play .stage::-webkit-scrollbar { display: none; width: 0; height: 0; }
+  .app.play .hud-row1 {
+    padding-left: 6px;
+    padding-right: 6px;
+    gap: 4px;
+    min-width: 0;
+  }
+  .app.play .hud-row1 .lockup {
+    height: 30px;
+    width: auto;
+    max-width: 96px;
+    object-fit: contain;
+    object-position: left center;
+  }
+  .app.play .modeseg {
+    min-width: 0;
+    flex: 0 1 auto;
+  }
+  .app.play .modeseg button {
+    min-width: 0;
+    padding: 0 6px;
+    letter-spacing: .02em;
+    font-size: 10px;
+  }
+  .app.play .dock {
+    padding-left: 4px;
+    padding-right: 4px;
+  }
+  .app.play .dockgrid {
+    grid-template-columns: minmax(0, 1fr) 104px;
+    gap: 4px;
+    min-width: 0;
+  }
+  .app.play .rack { min-width: 0; padding: 2px; }
+  .app.play .trough { min-width: 0; gap: 0; padding-left: 2px; padding-right: 2px; }
+  .app.play .context {
+    min-width: 0;
+    gap: 3px;
+  }
+  .app.play .context .key,
+  .app.play .stopkey {
+    min-width: 0;
+    padding-left: 2px;
+    padding-right: 2px;
+    letter-spacing: 0;
+  }
+  .app.play .felt.bfx .ats .lamp {
+    width: 11px;
+    height: 12px;
+    line-height: 12px;
+    font-size: 7px;
+    letter-spacing: 0;
+  }
+  .app.play .felt.bfx .numbox .half.place::after,
+  .app.play .felt.bfx .numbox .half.buy::after,
+  .app.play .felt.bfx .numbox .half.lay::after { inset: 0; }
+  .app.play .felt.bfx .prop .spot.hwad .lamp {
+    width: 14px;
+    height: 14px;
+    line-height: 14px;
+    font-size: 7px;
+    letter-spacing: 0;
+  }
+  .app.play .dome-cast { width: 170px; }
+  .app.play .dome-cast .speech { max-width: 96px; }
+}
+
