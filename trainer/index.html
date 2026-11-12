@@ -214,7 +214,6 @@
   details { color: var(--muted); }
   details summary { color: var(--ivory); min-height: 44px; display: flex; align-items: center; cursor: pointer; }
   footer { margin-top: 18px; color: var(--muted); font-size: 14px; }
-  body:has(#panel-learn:not([hidden])) footer { display: none; }
   .sq-wrap { position: relative; width: 96px; min-height: 132px; animation: deal 260ms ease-out both; }
   .sq-turn {
     position: relative; z-index: 5; min-width: 64px; min-height: 44px; margin: 0 auto 4px;
@@ -1909,7 +1908,7 @@ const CURRICULUM_GAMES = ["blackjack", "baccarat"];
 const CURRICULUM_LEVEL_NAME = { beginner: "Beginner", intermediate: "Intermediate", sharp: "Sharp" };
 
 function curriculumBlankLevel() {
-  return { stars: 0, passes: [], window: [], streak: 0, bestStreak: 0 };
+  return { stars: 0, passes: [], window: [], streak: 0, bestStreak: 0, streak20: false };
 }
 
 function curriculumBlankGame() {
@@ -1975,6 +1974,7 @@ function curriculumNormalize(data) {
       }
       if (typeof src.streak === "number" && src.streak >= 0) dest.streak = Math.floor(src.streak);
       if (typeof src.bestStreak === "number" && src.bestStreak >= 0) dest.bestStreak = Math.floor(src.bestStreak);
+      dest.streak20 = src.streak20 === true || dest.streak >= 20 || dest.bestStreak >= 20;
     });
     if (incoming.weak && typeof incoming.weak === "object") {
       Object.keys(incoming.weak).forEach(function (key) {
@@ -2028,7 +2028,7 @@ function curriculumRecord(store, gameId, level, correct, spotKey, day) {
   if (correct) {
     row.streak += 1;
     if (row.streak > row.bestStreak) row.bestStreak = row.streak;
-    if (row.streak >= 20 && row.stars < 3) row.stars = 3;
+    if (row.streak >= 20) row.streak20 = true;
   } else row.streak = 0;
   row.window.push(!!correct);
   if (row.window.length > 20) row.window.shift();
@@ -2046,6 +2046,7 @@ function curriculumRecord(store, gameId, level, correct, spotKey, day) {
       row.window = [];
     }
   }
+  if (row.stars >= 2 && row.streak20 && row.stars < 3) row.stars = 3;
   return { passed: passed, stars: row.stars, streak: row.streak, unlocked: game.unlocked };
 }
 
@@ -2142,12 +2143,151 @@ function gradeSideBetCall(name, player, banker, chosen) {
 }
 
 function gradeBlackjackPayout(kind, stake) {
-  let profit = -stake;
-  if (kind === "blackjack") profit = stake * 3 / 2;
-  else if (kind === "win") profit = stake;
-  else if (kind === "push") profit = 0;
-  const line = kind === "blackjack" ? "Blackjack pays 3 to 2" : kind === "win" ? "Even money" : kind === "push" ? "Push" : "The bet loses";
-  return { profit: profit, line: line };
+  const bet = stake > 0 ? stake : 0;
+  let profit = -bet;
+  let line = "The hand loses";
+  if (kind === "blackjack") { profit = bet * 3 / 2; line = "Blackjack pays 3 to 2"; }
+  else if (kind === "win") { profit = bet; line = "The hand wins"; }
+  else if (kind === "push") { profit = 0; line = "The hand pushes"; }
+  else if (kind === "double-win") { profit = bet * 2; line = "The doubled hand wins"; }
+  else if (kind === "double-lose") { profit = -bet * 2; line = "The doubled hand loses"; }
+  return { profit: profit, line: line, doubled: kind === "double-win" || kind === "double-lose" };
+}
+
+function sharpPayoutPrompt(roll, stake) {
+  const kinds = ["blackjack", "win", "push", "lose", "double-win", "double-lose"];
+  const bet = stake > 0 ? stake : 10;
+  const n = Number(roll);
+  const r = n !== n ? 0 : Math.max(0, Math.min(0.999999, n));
+  const kind = kinds[Math.min(kinds.length - 1, Math.floor(r * kinds.length))];
+  const graded = gradeBlackjackPayout(kind, bet);
+  const choices = [-bet, 0, bet, bet * 3 / 2];
+  if (graded.doubled) {
+    choices.push(bet * 2);
+    choices.push(-bet * 2);
+  }
+  if (choices.indexOf(graded.profit) === -1) choices.push(graded.profit);
+  return { kind: "payout", result: kind, stake: bet, answer: graded.profit, line: graded.line, choices: choices, doubled: graded.doubled };
+}
+
+function intermediateBankerPrompt(roll) {
+  const n = Number(roll);
+  const r = n !== n ? 0 : Math.max(0, Math.min(0.999999, n));
+  const bt = Math.floor(r * 8) % 8;
+  if (r < 0.5) return { kind: "banker-draw", bt: bt, pt: r < 0.25 ? 6 : 7, third: null };
+  return { kind: "banker-draw", bt: bt, pt: Math.floor(r * 6) % 6, third: Math.floor(r * 10) % 10 };
+}
+
+function legalCardCode(code) {
+  return typeof code === "string" && code.length === 2 && "A23456789TJQK".indexOf(code[0]) !== -1 && "SHDC".indexOf(code[1]) !== -1;
+}
+
+function handFromCards(player, banker) {
+  const playerInitial = baccaratTotal(player.slice(0, 2));
+  const bankerInitial = baccaratTotal(banker.slice(0, 2));
+  const playerThird = player.length === 3 ? baccaratValueChar(player[2][0]) : null;
+  const playerFinal = baccaratTotal(player);
+  const bankerFinal = baccaratTotal(banker);
+  return {
+    player: player,
+    banker: banker,
+    playerInitial: playerInitial,
+    bankerInitial: bankerInitial,
+    playerFinal: playerFinal,
+    bankerFinal: bankerFinal,
+    playerThird: playerThird,
+    playerDrew: player.length === 3,
+    bankerDrew: banker.length === 3,
+    natural: playerInitial >= 8 || bankerInitial >= 8,
+    outcome: baccaratOutcome(playerFinal, bankerFinal),
+  };
+}
+
+function outcomeSpotKey(hand) {
+  return "outcome:" + hand.player.join("+") + "/" + hand.banker.join("+");
+}
+
+function handFromOutcomeKey(key) {
+  const rest = String(key || "").slice("outcome:".length);
+  const parts = rest.split("/");
+  if (parts.length !== 2) return null;
+  const player = parts[0].split("+");
+  const banker = parts[1].split("+");
+  if (player.length < 2 || player.length > 3 || banker.length < 2 || banker.length > 3) return null;
+  for (let i = 0; i < player.length; i++) if (!legalCardCode(player[i])) return null;
+  for (let i = 0; i < banker.length; i++) if (!legalCardCode(banker[i])) return null;
+  return handFromCards(player, banker);
+}
+
+function sideBetSampleList() {
+  return [
+    { name: "dragon7", player: ["AS", "2D"], banker: ["2C", "3D", "2H"] },
+    { name: "panda8", player: ["2C", "2D", "4H"], banker: ["AS", "2H"] },
+    { name: "ezBanker", player: ["AS", "2D"], banker: ["2C", "3D", "2H"] },
+    { name: "tie", player: ["AS", "8S"], banker: ["KH", "9D"] },
+  ];
+}
+
+function sidePrompt(name) {
+  const samples = sideBetSampleList();
+  let sample = null;
+  for (let i = 0; i < samples.length; i++) if (samples[i].name === name) sample = samples[i];
+  if (!sample) return null;
+  const graded = gradeSideBetCall(sample.name, sample.player, sample.banker, 0);
+  return { kind: "side", name: sample.name, player: sample.player.slice(), banker: sample.banker.slice(), answer: graded.pays, line: graded.line, spotKey: "side:" + sample.name };
+}
+
+function weakSpotPrompt(gameId, key) {
+  if (!key) return null;
+  if (gameId === "blackjack") {
+    const parts = String(key).split(":");
+    if (parts.length !== 3) return null;
+    if (parts[0] !== "hard" && parts[0] !== "soft" && parts[0] !== "pairs") return null;
+    let code;
+    try { code = strategyCell(parts[0], parts[1], parts[2]); }
+    catch (err) { return null; }
+    return { kind: "strategy", cat: parts[0], hand: parts[1], up: parts[2], code: code, spotKey: key };
+  }
+  if (String(key).indexOf("outcome:") === 0) {
+    const hand = handFromOutcomeKey(key);
+    if (!hand) return null;
+    return { kind: "outcome", hand: hand, answer: hand.outcome, spotKey: key };
+  }
+  if (String(key).indexOf("side:") === 0) return sidePrompt(String(key).slice(5));
+  const parts = String(key).split(":");
+  if (parts[0] === "value" && parts[1]) {
+    const graded = gradeBaccaratValue(parts[1], 0);
+    return { kind: "value", rank: parts[1], answer: graded.value, spotKey: key };
+  }
+  if (parts[0] === "natural") {
+    const total = Number(parts[1]);
+    if (total >= 0 && total <= 9) return { kind: "natural", total: total, answer: total === 8 || total === 9, spotKey: key };
+  }
+  if (parts[0] === "pdraw") {
+    const pt = Number(parts[1]);
+    const bt = Number(parts[2]);
+    if (pt >= 0 && pt <= 9 && bt >= 0 && bt <= 9) return { kind: "player-draw", pt: pt, bt: bt, spotKey: key };
+  }
+  if (parts[0] === "bdraw") {
+    const bt = Number(parts[1]);
+    const pt = Number(parts[2]);
+    const third = parts[3] === "null" || parts[3] === "" || parts[3] === undefined ? null : Number(parts[3]);
+    const prompt = { kind: "banker-draw", bt: bt, pt: pt, third: third, spotKey: key };
+    const stood = third === null;
+    const legal = bt >= 0 && bt <= 7 && (stood ? (pt === 6 || pt === 7) : (pt >= 0 && pt <= 5 && third >= 0 && third <= 9));
+    if (!legal) return null;
+    return prompt;
+  }
+  return null;
+}
+
+function nextWeakSpot(store, gameId, roll) {
+  const keys = curriculumWeakKeys(store, gameId);
+  if (!keys.length) return null;
+  const n = Number(roll);
+  const r = n !== n ? 0 : Math.max(0, Math.min(0.999999, n));
+  const key = keys[Math.min(keys.length - 1, Math.floor(r * keys.length))];
+  return weakSpotPrompt(gameId, key);
 }
 
 const BONES = {
@@ -2183,6 +2323,12 @@ const BONES = {
   gradeBaccaratNatural: gradeBaccaratNatural,
   gradeSideBetCall: gradeSideBetCall,
   gradeBlackjackPayout: gradeBlackjackPayout,
+  sharpPayoutPrompt: sharpPayoutPrompt,
+  intermediateBankerPrompt: intermediateBankerPrompt,
+  outcomeSpotKey: outcomeSpotKey,
+  sideBetSampleList: sideBetSampleList,
+  weakSpotPrompt: weakSpotPrompt,
+  nextWeakSpot: nextWeakSpot,
   HOUSE_EDGES: HOUSE_EDGES,
   formatEdge: formatEdge,
   findEdge: findEdge,
@@ -2238,7 +2384,7 @@ const state = {
   trainer: false,
   tab: "blackjack",
   curriculum: null,
-  learn: { view: "home", game: "blackjack", level: "beginner", prompt: null, locked: false, feedback: "", ok: null, confirm: false },
+  learn: { view: "home", game: "blackjack", level: "beginner", prompt: null, locked: false, feedback: "", ok: null, confirm: false, weakOnly: false },
   bj: {
     hand: null,
     locked: false,
@@ -2839,40 +2985,35 @@ function cardsForCell(cell) {
   return { cards: cards, dealer: paintDrillCard(up) };
 }
 
-function baccPromptFromKey(level, key) {
-  const parts = String(key || "").split(":");
-  const kind = parts[0];
-  if (level === "beginner" && kind === "value" && parts[1]) {
-    const rank = parts[1];
-    return { kind: "value", rank: rank, card: paintDrillCard(rank === "T" ? faceTen() : rank), answer: B.gradeBaccaratValue(rank, 0).value };
+function attachPromptCards(prompt) {
+  if (!prompt) return prompt;
+  if (prompt.kind === "strategy") {
+    const dealt = cardsForCell(prompt);
+    prompt.cards = dealt.cards;
+    prompt.dealer = dealt.dealer;
+  } else if (prompt.kind === "value") {
+    prompt.card = paintDrillCard(prompt.rank === "T" ? faceTen() : prompt.rank);
   }
-  if (level === "beginner" && kind === "natural") {
-    const total = Number(parts[1]);
-    if (total >= 0 && total <= 9) return { kind: "natural", total: total, answer: total === 8 || total === 9 };
-  }
-  if (level === "intermediate" && kind === "pdraw") {
-    const pt = Number(parts[1]);
-    const bt = Number(parts[2]);
-    if (pt >= 0 && pt <= 9 && bt >= 0 && bt <= 9) return { kind: "player-draw", pt: pt, bt: bt };
-  }
-  if (level === "intermediate" && kind === "bdraw") {
-    const bt = Number(parts[1]);
-    const pt = Number(parts[2]);
-    const third = parts[3] === "null" || parts[3] === "" ? null : Number(parts[3]);
-    if (bt >= 0 && bt <= 7 && pt >= 0 && pt <= 9 && (third === null || (third >= 0 && third <= 9))) return { kind: "banker-draw", bt: bt, pt: pt, third: third };
-  }
-  if (level === "sharp" && kind === "side") {
-    const samples = {
-      dragon7: { name: "dragon7", player: ["AS", "2D"], banker: ["2C", "3D", "2H"] },
-      panda8: { name: "panda8", player: ["2C", "2D", "4H"], banker: ["AS", "2H"] },
-      ezBanker: { name: "ezBanker", player: ["AS", "2D"], banker: ["2C", "3D", "2H"] },
-      tie: { name: "tie", player: ["AS", "8S"], banker: ["KH", "9D"] },
-    };
-    const sample = samples[parts[1]];
-    if (!sample) return null;
-    const graded = B.gradeSideBetCall(sample.name, sample.player, sample.banker, 0);
-    return { kind: "side", name: sample.name, player: sample.player, banker: sample.banker, answer: graded.pays, line: graded.line };
-  }
+  return prompt;
+}
+
+function promptFitsLevel(level, prompt) {
+  if (!prompt) return false;
+  if (level === "beginner") return prompt.kind === "value" || prompt.kind === "natural";
+  if (level === "intermediate") return prompt.kind === "player-draw" || prompt.kind === "banker-draw";
+  return prompt.kind === "outcome" || prompt.kind === "side";
+}
+
+function learnSpotKey(prompt) {
+  if (!prompt) return null;
+  if (prompt.spotKey) return prompt.spotKey;
+  if (prompt.kind === "strategy") return prompt.cat + ":" + prompt.hand + ":" + prompt.up;
+  if (prompt.kind === "outcome") return B.outcomeSpotKey(prompt.hand);
+  if (prompt.kind === "side") return "side:" + prompt.name;
+  if (prompt.kind === "value") return "value:" + prompt.rank;
+  if (prompt.kind === "natural") return "natural:" + prompt.total;
+  if (prompt.kind === "player-draw") return "pdraw:" + prompt.pt + ":" + prompt.bt;
+  if (prompt.kind === "banker-draw") return "bdraw:" + prompt.bt + ":" + prompt.pt + ":" + (prompt.third === null || prompt.third === undefined ? "null" : prompt.third);
   return null;
 }
 
@@ -2885,13 +3026,14 @@ function dealLearn() {
   learn.locked = false;
   learn.feedback = "";
   learn.ok = null;
+  if (learn.weakOnly) {
+    learn.prompt = attachPromptCards(B.nextWeakSpot(state.curriculum, learn.game, Math.random()));
+    renderLearn();
+    return;
+  }
   if (learn.game === "blackjack") {
     if (learn.level === "sharp" && Math.random() < 0.25) {
-      const kinds = ["blackjack", "win", "push", "lose"];
-      const kind = kinds[Math.floor(Math.random() * kinds.length)];
-      const stake = 10;
-      const graded = B.gradeBlackjackPayout(kind, stake);
-      learn.prompt = { kind: "payout", stake: stake, result: kind, answer: graded.profit, line: graded.line, choices: [0, stake, stake * 3 / 2, stake * 2].filter(function (n, i, arr) { return arr.indexOf(n) === i; }) };
+      learn.prompt = B.sharpPayoutPrompt(Math.random(), 10);
       renderLearn();
       return;
     }
@@ -2907,8 +3049,8 @@ function dealLearn() {
     return;
   }
   if (bias.weak) {
-    const forced = baccPromptFromKey(learn.level, bias.key);
-    if (forced) { learn.prompt = forced; renderLearn(); return; }
+    const forced = B.weakSpotPrompt(learn.game, bias.key);
+    if (promptFitsLevel(learn.level, forced)) { learn.prompt = attachPromptCards(forced); renderLearn(); return; }
   }
   if (learn.level === "beginner") {
     if (Math.random() < 0.5) {
@@ -2924,28 +3066,32 @@ function dealLearn() {
     if (Math.random() < 0.5) {
       learn.prompt = { kind: "player-draw", pt: Math.floor(Math.random() * 10), bt: Math.floor(Math.random() * 10) };
     } else {
-      const stood = Math.random() < 0.35;
-      learn.prompt = { kind: "banker-draw", bt: Math.floor(Math.random() * 8), pt: Math.floor(Math.random() * 8), third: stood ? null : Math.floor(Math.random() * 10) };
+      learn.prompt = B.intermediateBankerPrompt(Math.random());
     }
   } else if (Math.random() < 0.5) {
     const hand = B.playBaccarat(nextUint32);
     learn.prompt = { kind: "outcome", hand: hand, answer: hand.outcome };
   } else {
-    const samples = [
-      { name: "dragon7", player: ["AS", "2D"], banker: ["2C", "3D", "2H"] },
-      { name: "panda8", player: ["2C", "2D", "4H"], banker: ["AS", "2H"] },
-      { name: "ezBanker", player: ["AS", "2D"], banker: ["2C", "3D", "2H"] },
-      { name: "tie", player: ["AS", "8S"], banker: ["KH", "9D"] },
-    ];
+    const samples = B.sideBetSampleList();
     const sample = samples[Math.floor(Math.random() * samples.length)];
     const graded = B.gradeSideBetCall(sample.name, sample.player, sample.banker, 0);
-    learn.prompt = { kind: "side", name: sample.name, player: sample.player, banker: sample.banker, answer: graded.pays, line: graded.line };
+    learn.prompt = { kind: "side", name: sample.name, player: sample.player, banker: sample.banker, answer: graded.pays, line: graded.line, spotKey: "side:" + sample.name };
   }
   renderLearn();
 }
 
 function finishLearnAnswer(ok, line, spotKey) {
   const learn = state.learn;
+  if (learn.weakOnly) {
+    B.curriculumQuietSpot(state.curriculum, learn.game, spotKey, ok);
+    saveCurriculum();
+    learn.locked = true;
+    learn.ok = ok;
+    learn.feedback = (ok ? "Right. " : "Not quite. ") + line;
+    if (spotKey && !state.curriculum.games[learn.game].weak[spotKey]) learn.feedback += " That spot is cleared.";
+    renderLearn();
+    return;
+  }
   const result = B.curriculumRecord(state.curriculum, learn.game, learn.level, ok, spotKey, todayKey());
   saveCurriculum();
   learn.locked = true;
@@ -2958,9 +3104,10 @@ function finishLearnAnswer(ok, line, spotKey) {
 function answerLearn(move) {
   const prompt = state.learn.prompt;
   if (!prompt || state.learn.locked) return;
+  const spotKey = learnSpotKey(prompt);
   if (prompt.kind === "strategy") {
     const graded = B.gradeBlackjackMove(prompt.cat, prompt.hand, prompt.up, move, true);
-    finishLearnAnswer(graded.ok, graded.line, prompt.cat + ":" + prompt.hand + ":" + prompt.up);
+    finishLearnAnswer(graded.ok, graded.line, spotKey);
     return;
   }
   if (prompt.kind === "payout") {
@@ -2970,33 +3117,33 @@ function answerLearn(move) {
   }
   if (prompt.kind === "value") {
     const graded = B.gradeBaccaratValue(prompt.rank, move);
-    finishLearnAnswer(graded.ok, graded.line, "value:" + prompt.rank);
+    finishLearnAnswer(graded.ok, graded.line, spotKey);
     return;
   }
   if (prompt.kind === "natural") {
     const graded = B.gradeBaccaratNatural(prompt.total, move === "yes");
-    finishLearnAnswer(graded.ok, graded.line, "natural:" + prompt.total);
+    finishLearnAnswer(graded.ok, graded.line, spotKey);
     return;
   }
   if (prompt.kind === "player-draw") {
     const graded = B.gradeBaccaratPlayerDraw(prompt.pt, prompt.bt, move === "yes");
-    finishLearnAnswer(graded.ok, graded.line, "pdraw:" + prompt.pt + ":" + prompt.bt);
+    finishLearnAnswer(graded.ok, graded.line, spotKey);
     return;
   }
   if (prompt.kind === "banker-draw") {
     const graded = B.gradeBaccaratBankerDraw(prompt.bt, prompt.pt, prompt.third, move === "yes");
-    finishLearnAnswer(graded.ok, graded.line, "bdraw:" + prompt.bt + ":" + prompt.pt + ":" + prompt.third);
+    finishLearnAnswer(graded.ok, graded.line, spotKey);
     return;
   }
   if (prompt.kind === "outcome") {
     const ok = move === prompt.answer;
     const word = prompt.answer === "tie" ? "Tie" : prompt.answer[0].toUpperCase() + prompt.answer.slice(1) + " wins";
-    finishLearnAnswer(ok, word, "outcome:" + prompt.hand.playerFinal + ":" + prompt.hand.bankerFinal);
+    finishLearnAnswer(ok, word, spotKey);
     return;
   }
   if (prompt.kind === "side") {
     const graded = B.gradeSideBetCall(prompt.name, prompt.player, prompt.banker, move);
-    finishLearnAnswer(graded.ok, graded.line, "side:" + prompt.name);
+    finishLearnAnswer(graded.ok, graded.line, spotKey);
   }
 }
 
@@ -3088,11 +3235,17 @@ function renderWeakReview() {
     any = true;
     html += "<h2>" + (gameId === "blackjack" ? "Blackjack" : "Baccarat") + "</h2>";
     keys.forEach(function (key) {
-      html += '<article class="learn-card"><p>' + esc(weakLabel(key)) + " · " + (3 - store.games[gameId].weak[key].rightRow) + ' correct in a row still needed</p><button type="button" data-act="learn-start" data-game="' + gameId + '" data-level="' + store.games[gameId].unlocked + '">Drill ' + (gameId === "blackjack" ? "Blackjack" : "Baccarat") + "</button></article>";
+      html += '<article class="learn-card"><p>' + esc(weakLabel(key)) + " · " + (3 - store.games[gameId].weak[key].rightRow) + ' correct in a row still needed</p><button type="button" data-act="learn-weak-drill" data-game="' + gameId + '">Drill ' + (gameId === "blackjack" ? "Blackjack" : "Baccarat") + "</button></article>";
     });
   });
   if (!any) html += '<p class="empty">No weak spots yet. A miss in a drill, or a Blackjack decision off Basic Strategy in play, will wait here.</p>';
   $("learn-root").innerHTML = html;
+}
+
+function dealtCardsHTML(cards) {
+  let html = "";
+  cards.forEach(function (c) { html += cardHTML({ rank: c[0], suit: c[1] }); });
+  return html;
 }
 
 function renderDrill() {
@@ -3101,14 +3254,21 @@ function renderDrill() {
   const hits = row.window.filter(function (bit) { return bit; }).length;
   const pct = row.window.length ? Math.round(100 * hits / row.window.length) : 0;
   const prompt = learn.prompt;
+  const openSpots = B.curriculumWeakKeys(state.curriculum, learn.game).length;
   let html = '<button type="button" class="learn-back" data-act="learn-view" data-view="home">Back</button>';
-  html += '<p class="learn-kicker">' + (learn.game === "blackjack" ? "Blackjack" : "Baccarat") + " · " + B.CURRICULUM_LEVEL_NAME[learn.level] + "</p>";
-  html += '<h2 class="learn-title">' + esc(learnTitle(learn.game, learn.level)) + "</h2>";
-  html += '<div class="learn-stats"><span>' + row.window.length + ' of 20 hands</span><span>' + hits + " right · " + pct + "% · goal 95%</span></div>";
-  html += '<div class="learn-meter"><span style="width:' + Math.round(100 * row.window.length / 20) + '%"></span></div>';
-  html += '<div class="learn-pills"><span class="pill">Streak ' + row.streak + '</span><span class="pill">Best ' + row.bestStreak + '</span><span class="pill">Day ' + state.curriculum.dayStreak + " in a row</span></div>";
+  if (learn.weakOnly) {
+    html += '<p class="learn-kicker">' + (learn.game === "blackjack" ? "Blackjack" : "Baccarat") + " · Weak spots</p>";
+    html += '<h2 class="learn-title">Review</h2>';
+    html += "<p>" + openSpots + (openSpots === 1 ? " spot still open." : " spots still open.") + " Three correct in a row clears a spot.</p>";
+  } else {
+    html += '<p class="learn-kicker">' + (learn.game === "blackjack" ? "Blackjack" : "Baccarat") + " · " + B.CURRICULUM_LEVEL_NAME[learn.level] + "</p>";
+    html += '<h2 class="learn-title">' + esc(learnTitle(learn.game, learn.level)) + "</h2>";
+    html += '<div class="learn-stats"><span>' + row.window.length + ' of 20 hands</span><span>' + hits + " right · " + pct + "% · goal 95%</span></div>";
+    html += '<div class="learn-meter"><span style="width:' + Math.round(100 * row.window.length / 20) + '%"></span></div>';
+    html += '<div class="learn-pills"><span class="pill">Streak ' + row.streak + '</span><span class="pill">Best ' + row.bestStreak + '</span><span class="pill">Day ' + state.curriculum.dayStreak + " in a row</span></div>";
+  }
   html += '<div class="bj-felt">';
-  if (!prompt) html += '<p class="empty">Deal the first hand.</p>';
+  if (!prompt) html += '<p class="empty">' + (learn.weakOnly ? "No weak spots left." : "Deal the first hand.") + "</p>";
   else if (prompt.kind === "strategy") {
     const label = prompt.cat === "hard" ? "Hard " + prompt.hand : prompt.cat === "soft" ? "Soft " + (11 + Number(prompt.hand.slice(1))) : "Pair";
     html += '<p class="kicker">Dealer</p><div class="cards">' + cardHTML(prompt.dealer) + cardBackSVG() + "</div>";
@@ -3116,7 +3276,7 @@ function renderDrill() {
     prompt.cards.forEach(function (card) { html += cardHTML(card); });
     html += '</div><p class="hand-tag">' + esc(label) + "</p>";
   } else if (prompt.kind === "payout") {
-    html += "<p>You bet " + prompt.stake + " practice chips. The hand is a " + prompt.result + ". What profit comes back?</p>";
+    html += "<p>You bet " + prompt.stake + " practice chips. " + esc(prompt.line) + ". What profit comes back?</p>";
   } else if (prompt.kind === "value") {
     html += '<p class="kicker">Card value</p><div class="cards">' + cardHTML(prompt.card) + "</div><p>What does this card count in baccarat?</p>";
   } else if (prompt.kind === "natural") {
@@ -3126,14 +3286,14 @@ function renderDrill() {
   } else if (prompt.kind === "banker-draw") {
     html += "<p>Banker shows " + prompt.bt + ". Player shows " + prompt.pt + ". " + (prompt.third === null ? "Player stood." : "Player's third card is " + prompt.third + ".") + " Does Banker draw?</p>";
   } else if (prompt.kind === "outcome") {
-    html += '<div class="zones"><div class="zone"><p class="zone-label">Player</p><div class="cards">';
-    prompt.hand.player.forEach(function (c) { html += cardHTML({ rank: c[0], suit: c[1] }); });
-    html += '</div></div><div class="zone"><p class="zone-label">Banker</p><div class="cards">';
-    prompt.hand.banker.forEach(function (c) { html += cardHTML({ rank: c[0], suit: c[1] }); });
+    html += '<div class="zones"><div class="zone"><p class="zone-label">Player</p><div class="cards">' + dealtCardsHTML(prompt.hand.player);
+    html += '</div></div><div class="zone"><p class="zone-label">Banker</p><div class="cards">' + dealtCardsHTML(prompt.hand.banker);
     html += "</div></div></div><p>Who wins this dealt hand?</p>";
   } else if (prompt.kind === "side") {
     const label = { dragon7: "Dragon 7", panda8: "Panda 8", ezBanker: "EZ Banker", tie: "Tie" }[prompt.name];
-    html += "<p>" + label + ". What is the payout number? 0 means a push or a loss with nothing paid.</p>";
+    html += '<div class="zones"><div class="zone"><p class="zone-label">Player</p><div class="cards">' + dealtCardsHTML(prompt.player);
+    html += '</div></div><div class="zone"><p class="zone-label">Banker</p><div class="cards">' + dealtCardsHTML(prompt.banker);
+    html += "</div></div></div><p>" + label + ". What is the payout number? 0 means a push or a loss with nothing paid.</p>";
   }
   html += "</div>";
   if (prompt && (prompt.kind === "strategy")) {
@@ -3523,13 +3683,14 @@ function playBjMove(move) {
   const hand = play.hands[play.active];
   if (!hand || !bjHandOpen(hand)) return;
   play.error = null;
+  const canDouble = hand.cards.length === 2 && !hand.aceSplit;
   if (move === "H") {
     if (hand.aceSplit) return;
-    notePlayDecision(hand.cards.slice(), play.dealer[0][0], "H", hand.cards.length === 2 && !hand.fromSplit);
+    notePlayDecision(hand.cards.slice(), play.dealer[0][0], "H", canDouble);
     hand.cards.push(drawBj());
     if (B.bjTotal(hand.cards).total >= 21) hand.stood = true;
   } else if (move === "S") {
-    notePlayDecision(hand.cards.slice(), play.dealer[0][0], "S", hand.cards.length === 2 && !hand.fromSplit);
+    notePlayDecision(hand.cards.slice(), play.dealer[0][0], "S", canDouble);
     hand.stood = true;
   } else if (move === "D") {
     if (hand.cards.length !== 2 || hand.aceSplit) return;
@@ -4590,6 +4751,18 @@ function onClick(event) {
   const act = el.dataset.act;
   if (act === "tab") { showTab(el.dataset.tab); return; }
   if (act === "learn-view") { state.learn.view = el.dataset.view; state.learn.confirm = false; renderLearn(); window.scrollTo(0, 0); return; }
+  if (act === "learn-weak-drill") {
+    const game = state.curriculum.games[el.dataset.game];
+    if (!game) return;
+    state.learn.game = el.dataset.game;
+    state.learn.level = game.unlocked;
+    state.learn.view = "drill";
+    state.learn.weakOnly = true;
+    state.learn.prompt = null;
+    dealLearn();
+    window.scrollTo(0, 0);
+    return;
+  }
   if (act === "learn-start") {
     const game = state.curriculum.games[el.dataset.game];
     if (!game) return;
@@ -4597,6 +4770,7 @@ function onClick(event) {
     state.learn.game = el.dataset.game;
     state.learn.level = el.dataset.level;
     state.learn.view = "drill";
+    state.learn.weakOnly = false;
     state.learn.prompt = null;
     dealLearn();
     window.scrollTo(0, 0);

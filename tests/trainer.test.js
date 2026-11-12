@@ -671,8 +671,11 @@ check("curriculum store stars, unlocks, days, streaks, and weak spots", function
   const sharp = B.curriculumBlank();
   sharp.games.blackjack.unlocked = "sharp";
   for (let i = 0; i < 20; i++) last = B.curriculumRecord(sharp, "blackjack", "sharp", true, null, "2026-11-01");
-  assert.strictEqual(sharp.games.blackjack.levels.sharp.stars, 3);
+  assert.strictEqual(sharp.games.blackjack.levels.sharp.stars, 1);
+  assert.strictEqual(sharp.games.blackjack.levels.sharp.streak20, true);
   assert.strictEqual(sharp.games.blackjack.levels.sharp.streak, 20);
+  for (let i = 0; i < 20; i++) last = B.curriculumRecord(sharp, "blackjack", "sharp", true, null, "2026-11-02");
+  assert.strictEqual(sharp.games.blackjack.levels.sharp.stars, 3);
 
   const weak = B.curriculumBlank();
   B.curriculumQuietSpot(weak, "blackjack", "hard:16:T", false);
@@ -697,6 +700,12 @@ check("blackjack and baccarat drills grade the live rules", function () {
   assert.strictEqual(B.gradeBlackjackMove("pairs", "AA", "6", "P", true).line, "Split aces vs 6");
   assert.strictEqual(B.gradeBlackjackPayout("blackjack", 10).profit, 15);
   assert.strictEqual(B.gradeBlackjackPayout("push", 10).profit, 0);
+  assert.strictEqual(B.gradeBlackjackMove("hard", "11", "6", "H", true).ok, false);
+  assert.strictEqual(B.gradeBlackjackMove("hard", "11", "6", "D", true).expected, "D");
+  assert.ok(uiMatch[1].indexOf('notePlayDecision(hand.cards.slice(), play.dealer[0][0], "H", hand.cards.length === 2 && !hand.fromSplit)') === -1);
+  assert.ok(uiMatch[1].indexOf("const canDouble = hand.cards.length === 2 && !hand.aceSplit;") !== -1);
+  assert.ok(html.indexOf("body:has(#panel-learn:not([hidden])) footer") === -1);
+  assert.ok(html.indexOf("18+ practice only. No real money.") !== -1);
 
   assert.strictEqual(B.gradeBaccaratPlayerDraw(5, 7, true).ok, true);
   assert.strictEqual(B.gradeBaccaratPlayerDraw(6, 5, false).ok, true);
@@ -719,6 +728,86 @@ check("blackjack and baccarat drills grade the live rules", function () {
   assert.strictEqual(B.gradeSideBetCall("tie", ["AS", "8S"], ["KH", "9D"], 8).ok, true);
   assert.strictEqual(B.bjChartCell(["KH", "6D"]).hand, "16");
   assert.strictEqual(B.bjChartCell(["AS", "7H"]).cat, "soft");
+});
+
+check("sharp payout buttons always include the net result", function () {
+  for (let i = 0; i < 4000; i++) {
+    const prompt = B.sharpPayoutPrompt(i / 4000, 10);
+    assert.ok(prompt.choices.indexOf(prompt.answer) !== -1, prompt.result + " missing " + prompt.answer);
+    assert.ok(prompt.line.indexOf(" a lose") === -1, prompt.line);
+    assert.ok(prompt.choices.indexOf(-10) !== -1);
+    assert.ok(prompt.choices.indexOf(0) !== -1);
+    assert.ok(prompt.choices.indexOf(10) !== -1);
+    assert.ok(prompt.choices.indexOf(15) !== -1);
+    if (prompt.result === "lose") {
+      assert.strictEqual(prompt.answer, -10);
+      assert.ok(prompt.line.indexOf("loses") !== -1);
+    }
+    if (prompt.result === "win") assert.ok(prompt.line.indexOf("wins") !== -1);
+    if (prompt.result === "push") {
+      assert.strictEqual(prompt.answer, 0);
+      assert.ok(prompt.line.indexOf("pushes") !== -1);
+    }
+    if (prompt.result === "blackjack") assert.strictEqual(prompt.answer, 15);
+    if (prompt.result === "double-win") {
+      assert.strictEqual(prompt.answer, 20);
+      assert.ok(prompt.choices.indexOf(20) !== -1);
+      assert.ok(prompt.line.indexOf("wins") !== -1);
+    }
+    if (prompt.result === "double-lose") {
+      assert.strictEqual(prompt.answer, -20);
+      assert.ok(prompt.choices.indexOf(-20) !== -1);
+      assert.ok(prompt.line.indexOf("loses") !== -1);
+    }
+  }
+  assert.strictEqual(B.sharpPayoutPrompt(0.5, 10).result, "lose");
+});
+
+check("banker-draw prompts follow the player rules", function () {
+  for (let i = 0; i < 4000; i++) {
+    const prompt = B.intermediateBankerPrompt(i / 4000);
+    assert.ok(prompt.bt >= 0 && prompt.bt <= 7);
+    if (prompt.third === null) {
+      assert.ok(prompt.pt === 6 || prompt.pt === 7, "stood on " + prompt.pt);
+    } else {
+      assert.ok(prompt.pt >= 0 && prompt.pt <= 5, "drew on " + prompt.pt);
+      assert.ok(prompt.third >= 0 && prompt.third <= 9);
+    }
+  }
+});
+
+check("weak-spot drill serves a play-mode miss from any level", function () {
+  const store = B.curriculumBlank();
+  for (let i = 0; i < 19; i++) B.curriculumRecord(store, "blackjack", "beginner", true, null, "2026-11-12");
+  B.curriculumRecord(store, "blackjack", "beginner", false, "hard:12:2", "2026-11-12");
+  assert.strictEqual(store.games.blackjack.unlocked, "intermediate");
+  B.curriculumQuietSpot(store, "blackjack", "hard:16:T", false);
+  let saw = false;
+  for (let i = 0; i < 40; i++) {
+    const prompt = B.nextWeakSpot(store, "blackjack", (i + 0.5) / 40);
+    assert.ok(prompt, "deal " + i);
+    assert.ok(store.games.blackjack.weak[prompt.spotKey], prompt.spotKey);
+    if (prompt.spotKey === "hard:16:T") {
+      saw = true;
+      assert.strictEqual(prompt.cat, "hard");
+      assert.strictEqual(prompt.hand, "16");
+      assert.strictEqual(prompt.up, "T");
+    }
+  }
+  assert.strictEqual(saw, true);
+  B.curriculumQuietSpot(store, "blackjack", "hard:16:T", true);
+  B.curriculumQuietSpot(store, "blackjack", "hard:16:T", true);
+  assert.ok(store.games.blackjack.weak["hard:16:T"]);
+  B.curriculumQuietSpot(store, "blackjack", "hard:16:T", true);
+  assert.strictEqual(store.games.blackjack.weak["hard:16:T"], undefined);
+
+  const bacc = B.curriculumBlank();
+  const key = B.outcomeSpotKey({ player: ["AS", "8S"], banker: ["KH", "9D"] });
+  B.curriculumQuietSpot(bacc, "baccarat", key, false);
+  const again = B.nextWeakSpot(bacc, "baccarat", 0);
+  assert.strictEqual(again.hand.player.join(","), "AS,8S");
+  assert.strictEqual(again.hand.banker.join(","), "KH,9D");
+  assert.strictEqual(again.answer, "tie");
 });
 
 console.log("\nSTRATEGY_6D_S17_DAS");
