@@ -645,6 +645,82 @@ check("baccarat play deals every card face down until it is peeled", function ()
   assert.ok(ui.indexOf('data-act="bc-reveal"') !== -1 || html.indexOf('data-act="bc-reveal"') !== -1);
 });
 
+check("curriculum store stars, unlocks, days, streaks, and weak spots", function () {
+  const blank = B.readCurriculum(null);
+  assert.strictEqual(blank.version, 1);
+  assert.strictEqual(blank.games.blackjack.unlocked, "beginner");
+  assert.strictEqual(blank.games.blackjack.levels.beginner.stars, 0);
+  assert.strictEqual(B.readCurriculum("{").version, 1);
+  assert.strictEqual(B.readCurriculum('{"version":2,"games":{}}').games.baccarat.levels.sharp.stars, 0);
+  assert.strictEqual(B.readCurriculum('{"version":1,"dayStreak":"nope","games":{"blackjack":{"unlocked":"nope"}}}').games.blackjack.unlocked, "beginner");
+
+  const store = B.curriculumBlank();
+  let last = null;
+  for (let i = 0; i < 19; i++) last = B.curriculumRecord(store, "blackjack", "beginner", true, "hard:12:2", "2026-11-12");
+  last = B.curriculumRecord(store, "blackjack", "beginner", false, "hard:12:2", "2026-11-12");
+  assert.strictEqual(last.passed, true);
+  assert.strictEqual(store.games.blackjack.levels.beginner.stars, 1);
+  assert.strictEqual(store.games.blackjack.unlocked, "intermediate");
+  assert.strictEqual(store.games.blackjack.weak["hard:12:2"].rightRow, 0);
+  for (let i = 0; i < 19; i++) B.curriculumRecord(store, "blackjack", "beginner", true, "hard:12:2", "2026-11-13");
+  last = B.curriculumRecord(store, "blackjack", "beginner", false, "hard:16:T", "2026-11-13");
+  assert.strictEqual(last.passed, true);
+  assert.strictEqual(store.games.blackjack.levels.beginner.stars, 2);
+  assert.strictEqual(store.dayStreak, 2);
+
+  const sharp = B.curriculumBlank();
+  sharp.games.blackjack.unlocked = "sharp";
+  for (let i = 0; i < 20; i++) last = B.curriculumRecord(sharp, "blackjack", "sharp", true, null, "2026-11-01");
+  assert.strictEqual(sharp.games.blackjack.levels.sharp.stars, 3);
+  assert.strictEqual(sharp.games.blackjack.levels.sharp.streak, 20);
+
+  const weak = B.curriculumBlank();
+  B.curriculumQuietSpot(weak, "blackjack", "hard:16:T", false);
+  assert.strictEqual(B.curriculumDealBias(["hard:16:T"], 0.1).weak, true);
+  assert.strictEqual(B.curriculumDealBias(["hard:16:T"], 0.9).weak, false);
+  assert.strictEqual(B.curriculumDealBias([], 0.1).weak, false);
+  B.curriculumQuietSpot(weak, "blackjack", "hard:16:T", true);
+  B.curriculumQuietSpot(weak, "blackjack", "hard:16:T", true);
+  assert.ok(weak.games.blackjack.weak["hard:16:T"]);
+  B.curriculumQuietSpot(weak, "blackjack", "hard:16:T", true);
+  assert.strictEqual(weak.games.blackjack.weak["hard:16:T"], undefined);
+  assert.strictEqual(B.curriculumStarCount(store) >= 2, true);
+});
+
+check("blackjack and baccarat drills grade the live rules", function () {
+  const hit = B.gradeBlackjackMove("hard", "12", "2", "H", true);
+  assert.strictEqual(hit.ok, true);
+  assert.strictEqual(hit.line, "Hit 12 vs 2");
+  assert.strictEqual(B.gradeBlackjackMove("hard", "12", "2", "S", true).ok, false);
+  assert.strictEqual(B.gradeBlackjackMove("hard", "16", "T", "H", true).line, "Hit 16 vs 10");
+  assert.strictEqual(B.gradeBlackjackMove("pairs", "88", "T", "P", true).ok, true);
+  assert.strictEqual(B.gradeBlackjackMove("pairs", "AA", "6", "P", true).line, "Split aces vs 6");
+  assert.strictEqual(B.gradeBlackjackPayout("blackjack", 10).profit, 15);
+  assert.strictEqual(B.gradeBlackjackPayout("push", 10).profit, 0);
+
+  assert.strictEqual(B.gradeBaccaratPlayerDraw(5, 7, true).ok, true);
+  assert.strictEqual(B.gradeBaccaratPlayerDraw(6, 5, false).ok, true);
+  assert.strictEqual(B.gradeBaccaratPlayerDraw(6, 5, true).ok, false);
+  assert.strictEqual(B.gradeBaccaratPlayerDraw(9, 7, false).line, "Player stands on 9 vs 7");
+  assert.strictEqual(B.gradeBaccaratBankerDraw(3, 4, 8, false).ok, true);
+  assert.strictEqual(B.gradeBaccaratBankerDraw(5, 4, 4, true).ok, true);
+  assert.strictEqual(B.gradeBaccaratValue("K", 0).ok, true);
+  assert.strictEqual(B.gradeBaccaratValue("A", 1).ok, true);
+  assert.strictEqual(B.gradeBaccaratNatural(8, true).ok, true);
+  assert.strictEqual(B.gradeBaccaratNatural(7, false).ok, true);
+
+  const dragon = [["AS", "2D"], ["2C", "3D", "2H"]];
+  const panda = [["2C", "2D", "4H"], ["AS", "2H"]];
+  assert.strictEqual(B.gradeSideBetCall("dragon7", dragon[0], dragon[1], 40).ok, true);
+  assert.strictEqual(B.gradeSideBetCall("dragon7", dragon[0], dragon[1], 40).line, "Dragon 7 pays 40 to 1");
+  assert.strictEqual(B.gradeSideBetCall("ezBanker", dragon[0], dragon[1], 0).ok, true);
+  assert.strictEqual(B.gradeSideBetCall("ezBanker", dragon[0], dragon[1], 0).line, "EZ Banker pushes");
+  assert.strictEqual(B.gradeSideBetCall("panda8", panda[0], panda[1], 25).ok, true);
+  assert.strictEqual(B.gradeSideBetCall("tie", ["AS", "8S"], ["KH", "9D"], 8).ok, true);
+  assert.strictEqual(B.bjChartCell(["KH", "6D"]).hand, "16");
+  assert.strictEqual(B.bjChartCell(["AS", "7H"]).cat, "soft");
+});
+
 console.log("\nSTRATEGY_6D_S17_DAS");
 console.log("upcards " + B.STRATEGY_6D_S17_DAS.upcards.join(" "));
 ["hard", "soft", "pairs"].forEach(function (cat) {

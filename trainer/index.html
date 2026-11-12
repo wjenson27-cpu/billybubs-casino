@@ -214,6 +214,7 @@
   details { color: var(--muted); }
   details summary { color: var(--ivory); min-height: 44px; display: flex; align-items: center; cursor: pointer; }
   footer { margin-top: 18px; color: var(--muted); font-size: 14px; }
+  body:has(#panel-learn:not([hidden])) footer { display: none; }
   .sq-wrap { position: relative; width: 96px; min-height: 132px; animation: deal 260ms ease-out both; }
   .sq-turn {
     position: relative; z-index: 5; min-width: 64px; min-height: 44px; margin: 0 auto 4px;
@@ -620,8 +621,54 @@
       overflow: hidden;
     }
     .bc-rail-row button, .bc-setting button, .trainer-toggle { min-height: 44px; }
+    .tabs button { font-size: 9px; letter-spacing: 0; min-width: 0; padding-left: 0; padding-right: 0; }
+    .tabs svg { width: 18px; height: 18px; }
     html:not([data-trainer="on"]) .coach-only { display: none !important; }
   }
+  .learn-kicker { margin: 0; color: var(--gold); letter-spacing: .14em; font: 600 12px var(--font-display); text-transform: uppercase; }
+  .learn-title { margin: 2px 0 8px; font: 700 28px/1.05 var(--font-display); color: var(--gold-hi); }
+  .learn-card, .learn-soon {
+    border: 1px solid rgba(201,164,92,.45); border-radius: 16px; background: #0A1A33;
+    padding: 12px; margin: 0 0 10px;
+  }
+  .learn-card h2, .learn-soon h2 { margin: 0 0 4px; font-size: 16px; letter-spacing: .08em; }
+  .learn-card p, .learn-soon p { margin: 0 0 8px; color: var(--muted); }
+  .learn-row { display: flex; justify-content: space-between; gap: 8px; align-items: center; }
+  .learn-stars { color: var(--gold-hi); letter-spacing: .12em; font-size: 16px; }
+  .learn-meter { height: 8px; border-radius: 999px; background: #12203a; overflow: hidden; margin: 8px 0; }
+  .learn-meter span { display: block; height: 100%; background: var(--gold-metal); }
+  .learn-stats { display: flex; justify-content: space-between; gap: 8px; font-size: 13px; margin: 0 0 8px; }
+  .learn-pills { display: flex; flex-wrap: wrap; gap: 8px; margin: 6px 0; }
+  .learn-pills .pill { min-height: 32px; }
+  .learn-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .learn-actions.values { grid-template-columns: repeat(5, minmax(44px, 1fr)); }
+  .learn-actions button:disabled { opacity: .38; }
+  .learn-feedback { margin-top: 8px; }
+  .learn-nav, .learn-levels { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 0 0 10px; }
+  #learn-root .learn-levels { margin: 0; }
+  #learn-root .learn-card:has(.learn-levels) { padding-bottom: 2px; }
+  #learn-root .learn-reset, #learn-root .confirm-row { margin-top: 148px; }
+  .learn-back { margin: 0 0 8px; }
+  .hand-tag { display: inline-flex; align-items: center; min-height: 32px; margin-top: 6px; padding: 4px 10px; border-radius: 999px; background: rgba(0,16,42,.72); border: 1px solid var(--gold); color: var(--gold-hi); }
+  #panel-learn .bj-felt { margin: 6px 0; padding: 4px 6px 2px; }
+  #panel-learn .bj-felt .card-svg { width: 40px; height: 56px; }
+  @media (max-width: 430px) {
+    .learn-title { font-size: 24px; }
+    .learn-card, .learn-soon { padding: 8px 10px; margin-bottom: 8px; }
+    .learn-card p, .learn-soon p { font-size: 14px; line-height: 1.3; margin-bottom: 4px; }
+  }
+  #panel-learn .bj-felt .kicker, #panel-learn .bj-felt p { position: relative; z-index: 1; }
+  #panel-learn .bj-felt .print { margin: 4px 4px; font-size: 11px; line-height: 1.35; }
+  #learn-root button {
+    min-height: 44px; min-width: 44px; border-radius: 12px; border: 1px solid var(--gold-dim);
+    background: var(--surface); padding: 10px 12px; color: var(--ivory);
+  }
+  #learn-root button.gold {
+    background: var(--metal); color: #1a140c; border-color: transparent; font-weight: 700; width: 100%;
+  }
+  #learn-root .learn-nav button, #learn-root .learn-levels button { white-space: normal; line-height: 1.15; }
+  .confirm-row { display: flex; gap: 8px; }
+  .confirm-row button { flex: 1; min-height: 44px; min-width: 44px; }
 </style>
 </head>
 <body>
@@ -790,10 +837,15 @@
     </details>
   </section>
 
-  <footer>Decisions and practice chips only. This page never places a bet, never calls a server, and keeps a session score only in this browser tab.</footer>
+  <section class="panel" id="panel-learn" role="tabpanel" aria-labelledby="tab-learn" hidden>
+    <div id="learn-root"></div>
+  </section>
+
+  <footer>Decisions and practice chips only. This page never places a bet, never calls a server, and keeps a session score only in this browser tab. 18+ practice only. No real money.</footer>
 </div>
   <nav class="tabs" role="tablist" aria-label="Games">
     <span class="tab-ind" id="tab-ind"></span>
+    <button type="button" role="tab" id="tab-learn" data-act="tab" data-tab="learn" aria-selected="false" aria-controls="panel-learn" tabindex="-1"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5h7.2a2 2 0 0 1 1.6.8L14 8h6v11.5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z" fill="none" stroke="currentColor" stroke-width="1.75"/></svg>Learn</button>
     <button type="button" role="tab" id="tab-blackjack" data-act="tab" data-tab="blackjack" aria-selected="true" aria-controls="panel-blackjack"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="3" width="12" height="18" rx="2" fill="none" stroke="currentColor" stroke-width="1.75"/><path d="M12 8l1.2 2.4 2.6.2-2 1.7.6 2.6L12 13.6 9.6 15l.6-2.6-2-1.7 2.6-.2z" fill="currentColor"/></svg>Blackjack</button>
     <button type="button" role="tab" id="tab-poker" data-act="tab" data-tab="poker" aria-selected="false" aria-controls="panel-poker" tabindex="-1"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="6" width="10" height="14" rx="1.5" transform="rotate(-14 9 13)" fill="none" stroke="currentColor" stroke-width="1.75"/><rect x="9" y="4" width="10" height="14" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.75"/></svg>Poker</button>
     <button type="button" role="tab" id="tab-edges" data-act="tab" data-tab="edges" aria-selected="false" aria-controls="panel-edges" tabindex="-1"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="8" r="2.2" fill="none" stroke="currentColor" stroke-width="1.75"/><circle cx="16" cy="16" r="2.2" fill="none" stroke="currentColor" stroke-width="1.75"/><path d="M17 7 L7 17" fill="none" stroke="currentColor" stroke-width="1.75"/></svg>Edges</button>
@@ -1849,6 +1901,255 @@ function quizProfit(type, stake) {
 
 validateStrategy();
 
+/* ---------- Curriculum ---------- */
+
+const CURRICULUM_VERSION = 1;
+const CURRICULUM_LEVELS = ["beginner", "intermediate", "sharp"];
+const CURRICULUM_GAMES = ["blackjack", "baccarat"];
+const CURRICULUM_LEVEL_NAME = { beginner: "Beginner", intermediate: "Intermediate", sharp: "Sharp" };
+
+function curriculumBlankLevel() {
+  return { stars: 0, passes: [], window: [], streak: 0, bestStreak: 0 };
+}
+
+function curriculumBlankGame() {
+  return {
+    unlocked: "beginner",
+    levels: {
+      beginner: curriculumBlankLevel(),
+      intermediate: curriculumBlankLevel(),
+      sharp: curriculumBlankLevel(),
+    },
+    weak: {},
+  };
+}
+
+function curriculumBlank() {
+  return {
+    version: CURRICULUM_VERSION,
+    dayStreak: 0,
+    bestDayStreak: 0,
+    lastPracticeDay: "",
+    games: { blackjack: curriculumBlankGame(), baccarat: curriculumBlankGame() },
+  };
+}
+
+function curriculumLevelIndex(level) {
+  const i = CURRICULUM_LEVELS.indexOf(level);
+  return i < 0 ? 0 : i;
+}
+
+function curriculumNextDay(iso) {
+  const parts = String(iso || "").split("-");
+  if (parts.length !== 3) return "";
+  const dt = new Date(Date.UTC(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2])));
+  if (isNaN(dt.getTime())) return "";
+  dt.setUTCDate(dt.getUTCDate() + 1);
+  const y = dt.getUTCFullYear();
+  const m = dt.getUTCMonth() + 1;
+  const d = dt.getUTCDate();
+  return y + "-" + (m < 10 ? "0" : "") + m + "-" + (d < 10 ? "0" : "") + d;
+}
+
+function curriculumNormalize(data) {
+  const store = curriculumBlank();
+  if (!data || typeof data !== "object" || data.version !== CURRICULUM_VERSION) return store;
+  if (typeof data.dayStreak === "number" && data.dayStreak >= 0 && data.dayStreak < 100000) store.dayStreak = Math.floor(data.dayStreak);
+  if (typeof data.bestDayStreak === "number" && data.bestDayStreak >= 0) store.bestDayStreak = Math.floor(data.bestDayStreak);
+  if (typeof data.lastPracticeDay === "string" && /^\d{4}-\d{2}-\d{2}$/.test(data.lastPracticeDay)) store.lastPracticeDay = data.lastPracticeDay;
+  CURRICULUM_GAMES.forEach(function (gameId) {
+    const incoming = data.games && data.games[gameId];
+    if (!incoming || typeof incoming !== "object") return;
+    const game = store.games[gameId];
+    if (CURRICULUM_LEVELS.indexOf(incoming.unlocked) !== -1) game.unlocked = incoming.unlocked;
+    CURRICULUM_LEVELS.forEach(function (level) {
+      const src = incoming.levels && incoming.levels[level];
+      const dest = game.levels[level];
+      if (!src || typeof src !== "object") return;
+      if (typeof src.stars === "number" && src.stars >= 0 && src.stars <= 3) dest.stars = Math.floor(src.stars);
+      if (Array.isArray(src.passes)) {
+        dest.passes = src.passes.filter(function (day) { return typeof day === "string" && /^\d{4}-\d{2}-\d{2}$/.test(day); });
+      }
+      if (Array.isArray(src.window)) {
+        dest.window = src.window.filter(function (bit) { return bit === true || bit === false; }).slice(-20);
+      }
+      if (typeof src.streak === "number" && src.streak >= 0) dest.streak = Math.floor(src.streak);
+      if (typeof src.bestStreak === "number" && src.bestStreak >= 0) dest.bestStreak = Math.floor(src.bestStreak);
+    });
+    if (incoming.weak && typeof incoming.weak === "object") {
+      Object.keys(incoming.weak).forEach(function (key) {
+        const row = incoming.weak[key];
+        const rightRow = row && typeof row.rightRow === "number" && row.rightRow >= 0 ? Math.floor(row.rightRow) : 0;
+        if (rightRow < 3) game.weak[key] = { rightRow: rightRow };
+      });
+    }
+  });
+  if (store.bestDayStreak < store.dayStreak) store.bestDayStreak = store.dayStreak;
+  return store;
+}
+
+function readCurriculum(raw) {
+  if (raw == null || raw === "") return curriculumBlank();
+  try {
+    const data = typeof raw === "string" ? JSON.parse(raw) : raw;
+    return curriculumNormalize(data);
+  } catch (err) {
+    return curriculumBlank();
+  }
+}
+
+function curriculumTouchDay(store, day) {
+  if (!day || store.lastPracticeDay === day) return;
+  if (!store.lastPracticeDay) store.dayStreak = 1;
+  else store.dayStreak = curriculumNextDay(store.lastPracticeDay) === day ? store.dayStreak + 1 : 1;
+  if (store.dayStreak > store.bestDayStreak) store.bestDayStreak = store.dayStreak;
+  store.lastPracticeDay = day;
+}
+
+function curriculumQuietSpot(store, gameId, spotKey, correct) {
+  const game = store.games[gameId];
+  if (!game || !spotKey) return;
+  if (!correct) {
+    game.weak[spotKey] = { rightRow: 0 };
+    return;
+  }
+  if (!game.weak[spotKey]) return;
+  game.weak[spotKey].rightRow += 1;
+  if (game.weak[spotKey].rightRow >= 3) delete game.weak[spotKey];
+}
+
+function curriculumRecord(store, gameId, level, correct, spotKey, day) {
+  const game = store.games[gameId];
+  if (!game || CURRICULUM_LEVELS.indexOf(level) === -1) return { passed: false, stars: 0, streak: 0 };
+  if (curriculumLevelIndex(level) > curriculumLevelIndex(game.unlocked)) return { passed: false, stars: game.levels[level].stars, streak: 0 };
+  curriculumTouchDay(store, day);
+  curriculumQuietSpot(store, gameId, spotKey, !!correct);
+  const row = game.levels[level];
+  if (correct) {
+    row.streak += 1;
+    if (row.streak > row.bestStreak) row.bestStreak = row.streak;
+    if (row.streak >= 20 && row.stars < 3) row.stars = 3;
+  } else row.streak = 0;
+  row.window.push(!!correct);
+  if (row.window.length > 20) row.window.shift();
+  let passed = false;
+  if (row.window.length === 20) {
+    let hits = 0;
+    row.window.forEach(function (bit) { if (bit) hits += 1; });
+    if (hits / 20 >= 0.95) {
+      passed = true;
+      if (day && row.passes.indexOf(day) === -1) row.passes.push(day);
+      if (row.stars < 1) row.stars = 1;
+      if (row.passes.length >= 2 && row.stars < 2) row.stars = 2;
+      const next = CURRICULUM_LEVELS[curriculumLevelIndex(level) + 1];
+      if (next && curriculumLevelIndex(game.unlocked) < curriculumLevelIndex(next)) game.unlocked = next;
+      row.window = [];
+    }
+  }
+  return { passed: passed, stars: row.stars, streak: row.streak, unlocked: game.unlocked };
+}
+
+function curriculumDealBias(weakKeys, roll) {
+  const keys = weakKeys || [];
+  if (!keys.length || !(roll < 0.25)) return { weak: false, key: null };
+  const i = Math.min(keys.length - 1, Math.floor((roll / 0.25) * keys.length));
+  return { weak: true, key: keys[i] };
+}
+
+function curriculumStarCount(store) {
+  let n = 0;
+  CURRICULUM_GAMES.forEach(function (gameId) {
+    CURRICULUM_LEVELS.forEach(function (level) { n += store.games[gameId].levels[level].stars; });
+  });
+  return n;
+}
+
+function curriculumWeakKeys(store, gameId) {
+  return Object.keys(store.games[gameId].weak);
+}
+
+function bjChartCell(cards) {
+  if (!cards || cards.length < 2) return null;
+  const total = bjTotal(cards);
+  if (total.total > 21) return null;
+  if (cards.length === 2) {
+    const norm = function (rank) { return "TJQK".indexOf(rank) >= 0 ? "T" : rank; };
+    const a = norm(cards[0][0]);
+    const b = norm(cards[1][0]);
+    if (a === b) {
+      const key = a === "A" ? "AA" : a === "T" ? "TT" : a + a;
+      if (STRATEGY_6D_S17_DAS.pairs[key]) return { cat: "pairs", hand: key };
+    }
+  }
+  if (total.soft) {
+    const k = total.total - 11;
+    const key = "A" + k;
+    if (k >= 2 && k <= 9 && STRATEGY_6D_S17_DAS.soft[key]) return { cat: "soft", hand: key };
+  }
+  const hard = String(total.total);
+  if (STRATEGY_6D_S17_DAS.hard[hard]) return { cat: "hard", hand: hard };
+  return null;
+}
+
+function bjUpcard(rank) {
+  return "TJQK".indexOf(rank) >= 0 ? "T" : rank;
+}
+
+function gradeBlackjackMove(cat, hand, up, move, canDouble) {
+  const code = strategyCell(cat, hand, up);
+  const expected = resolveAction(code, canDouble !== false);
+  const verb = { H: "Hit", S: "Stand", D: "Double", P: "Split" }[expected];
+  const vs = up === "T" ? "10" : up;
+  let what = hand;
+  if (cat === "soft") what = "soft " + (11 + Number(hand.slice(1)));
+  else if (cat === "pairs") what = hand === "AA" ? "aces" : hand === "TT" ? "tens" : hand[0] + "s";
+  return { ok: move === expected, expected: expected, code: code, line: verb + " " + what + " vs " + vs };
+}
+
+function gradeBaccaratPlayerDraw(playerTotal, bankerTotal, yes) {
+  const draws = playerDraws(playerTotal, bankerTotal);
+  const ok = !!yes === draws;
+  return { ok: ok, draws: draws, line: (draws ? "Player draws" : "Player stands") + " on " + playerTotal + " vs " + bankerTotal };
+}
+
+function gradeBaccaratBankerDraw(bankerTotal, playerTotal, playerThird, yes) {
+  const draws = bankerDraws(bankerTotal, playerTotal, playerThird);
+  const third = playerThird === null || playerThird === undefined ? "no third card" : "third card " + playerThird;
+  return { ok: !!yes === draws, draws: draws, line: (draws ? "Banker draws" : "Banker stands") + " on " + bankerTotal + ", " + third };
+}
+
+function gradeBaccaratValue(rank, answer) {
+  const value = baccaratValueChar(rank);
+  return { ok: Number(answer) === value, value: value, line: (rank === "T" ? "10" : rank) + " counts " + value };
+}
+
+function gradeBaccaratNatural(total, yes) {
+  const natural = total === 8 || total === 9;
+  return { ok: !!yes === natural, natural: natural, line: natural ? "Natural " + total : total + " is not a natural" };
+}
+
+function gradeSideBetCall(name, player, banker, chosen) {
+  const odds = sideBetOdds(name, { player: player, banker: banker });
+  const pays = name === "ezBanker" ? odds : (odds > 0 ? odds : 0);
+  let line = "No payout";
+  if (name === "dragon7") line = pays === 40 ? "Dragon 7 pays 40 to 1" : "Dragon 7 loses";
+  else if (name === "panda8") line = pays === 25 ? "Panda 8 pays 25 to 1" : "Panda 8 loses";
+  else if (name === "tie") line = pays === 8 ? "Tie pays 8 to 1" : "Tie loses";
+  else if (odds === 0) line = "EZ Banker pushes";
+  else if (odds === 1) line = "EZ Banker pays 1 to 1";
+  else line = "EZ Banker loses";
+  return { ok: Number(chosen) === pays, pays: pays, line: line };
+}
+
+function gradeBlackjackPayout(kind, stake) {
+  let profit = -stake;
+  if (kind === "blackjack") profit = stake * 3 / 2;
+  else if (kind === "win") profit = stake;
+  else if (kind === "push") profit = 0;
+  const line = kind === "blackjack" ? "Blackjack pays 3 to 2" : kind === "win" ? "Even money" : kind === "push" ? "Push" : "The bet loses";
+  return { profit: profit, line: line };
+}
+
 const BONES = {
   STRATEGY_6D_S17_DAS: STRATEGY_6D_S17_DAS,
   strategyCell: strategyCell,
@@ -1861,6 +2162,27 @@ const BONES = {
   dealerDraws: dealerDraws,
   playDealer: playDealer,
   blackjackProfit: blackjackProfit,
+  CURRICULUM_VERSION: CURRICULUM_VERSION,
+  CURRICULUM_LEVELS: CURRICULUM_LEVELS,
+  CURRICULUM_GAMES: CURRICULUM_GAMES,
+  CURRICULUM_LEVEL_NAME: CURRICULUM_LEVEL_NAME,
+  curriculumBlank: curriculumBlank,
+  readCurriculum: readCurriculum,
+  curriculumRecord: curriculumRecord,
+  curriculumQuietSpot: curriculumQuietSpot,
+  curriculumDealBias: curriculumDealBias,
+  curriculumStarCount: curriculumStarCount,
+  curriculumWeakKeys: curriculumWeakKeys,
+  curriculumNextDay: curriculumNextDay,
+  bjChartCell: bjChartCell,
+  bjUpcard: bjUpcard,
+  gradeBlackjackMove: gradeBlackjackMove,
+  gradeBaccaratPlayerDraw: gradeBaccaratPlayerDraw,
+  gradeBaccaratBankerDraw: gradeBaccaratBankerDraw,
+  gradeBaccaratValue: gradeBaccaratValue,
+  gradeBaccaratNatural: gradeBaccaratNatural,
+  gradeSideBetCall: gradeSideBetCall,
+  gradeBlackjackPayout: gradeBlackjackPayout,
   HOUSE_EDGES: HOUSE_EDGES,
   formatEdge: formatEdge,
   findEdge: findEdge,
@@ -1915,6 +2237,8 @@ const SUIT = B.SUIT_SYMBOL;
 const state = {
   trainer: false,
   tab: "blackjack",
+  curriculum: null,
+  learn: { view: "home", game: "blackjack", level: "beginner", prompt: null, locked: false, feedback: "", ok: null, confirm: false },
   bj: {
     hand: null,
     locked: false,
@@ -2427,9 +2751,440 @@ function nameCard(name, extra) {
 
 /* ---------- tabs ---------- */
 
+function todayKey() {
+  const d = new Date();
+  const m = d.getMonth() + 1;
+  const day = d.getDate();
+  return d.getFullYear() + "-" + (m < 10 ? "0" : "") + m + "-" + (day < 10 ? "0" : "") + day;
+}
+
+function loadCurriculum() {
+  try { state.curriculum = B.readCurriculum(localStorage.getItem("bb-curriculum-v1")); }
+  catch (err) { state.curriculum = B.readCurriculum(null); }
+}
+
+function saveCurriculum() {
+  try { localStorage.setItem("bb-curriculum-v1", JSON.stringify(state.curriculum)); }
+  catch (err) { /* private mode */ }
+}
+
+function starsGlyph(n) {
+  let s = "";
+  for (let i = 1; i <= 3; i++) s += i <= n ? "★" : "☆";
+  return s;
+}
+
+function learnLesson(game, level) {
+  if (game === "blackjack" && level === "beginner") return "A hard total counts every ace as 1. A soft total counts one ace as 11. Six decks, dealer stands on all 17s, blackjack pays 3 to 2, no surrender.";
+  if (game === "blackjack" && level === "intermediate") return "Soft totals keep an ace as 11. Pairs may split, and you may double after a split. Aces get one card and cannot be resplit.";
+  if (game === "blackjack") return "Every chart decision is in the mix. A blackjack pays 3 to 2. A win pays even money. A push returns the bet.";
+  if (game === "baccarat" && level === "beginner") return "Tens and faces count 0. Aces count 1. A two-card 8 or 9 is a natural, and nobody draws.";
+  if (game === "baccarat" && level === "intermediate") return "With no natural, Player draws on 0–5 and stands on 6–7. If Player draws, Banker uses the third-card table.";
+  return "Call the hand, then the side bets. Dragon 7 is a Banker 3-card 7. Panda 8 is a Player 3-card 8. That Dragon 7 pushes an EZ Banker bet.";
+}
+
+function learnTitle(game, level) {
+  if (game === "blackjack" && level === "beginner") return "Hard totals";
+  if (game === "blackjack" && level === "intermediate") return "Soft totals and pairs";
+  if (game === "blackjack") return "Mixed decisions";
+  if (game === "baccarat" && level === "beginner") return "Values and naturals";
+  if (game === "baccarat" && level === "intermediate") return "Third-card rules";
+  return "Outcomes and side bets";
+}
+
+function learnBlurb(game, level) {
+  if (game === "blackjack" && level === "beginner") return "Beginner · Hard totals";
+  if (game === "blackjack" && level === "intermediate") return "Intermediate · Soft totals and pairs";
+  if (game === "blackjack") return "Sharp · Mixed decisions and 3:2";
+  if (game === "baccarat" && level === "beginner") return "Beginner · Card values and naturals";
+  if (game === "baccarat" && level === "intermediate") return "Intermediate · Third-card rules";
+  return "Sharp · Outcomes and side bets";
+}
+
+function bjPool(level) {
+  const cells = [];
+  const ups = B.STRATEGY_6D_S17_DAS.upcards;
+  function add(cat) {
+    Object.keys(B.STRATEGY_6D_S17_DAS[cat]).forEach(function (hand) {
+      const actions = B.strategyActions(cat, hand);
+      ups.forEach(function (up, i) { cells.push({ cat: cat, hand: hand, up: up, code: actions[i] }); });
+    });
+  }
+  if (level === "beginner") add("hard");
+  else if (level === "intermediate") { add("soft"); add("pairs"); }
+  else { add("hard"); add("soft"); add("pairs"); }
+  return cells;
+}
+
+function cellFromKey(key) {
+  const parts = key.split(":");
+  if (parts.length !== 3) return null;
+  try {
+    const code = B.strategyCell(parts[0], parts[1], parts[2]);
+    return { cat: parts[0], hand: parts[1], up: parts[2], code: code };
+  } catch (err) { return null; }
+}
+
+function paintDrillCard(rank) {
+  return { rank: rank, suit: pick(["S", "H", "D", "C"]) };
+}
+
+function cardsForCell(cell) {
+  let ranks;
+  if (cell.cat === "hard") ranks = hardRanks(Number(cell.hand), false);
+  else if (cell.cat === "soft") ranks = softRanks(cell.hand, false);
+  else ranks = pairRanks(cell.hand);
+  const cards = paint(ranks);
+  const up = cell.up === "T" ? faceTen() : cell.up;
+  return { cards: cards, dealer: paintDrillCard(up) };
+}
+
+function baccPromptFromKey(level, key) {
+  const parts = String(key || "").split(":");
+  const kind = parts[0];
+  if (level === "beginner" && kind === "value" && parts[1]) {
+    const rank = parts[1];
+    return { kind: "value", rank: rank, card: paintDrillCard(rank === "T" ? faceTen() : rank), answer: B.gradeBaccaratValue(rank, 0).value };
+  }
+  if (level === "beginner" && kind === "natural") {
+    const total = Number(parts[1]);
+    if (total >= 0 && total <= 9) return { kind: "natural", total: total, answer: total === 8 || total === 9 };
+  }
+  if (level === "intermediate" && kind === "pdraw") {
+    const pt = Number(parts[1]);
+    const bt = Number(parts[2]);
+    if (pt >= 0 && pt <= 9 && bt >= 0 && bt <= 9) return { kind: "player-draw", pt: pt, bt: bt };
+  }
+  if (level === "intermediate" && kind === "bdraw") {
+    const bt = Number(parts[1]);
+    const pt = Number(parts[2]);
+    const third = parts[3] === "null" || parts[3] === "" ? null : Number(parts[3]);
+    if (bt >= 0 && bt <= 7 && pt >= 0 && pt <= 9 && (third === null || (third >= 0 && third <= 9))) return { kind: "banker-draw", bt: bt, pt: pt, third: third };
+  }
+  if (level === "sharp" && kind === "side") {
+    const samples = {
+      dragon7: { name: "dragon7", player: ["AS", "2D"], banker: ["2C", "3D", "2H"] },
+      panda8: { name: "panda8", player: ["2C", "2D", "4H"], banker: ["AS", "2H"] },
+      ezBanker: { name: "ezBanker", player: ["AS", "2D"], banker: ["2C", "3D", "2H"] },
+      tie: { name: "tie", player: ["AS", "8S"], banker: ["KH", "9D"] },
+    };
+    const sample = samples[parts[1]];
+    if (!sample) return null;
+    const graded = B.gradeSideBetCall(sample.name, sample.player, sample.banker, 0);
+    return { kind: "side", name: sample.name, player: sample.player, banker: sample.banker, answer: graded.pays, line: graded.line };
+  }
+  return null;
+}
+
+function dealLearn() {
+  const learn = state.learn;
+  const game = state.curriculum.games[learn.game];
+  const weak = B.curriculumWeakKeys(state.curriculum, learn.game);
+  const roll = Math.random();
+  const bias = B.curriculumDealBias(weak, roll);
+  learn.locked = false;
+  learn.feedback = "";
+  learn.ok = null;
+  if (learn.game === "blackjack") {
+    if (learn.level === "sharp" && Math.random() < 0.25) {
+      const kinds = ["blackjack", "win", "push", "lose"];
+      const kind = kinds[Math.floor(Math.random() * kinds.length)];
+      const stake = 10;
+      const graded = B.gradeBlackjackPayout(kind, stake);
+      learn.prompt = { kind: "payout", stake: stake, result: kind, answer: graded.profit, line: graded.line, choices: [0, stake, stake * 3 / 2, stake * 2].filter(function (n, i, arr) { return arr.indexOf(n) === i; }) };
+      renderLearn();
+      return;
+    }
+    let cell = null;
+    if (bias.weak) cell = cellFromKey(bias.key);
+    const pool = bjPool(learn.level);
+    if (!cell || !pool.some(function (c) { return c.cat === cell.cat && c.hand === cell.hand && c.up === cell.up; })) {
+      cell = pool[Math.floor(Math.random() * pool.length)];
+    }
+    const dealt = cardsForCell(cell);
+    learn.prompt = { kind: "strategy", cat: cell.cat, hand: cell.hand, up: cell.up, code: cell.code, cards: dealt.cards, dealer: dealt.dealer };
+    renderLearn();
+    return;
+  }
+  if (bias.weak) {
+    const forced = baccPromptFromKey(learn.level, bias.key);
+    if (forced) { learn.prompt = forced; renderLearn(); return; }
+  }
+  if (learn.level === "beginner") {
+    if (Math.random() < 0.5) {
+      const ranks = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K"];
+      const rank = ranks[Math.floor(Math.random() * ranks.length)];
+      const graded = B.gradeBaccaratValue(rank, B.gradeBaccaratValue(rank, 0).value);
+      learn.prompt = { kind: "value", rank: rank, card: paintDrillCard(rank === "T" ? faceTen() : rank), answer: graded.value };
+    } else {
+      const total = Math.floor(Math.random() * 10);
+      learn.prompt = { kind: "natural", total: total, answer: total === 8 || total === 9 };
+    }
+  } else if (learn.level === "intermediate") {
+    if (Math.random() < 0.5) {
+      learn.prompt = { kind: "player-draw", pt: Math.floor(Math.random() * 10), bt: Math.floor(Math.random() * 10) };
+    } else {
+      const stood = Math.random() < 0.35;
+      learn.prompt = { kind: "banker-draw", bt: Math.floor(Math.random() * 8), pt: Math.floor(Math.random() * 8), third: stood ? null : Math.floor(Math.random() * 10) };
+    }
+  } else if (Math.random() < 0.5) {
+    const hand = B.playBaccarat(nextUint32);
+    learn.prompt = { kind: "outcome", hand: hand, answer: hand.outcome };
+  } else {
+    const samples = [
+      { name: "dragon7", player: ["AS", "2D"], banker: ["2C", "3D", "2H"] },
+      { name: "panda8", player: ["2C", "2D", "4H"], banker: ["AS", "2H"] },
+      { name: "ezBanker", player: ["AS", "2D"], banker: ["2C", "3D", "2H"] },
+      { name: "tie", player: ["AS", "8S"], banker: ["KH", "9D"] },
+    ];
+    const sample = samples[Math.floor(Math.random() * samples.length)];
+    const graded = B.gradeSideBetCall(sample.name, sample.player, sample.banker, 0);
+    learn.prompt = { kind: "side", name: sample.name, player: sample.player, banker: sample.banker, answer: graded.pays, line: graded.line };
+  }
+  renderLearn();
+}
+
+function finishLearnAnswer(ok, line, spotKey) {
+  const learn = state.learn;
+  const result = B.curriculumRecord(state.curriculum, learn.game, learn.level, ok, spotKey, todayKey());
+  saveCurriculum();
+  learn.locked = true;
+  learn.ok = ok;
+  learn.feedback = (ok ? "Right. " : "Not quite. ") + line;
+  if (result.passed) learn.feedback += " Mastery bar cleared.";
+  renderLearn();
+}
+
+function answerLearn(move) {
+  const prompt = state.learn.prompt;
+  if (!prompt || state.learn.locked) return;
+  if (prompt.kind === "strategy") {
+    const graded = B.gradeBlackjackMove(prompt.cat, prompt.hand, prompt.up, move, true);
+    finishLearnAnswer(graded.ok, graded.line, prompt.cat + ":" + prompt.hand + ":" + prompt.up);
+    return;
+  }
+  if (prompt.kind === "payout") {
+    const ok = Number(move) === prompt.answer;
+    finishLearnAnswer(ok, prompt.line + ". Profit " + prompt.answer, null);
+    return;
+  }
+  if (prompt.kind === "value") {
+    const graded = B.gradeBaccaratValue(prompt.rank, move);
+    finishLearnAnswer(graded.ok, graded.line, "value:" + prompt.rank);
+    return;
+  }
+  if (prompt.kind === "natural") {
+    const graded = B.gradeBaccaratNatural(prompt.total, move === "yes");
+    finishLearnAnswer(graded.ok, graded.line, "natural:" + prompt.total);
+    return;
+  }
+  if (prompt.kind === "player-draw") {
+    const graded = B.gradeBaccaratPlayerDraw(prompt.pt, prompt.bt, move === "yes");
+    finishLearnAnswer(graded.ok, graded.line, "pdraw:" + prompt.pt + ":" + prompt.bt);
+    return;
+  }
+  if (prompt.kind === "banker-draw") {
+    const graded = B.gradeBaccaratBankerDraw(prompt.bt, prompt.pt, prompt.third, move === "yes");
+    finishLearnAnswer(graded.ok, graded.line, "bdraw:" + prompt.bt + ":" + prompt.pt + ":" + prompt.third);
+    return;
+  }
+  if (prompt.kind === "outcome") {
+    const ok = move === prompt.answer;
+    const word = prompt.answer === "tie" ? "Tie" : prompt.answer[0].toUpperCase() + prompt.answer.slice(1) + " wins";
+    finishLearnAnswer(ok, word, "outcome:" + prompt.hand.playerFinal + ":" + prompt.hand.bankerFinal);
+    return;
+  }
+  if (prompt.kind === "side") {
+    const graded = B.gradeSideBetCall(prompt.name, prompt.player, prompt.banker, move);
+    finishLearnAnswer(graded.ok, graded.line, "side:" + prompt.name);
+  }
+}
+
+function renderLearn() {
+  const root = $("learn-root");
+  if (!root || !state.curriculum) return;
+  const learn = state.learn;
+  const store = state.curriculum;
+  if (learn.view === "progress") { renderProgress(); return; }
+  if (learn.view === "weak") { renderWeakReview(); return; }
+  if (learn.view === "drill") { renderDrill(); return; }
+  const stars = B.curriculumStarCount(store);
+  const weakN = B.curriculumWeakKeys(store, "blackjack").length + B.curriculumWeakKeys(store, "baccarat").length;
+  let html = '<p class="learn-kicker">Saved on this phone</p><h2 class="learn-title">Learn</h2>';
+  html += '<div class="learn-stats"><span>' + store.dayStreak + ' day streak</span><span>' + stars + '/18 stars</span><span>' + weakN + ' weak spots</span></div>';
+  ["blackjack", "baccarat"].forEach(function (gameId) {
+    const game = store.games[gameId];
+    const level = game.unlocked;
+    const row = game.levels[level];
+    html += '<article class="learn-card"><div class="learn-row"><h2>' + (gameId === "blackjack" ? "Blackjack" : "Baccarat") + '</h2><span class="learn-stars">' + starsGlyph(row.stars) + '</span></div>';
+    html += "<p>" + esc(learnBlurb(gameId, level)) + "</p><p>" + esc(learnLesson(gameId, level)) + "</p>";
+    html += '<button type="button" data-act="learn-start" data-game="' + gameId + '" data-level="' + level + '">Start ' + esc(learnTitle(gameId, level)) + "</button></article>";
+  });
+  html += '<div class="learn-nav"><button type="button" data-act="learn-view" data-view="progress">Progress</button>';
+  html += '<button type="button" data-act="learn-view" data-view="weak">Review weak spots' + (weakN ? " " + weakN : "") + "</button></div>";
+  html += '<article class="learn-soon"><h2>Coming soon</h2><p>Roulette, Video Poker, and Pai Gow.</p></article>';
+  root.innerHTML = html;
+}
+
+function renderProgress() {
+  const store = state.curriculum;
+  const stars = B.curriculumStarCount(store);
+  const weakN = B.curriculumWeakKeys(store, "blackjack").length + B.curriculumWeakKeys(store, "baccarat").length;
+  let html = '<button type="button" class="learn-back" data-act="learn-view" data-view="home">Back</button>';
+  html += '<p class="learn-kicker">Saved on this phone</p><h2 class="learn-title">Your progress</h2>';
+  html += '<div class="learn-stats"><span><strong>' + store.dayStreak + '</strong><br>day streak</span><span><strong>' + stars + "/18</strong><br>stars</span><span><strong>" + weakN + "</strong><br>weak spots</span></div>";
+  ["blackjack", "baccarat"].forEach(function (gameId) {
+    const game = store.games[gameId];
+    const level = game.unlocked;
+    const row = game.levels[level];
+    const hits = row.window.filter(function (bit) { return bit; }).length;
+    const pct = row.window.length ? Math.round(100 * hits / row.window.length) : 0;
+    html += '<article class="learn-card"><div class="learn-row"><h2>' + (gameId === "blackjack" ? "Blackjack" : "Baccarat") + '</h2><span class="learn-stars">' + starsGlyph(row.stars) + '</span></div>';
+    html += "<p>" + esc(learnBlurb(gameId, level)) + "</p>";
+    html += '<div class="learn-meter"><span style="width:' + Math.round(100 * row.window.length / 20) + '%"></span></div><p>' + row.window.length + " of 20 · " + hits + " right · " + pct + "% · goal 95%</p>";
+    html += '<div class="learn-levels">';
+    B.CURRICULUM_LEVELS.forEach(function (name) {
+      const open = B.CURRICULUM_LEVELS.indexOf(name) <= B.CURRICULUM_LEVELS.indexOf(game.unlocked);
+      html += '<button type="button" data-act="learn-start" data-game="' + gameId + '" data-level="' + name + '"' + (open ? "" : " disabled") + ">" + B.CURRICULUM_LEVEL_NAME[name] + " " + starsGlyph(game.levels[name].stars) + "</button>";
+    });
+    html += "</div></article>";
+  });
+  if (!state.learn.confirm) html += '<button type="button" class="gold learn-reset" data-act="learn-reset-ask">Reset progress</button>';
+  else html += '<div class="confirm-row"><button type="button" data-act="learn-reset-no">Cancel</button><button type="button" class="gold" data-act="learn-reset-yes">Erase progress</button></div><p>This clears stars, streaks, and weak spots on this phone.</p>';
+  $("learn-root").innerHTML = html;
+}
+
+function weakLabel(key) {
+  const parts = key.split(":");
+  if (parts[0] === "hard" || parts[0] === "soft" || parts[0] === "pairs") {
+    const up = parts[2] === "T" ? "10" : parts[2];
+    const name = parts[0] === "hard" ? "Hard " + parts[1] : parts[0] === "soft" ? "Soft " + (11 + Number(parts[1].slice(1))) : "Pair " + parts[1];
+    return name + " vs " + up;
+  }
+  if (parts[0] === "pdraw") return "Player " + parts[1] + " vs Banker " + parts[2] + " — does Player draw?";
+  if (parts[0] === "bdraw") {
+    const third = parts[3] === "null" || parts[3] === undefined ? "Player stood" : "third card " + parts[3];
+    return "Banker " + parts[1] + " vs Player " + parts[2] + ", " + third + " — does Banker draw?";
+  }
+  if (parts[0] === "value") return "Card value " + (parts[1] === "T" ? "10" : parts[1]);
+  if (parts[0] === "natural") return "Natural on " + parts[1];
+  if (parts[0] === "outcome") return "Hand outcome " + parts[1] + " vs " + parts[2];
+  if (parts[0] === "side") {
+    const names = { dragon7: "Dragon 7", panda8: "Panda 8", ezBanker: "EZ Banker", tie: "Tie" };
+    return (names[parts[1]] || parts[1]) + " payout";
+  }
+  return key.replace(/:/g, " ");
+}
+
+function renderWeakReview() {
+  const store = state.curriculum;
+  let html = '<button type="button" class="learn-back" data-act="learn-view" data-view="home">Back</button>';
+  html += '<p class="learn-kicker">Quiet notes</p><h2 class="learn-title">Weak spots</h2>';
+  html += "<p>Misses come back about 1 deal in 4 until you get the same spot right 3 times in a row. Play mode writes them here without showing them at the table.</p>";
+  let any = false;
+  ["blackjack", "baccarat"].forEach(function (gameId) {
+    const keys = B.curriculumWeakKeys(store, gameId);
+    if (!keys.length) return;
+    any = true;
+    html += "<h2>" + (gameId === "blackjack" ? "Blackjack" : "Baccarat") + "</h2>";
+    keys.forEach(function (key) {
+      html += '<article class="learn-card"><p>' + esc(weakLabel(key)) + " · " + (3 - store.games[gameId].weak[key].rightRow) + ' correct in a row still needed</p><button type="button" data-act="learn-start" data-game="' + gameId + '" data-level="' + store.games[gameId].unlocked + '">Drill ' + (gameId === "blackjack" ? "Blackjack" : "Baccarat") + "</button></article>";
+    });
+  });
+  if (!any) html += '<p class="empty">No weak spots yet. A miss in a drill, or a Blackjack decision off Basic Strategy in play, will wait here.</p>';
+  $("learn-root").innerHTML = html;
+}
+
+function renderDrill() {
+  const learn = state.learn;
+  const row = state.curriculum.games[learn.game].levels[learn.level];
+  const hits = row.window.filter(function (bit) { return bit; }).length;
+  const pct = row.window.length ? Math.round(100 * hits / row.window.length) : 0;
+  const prompt = learn.prompt;
+  let html = '<button type="button" class="learn-back" data-act="learn-view" data-view="home">Back</button>';
+  html += '<p class="learn-kicker">' + (learn.game === "blackjack" ? "Blackjack" : "Baccarat") + " · " + B.CURRICULUM_LEVEL_NAME[learn.level] + "</p>";
+  html += '<h2 class="learn-title">' + esc(learnTitle(learn.game, learn.level)) + "</h2>";
+  html += '<div class="learn-stats"><span>' + row.window.length + ' of 20 hands</span><span>' + hits + " right · " + pct + "% · goal 95%</span></div>";
+  html += '<div class="learn-meter"><span style="width:' + Math.round(100 * row.window.length / 20) + '%"></span></div>';
+  html += '<div class="learn-pills"><span class="pill">Streak ' + row.streak + '</span><span class="pill">Best ' + row.bestStreak + '</span><span class="pill">Day ' + state.curriculum.dayStreak + " in a row</span></div>";
+  html += '<div class="bj-felt">';
+  if (!prompt) html += '<p class="empty">Deal the first hand.</p>';
+  else if (prompt.kind === "strategy") {
+    const label = prompt.cat === "hard" ? "Hard " + prompt.hand : prompt.cat === "soft" ? "Soft " + (11 + Number(prompt.hand.slice(1))) : "Pair";
+    html += '<p class="kicker">Dealer</p><div class="cards">' + cardHTML(prompt.dealer) + cardBackSVG() + "</div>";
+    html += '<p class="print">Stands on all 17s · Pays 3 to 2</p><p class="kicker">Player</p><div class="cards">';
+    prompt.cards.forEach(function (card) { html += cardHTML(card); });
+    html += '</div><p class="hand-tag">' + esc(label) + "</p>";
+  } else if (prompt.kind === "payout") {
+    html += "<p>You bet " + prompt.stake + " practice chips. The hand is a " + prompt.result + ". What profit comes back?</p>";
+  } else if (prompt.kind === "value") {
+    html += '<p class="kicker">Card value</p><div class="cards">' + cardHTML(prompt.card) + "</div><p>What does this card count in baccarat?</p>";
+  } else if (prompt.kind === "natural") {
+    html += "<p>The two-card total is " + prompt.total + ". Is that a natural?</p>";
+  } else if (prompt.kind === "player-draw") {
+    html += "<p>Player shows " + prompt.pt + ". Banker shows " + prompt.bt + ". Does Player draw?</p>";
+  } else if (prompt.kind === "banker-draw") {
+    html += "<p>Banker shows " + prompt.bt + ". Player shows " + prompt.pt + ". " + (prompt.third === null ? "Player stood." : "Player's third card is " + prompt.third + ".") + " Does Banker draw?</p>";
+  } else if (prompt.kind === "outcome") {
+    html += '<div class="zones"><div class="zone"><p class="zone-label">Player</p><div class="cards">';
+    prompt.hand.player.forEach(function (c) { html += cardHTML({ rank: c[0], suit: c[1] }); });
+    html += '</div></div><div class="zone"><p class="zone-label">Banker</p><div class="cards">';
+    prompt.hand.banker.forEach(function (c) { html += cardHTML({ rank: c[0], suit: c[1] }); });
+    html += "</div></div></div><p>Who wins this dealt hand?</p>";
+  } else if (prompt.kind === "side") {
+    const label = { dragon7: "Dragon 7", panda8: "Panda 8", ezBanker: "EZ Banker", tie: "Tie" }[prompt.name];
+    html += "<p>" + label + ". What is the payout number? 0 means a push or a loss with nothing paid.</p>";
+  }
+  html += "</div>";
+  if (prompt && (prompt.kind === "strategy")) {
+    html += '<p class="learn-kicker">Your play?</p><div class="learn-actions">';
+    [["H", "Hit"], ["S", "Stand"], ["D", "Double"], ["P", "Split"]].forEach(function (pair) {
+      const illegal = (pair[0] === "P" && prompt.cat !== "pairs") || (pair[0] === "D" && prompt.cat === "pairs" && prompt.hand === "AA");
+      html += '<button type="button" data-act="learn-answer" data-move="' + pair[0] + '"' + (learn.locked || illegal ? " disabled" : "") + ">" + pair[1] + "</button>";
+    });
+    html += "</div>";
+  } else if (prompt && (prompt.kind === "natural" || prompt.kind === "player-draw" || prompt.kind === "banker-draw")) {
+    html += '<div class="learn-actions"><button type="button" data-act="learn-answer" data-move="yes"' + (learn.locked ? " disabled" : "") + '>Yes</button><button type="button" data-act="learn-answer" data-move="no"' + (learn.locked ? " disabled" : "") + ">No</button></div>";
+  } else if (prompt && prompt.kind === "value") {
+    html += '<div class="learn-actions values">';
+    for (let v = 0; v <= 9; v++) html += '<button type="button" data-act="learn-answer" data-move="' + v + '"' + (learn.locked ? " disabled" : "") + ">" + v + "</button>";
+    html += "</div>";
+  } else if (prompt && prompt.kind === "outcome") {
+    html += '<div class="learn-actions"><button type="button" data-act="learn-answer" data-move="player"' + (learn.locked ? " disabled" : "") + '>Player</button><button type="button" data-act="learn-answer" data-move="banker"' + (learn.locked ? " disabled" : "") + '>Banker</button><button type="button" data-act="learn-answer" data-move="tie"' + (learn.locked ? " disabled" : "") + ">Tie</button></div>";
+  } else if (prompt && prompt.kind === "side") {
+    html += '<div class="learn-actions">';
+    [0, 8, 25, 40].forEach(function (n) {
+      html += '<button type="button" data-act="learn-answer" data-move="' + n + '"' + (learn.locked ? " disabled" : "") + ">" + (n === 0 ? "0" : n + ":1") + "</button>";
+    });
+    html += "</div>";
+  } else if (prompt && prompt.kind === "payout") {
+    html += '<div class="learn-actions">';
+    prompt.choices.forEach(function (n) {
+      html += '<button type="button" data-act="learn-answer" data-move="' + n + '"' + (learn.locked ? " disabled" : "") + ">" + n + "</button>";
+    });
+    html += "</div>";
+  }
+  if (learn.feedback) html += '<div class="banner learn-feedback ' + (learn.ok ? "good" : "bad") + '"><strong>' + esc(learn.feedback) + "</strong></div>";
+  if (learn.locked) html += '<button type="button" class="gold" data-act="learn-next">Next hand</button>';
+  else if (!prompt) html += '<button type="button" class="gold" data-act="learn-next">Deal</button>';
+  $("learn-root").innerHTML = html;
+}
+
+function notePlayDecision(cards, upRank, move, canDouble) {
+  if (state.trainer) return;
+  const cell = B.bjChartCell(cards);
+  if (!cell) return;
+  const up = B.bjUpcard(upRank);
+  let graded;
+  try { graded = B.gradeBlackjackMove(cell.cat, cell.hand, up, move, canDouble); }
+  catch (err) { return; }
+  B.curriculumQuietSpot(state.curriculum, "blackjack", cell.cat + ":" + cell.hand + ":" + up, graded.ok);
+  saveCurriculum();
+}
+
 function showTab(name) {
   state.tab = name;
-  const order = ["blackjack", "poker", "edges", "baccarat", "roulette"];
+  const order = ["learn", "blackjack", "poker", "edges", "baccarat", "roulette"];
   order.forEach(function (id) {
     const panel = $("panel-" + id);
     const tab = $("tab-" + id);
@@ -2445,6 +3200,7 @@ function showTab(name) {
     const box = tab.getBoundingClientRect();
     ind.style.transform = "translateX(" + (box.left - nav.left + box.width / 2 - 12) + "px)";
   }
+  if (name === "learn") { renderLearn(); window.scrollTo(0, 0); }
   if (name === "poker" && state.vp.phase === "idle") renderVp();
   if (name === "edges") renderEdges();
   if (name === "baccarat") renderBaccarat();
@@ -2769,9 +3525,11 @@ function playBjMove(move) {
   play.error = null;
   if (move === "H") {
     if (hand.aceSplit) return;
+    notePlayDecision(hand.cards.slice(), play.dealer[0][0], "H", hand.cards.length === 2 && !hand.fromSplit);
     hand.cards.push(drawBj());
     if (B.bjTotal(hand.cards).total >= 21) hand.stood = true;
   } else if (move === "S") {
+    notePlayDecision(hand.cards.slice(), play.dealer[0][0], "S", hand.cards.length === 2 && !hand.fromSplit);
     hand.stood = true;
   } else if (move === "D") {
     if (hand.cards.length !== 2 || hand.aceSplit) return;
@@ -2780,6 +3538,7 @@ function playBjMove(move) {
       renderBjPlay();
       return;
     }
+    notePlayDecision(hand.cards.slice(), play.dealer[0][0], "D", true);
     play.chips -= hand.base;
     hand.bet += hand.base;
     hand.cards.push(drawBj());
@@ -2791,6 +3550,7 @@ function playBjMove(move) {
       renderBjPlay();
       return;
     }
+    notePlayDecision(hand.cards.slice(), play.dealer[0][0], "P", true);
     play.chips -= hand.base;
     const moved = hand.cards.pop();
     const aces = hand.cards[0][0] === "A";
@@ -3829,6 +4589,32 @@ function onClick(event) {
   if (!el) return;
   const act = el.dataset.act;
   if (act === "tab") { showTab(el.dataset.tab); return; }
+  if (act === "learn-view") { state.learn.view = el.dataset.view; state.learn.confirm = false; renderLearn(); window.scrollTo(0, 0); return; }
+  if (act === "learn-start") {
+    const game = state.curriculum.games[el.dataset.game];
+    if (!game) return;
+    if (B.CURRICULUM_LEVELS.indexOf(el.dataset.level) > B.CURRICULUM_LEVELS.indexOf(game.unlocked)) return;
+    state.learn.game = el.dataset.game;
+    state.learn.level = el.dataset.level;
+    state.learn.view = "drill";
+    state.learn.prompt = null;
+    dealLearn();
+    window.scrollTo(0, 0);
+    return;
+  }
+  if (act === "learn-answer") { answerLearn(el.dataset.move); return; }
+  if (act === "learn-next") { dealLearn(); return; }
+  if (act === "learn-reset-ask") { state.learn.confirm = true; renderProgress(); return; }
+  if (act === "learn-reset-no") { state.learn.confirm = false; renderProgress(); return; }
+  if (act === "learn-reset-yes") {
+    state.curriculum = B.curriculumBlank();
+    saveCurriculum();
+    state.learn.confirm = false;
+    state.learn.view = "home";
+    state.learn.prompt = null;
+    renderLearn();
+    return;
+  }
   if (act === "bj-play") {
     if (!state.trainer) return;
     answerBj(el.dataset.move);
@@ -4184,6 +4970,7 @@ function applyTrainer(on) {
 }
 function init() {
   load();
+  loadCurriculum();
   applyTrainer(readTrainer());
   document.body.addEventListener("click", onClick);
   document.addEventListener("keydown", onKey);
@@ -4200,7 +4987,7 @@ function init() {
   renderRoulette();
   function tabFromHash() {
     const name = (location.hash || "").replace(/^#/, "");
-    const order = ["blackjack", "poker", "edges", "baccarat", "roulette"];
+    const order = ["learn", "blackjack", "poker", "edges", "baccarat", "roulette"];
     return order.indexOf(name) >= 0 ? name : "blackjack";
   }
   showTab(tabFromHash());
