@@ -1980,7 +1980,11 @@ function curriculumNormalize(data) {
       Object.keys(incoming.weak).forEach(function (key) {
         const row = incoming.weak[key];
         const rightRow = row && typeof row.rightRow === "number" && row.rightRow >= 0 ? Math.floor(row.rightRow) : 0;
-        if (rightRow < 3) game.weak[key] = { rightRow: rightRow };
+        if (rightRow >= 3) return;
+        const kept = canonicalWeakKey(gameId, key);
+        if (!kept) return;
+        const prev = game.weak[kept];
+        if (!prev || rightRow < prev.rightRow) game.weak[kept] = { rightRow: rightRow };
       });
     }
   });
@@ -2170,12 +2174,37 @@ function sharpPayoutPrompt(roll, stake) {
   return { kind: "payout", result: kind, stake: bet, answer: graded.profit, line: graded.line, choices: choices, doubled: graded.doubled };
 }
 
+let BANKER_PROMPT_LISTS = null;
+function bankerPromptLists() {
+  if (BANKER_PROMPT_LISTS) return BANKER_PROMPT_LISTS;
+  const stand = [];
+  const draw = [];
+  for (let bt = 0; bt <= 7; bt++) {
+    for (let pt = 6; pt <= 7; pt++) {
+      const row = { bt: bt, pt: pt, third: null };
+      (bankerDraws(bt, pt, null) ? draw : stand).push(row);
+    }
+    for (let pt = 0; pt <= 5; pt++) {
+      for (let third = 0; third <= 9; third++) {
+        const row = { bt: bt, pt: pt, third: third };
+        (bankerDraws(bt, pt, third) ? draw : stand).push(row);
+      }
+    }
+  }
+  BANKER_PROMPT_LISTS = { stand: stand, draw: draw };
+  return BANKER_PROMPT_LISTS;
+}
+
 function intermediateBankerPrompt(roll) {
   const n = Number(roll);
   const r = n !== n ? 0 : Math.max(0, Math.min(0.999999, n));
-  const bt = Math.floor(r * 8) % 8;
-  if (r < 0.5) return { kind: "banker-draw", bt: bt, pt: r < 0.25 ? 6 : 7, third: null };
-  return { kind: "banker-draw", bt: bt, pt: Math.floor(r * 6) % 6, third: Math.floor(r * 10) % 10 };
+  const lists = bankerPromptLists();
+  const wantDraw = r >= 0.5;
+  const list = wantDraw ? lists.draw : lists.stand;
+  const span = wantDraw ? (r - 0.5) * 2 : r * 2;
+  const idx = Math.min(list.length - 1, Math.floor(span * list.length));
+  const row = list[idx];
+  return { kind: "banker-draw", bt: row.bt, pt: row.pt, third: row.third };
 }
 
 function legalCardCode(code) {
@@ -2281,13 +2310,29 @@ function weakSpotPrompt(gameId, key) {
   return null;
 }
 
+function canonicalWeakKey(gameId, key) {
+  const prompt = weakSpotPrompt(gameId, key);
+  if (!prompt || !prompt.spotKey) return "";
+  return prompt.spotKey;
+}
+
 function nextWeakSpot(store, gameId, roll) {
-  const keys = curriculumWeakKeys(store, gameId);
+  const keys = curriculumWeakKeys(store, gameId).filter(function (key) { return canonicalWeakKey(gameId, key); });
   if (!keys.length) return null;
   const n = Number(roll);
   const r = n !== n ? 0 : Math.max(0, Math.min(0.999999, n));
   const key = keys[Math.min(keys.length - 1, Math.floor(r * keys.length))];
   return weakSpotPrompt(gameId, key);
+}
+
+function joinFeedback(line, extra) {
+  const text = String(line || "");
+  const tail = String(extra || "");
+  if (!tail) return text;
+  if (!text) return tail;
+  const end = text.charAt(text.length - 1);
+  if (end === "." || end === "!" || end === "?") return text + " " + tail;
+  return text + ". " + tail;
 }
 
 const BONES = {
@@ -2329,6 +2374,7 @@ const BONES = {
   sideBetSampleList: sideBetSampleList,
   weakSpotPrompt: weakSpotPrompt,
   nextWeakSpot: nextWeakSpot,
+  joinFeedback: joinFeedback,
   HOUSE_EDGES: HOUSE_EDGES,
   formatEdge: formatEdge,
   findEdge: findEdge,
@@ -3088,7 +3134,7 @@ function finishLearnAnswer(ok, line, spotKey) {
     learn.locked = true;
     learn.ok = ok;
     learn.feedback = (ok ? "Right. " : "Not quite. ") + line;
-    if (spotKey && !state.curriculum.games[learn.game].weak[spotKey]) learn.feedback += " That spot is cleared.";
+    if (spotKey && !state.curriculum.games[learn.game].weak[spotKey]) learn.feedback = B.joinFeedback(learn.feedback, "That spot is cleared.");
     renderLearn();
     return;
   }
@@ -3097,7 +3143,7 @@ function finishLearnAnswer(ok, line, spotKey) {
   learn.locked = true;
   learn.ok = ok;
   learn.feedback = (ok ? "Right. " : "Not quite. ") + line;
-  if (result.passed) learn.feedback += " Mastery bar cleared.";
+  if (result.passed) learn.feedback = B.joinFeedback(learn.feedback, "Mastery bar cleared.");
   renderLearn();
 }
 

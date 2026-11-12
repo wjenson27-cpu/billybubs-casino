@@ -763,17 +763,32 @@ check("sharp payout buttons always include the net result", function () {
   assert.strictEqual(B.sharpPayoutPrompt(0.5, 10).result, "lose");
 });
 
-check("banker-draw prompts follow the player rules", function () {
-  for (let i = 0; i < 4000; i++) {
-    const prompt = B.intermediateBankerPrompt(i / 4000);
+check("banker-draw prompts cover the table and balance the answer", function () {
+  const seen = {};
+  let draws = 0;
+  const n = 100000;
+  for (let i = 0; i < n; i++) {
+    const prompt = B.intermediateBankerPrompt(i / n);
     assert.ok(prompt.bt >= 0 && prompt.bt <= 7);
-    if (prompt.third === null) {
-      assert.ok(prompt.pt === 6 || prompt.pt === 7, "stood on " + prompt.pt);
-    } else {
+    if (prompt.third === null) assert.ok(prompt.pt === 6 || prompt.pt === 7, "stood on " + prompt.pt);
+    else {
       assert.ok(prompt.pt >= 0 && prompt.pt <= 5, "drew on " + prompt.pt);
       assert.ok(prompt.third >= 0 && prompt.third <= 9);
     }
+    const answer = B.bankerDraws(prompt.bt, prompt.pt, prompt.third);
+    if (prompt.third === null) assert.strictEqual(answer, prompt.bt <= 5);
+    else assert.strictEqual(answer, B.BANKER_DRAWS_ON[prompt.bt].indexOf(prompt.third) !== -1);
+    assert.strictEqual(B.gradeBaccaratBankerDraw(prompt.bt, prompt.pt, prompt.third, answer).ok, true);
+    assert.strictEqual(B.gradeBaccaratBankerDraw(prompt.bt, prompt.pt, prompt.third, !answer).ok, false);
+    if (answer) draws += 1;
+    seen[prompt.bt + "|" + prompt.pt + "|" + (prompt.third === null ? "S" : String(prompt.third))] = true;
   }
+  assert.strictEqual(Object.keys(seen).length, 8 * (2 + 6 * 10));
+  assert.ok(seen["3|4|8"]);
+  assert.ok(seen["6|6|S"] && seen["6|7|S"]);
+  assert.ok(seen["6|2|6"] && seen["6|2|7"]);
+  const share = draws / n;
+  assert.ok(share >= 0.4 && share <= 0.6, "draw share " + share);
 });
 
 check("weak-spot drill serves a play-mode miss from any level", function () {
@@ -808,6 +823,36 @@ check("weak-spot drill serves a play-mode miss from any level", function () {
   assert.strictEqual(again.hand.player.join(","), "AS,8S");
   assert.strictEqual(again.hand.banker.join(","), "KH,9D");
   assert.strictEqual(again.answer, "tie");
+});
+
+check("legacy weak spots are dropped so the count matches the session", function () {
+  const store = B.readCurriculum(JSON.stringify({
+    version: 1,
+    games: {
+      baccarat: {
+        unlocked: "sharp",
+        weak: {
+          "outcome:5:5": { rightRow: 1 },
+          "not-a-spot": { rightRow: 0 },
+          "outcome:AS+8S/KH+9D": { rightRow: 2 },
+        },
+      },
+    },
+  }));
+  const keys = B.curriculumWeakKeys(store, "baccarat");
+  assert.strictEqual(keys.join("|"), "outcome:AS+8S/KH+9D");
+  for (let i = 0; i < 20; i++) {
+    const prompt = B.nextWeakSpot(store, "baccarat", i / 20);
+    assert.ok(prompt);
+    assert.strictEqual(prompt.spotKey, keys[0]);
+  }
+  assert.strictEqual(B.curriculumWeakKeys(store, "baccarat").length, 1);
+});
+
+check("cleared-spot feedback keeps a period before the next sentence", function () {
+  assert.strictEqual(B.joinFeedback("Right. Hit 16 vs 10", "That spot is cleared."), "Right. Hit 16 vs 10. That spot is cleared.");
+  assert.strictEqual(B.joinFeedback("Not quite. The hand loses.", "That spot is cleared."), "Not quite. The hand loses. That spot is cleared.");
+  assert.strictEqual(B.joinFeedback("Right. Hit 12 vs 2", "Mastery bar cleared."), "Right. Hit 12 vs 2. Mastery bar cleared.");
 });
 
 console.log("\nSTRATEGY_6D_S17_DAS");
